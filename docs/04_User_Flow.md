@@ -1,10 +1,27 @@
 # User Flow
 
+Status key: **Done** · **Next** · **Out of scope**
+
 ## Browse
-Home Feed → Playdate Detail or Post Detail
+
+| Step | Status |
+|------|--------|
+| Home Feed | **Done** |
+| → Playdate Detail | **Next** (card `onTap` not wired) |
+| → Post Detail | **Next** (card `onTap` not wired) |
 
 ## Create
-Create → Create Selection → Create Playdate or Create Post → Home Feed
+
+| Step | Status |
+|------|--------|
+| Create tab | **Placeholder** |
+| → Create Selection | **Next** |
+| → Create Playdate or Create Post | **Next** |
+| → Home Feed (new card appears) | **Next** |
 
 ## Profile
-Profile
+
+| Step | Status |
+|------|--------|
+| Profile tab | **Placeholder** |
+| Real profile (user + their cards) | **Next** |
