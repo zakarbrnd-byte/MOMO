@@ -21,7 +21,7 @@ flutter run
 lib/
   main.dart              # Entry
   app.dart               # MaterialApp
-  core/theme/            # Colors + theme
+  core/theme/            # Design system (colors, type, spacing, card, button)
   navigation/            # Home · Create · Profile shell
   features/              # Screen placeholders
   data/                  # Mock data + models (later)
