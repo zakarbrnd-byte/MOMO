@@ -26,10 +26,13 @@ Thumbs.db
 .env
 .env.*
 
-# Platform (generated — keep after flutter create)
-# android/.gradle/
-# ios/Pods/
-# ios/.symlinks/
-# macos/Flutter/ephemeral/
-# windows/flutter/ephemeral/
-# linux/flutter/ephemeral/
+# Platform build artifacts
+**/android/local.properties
+**/android/.gradle/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/ephemeral/
+**/macos/Flutter/ephemeral/
+**/windows/flutter/ephemeral/
+**/linux/flutter/ephemeral/
