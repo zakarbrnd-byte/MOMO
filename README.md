@@ -24,8 +24,8 @@ lib/
   core/theme/            # Design system (colors, type, spacing, card, button)
   navigation/            # Home · Create · Profile shell
   features/              # Screen placeholders
-  data/                  # Mock data + models (later)
-  shared/                # Shared widgets (later)
+  data/models/           # Playdate, Post, MomUser
+  shared/widgets/cards/  # BaseCard, PlaydateCard, PostCard
 ```
 
 See `CLAUDE.md` and `docs/` for product scope.
