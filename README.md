@@ -15,6 +15,8 @@ flutter pub get
 flutter run
 ```
 
+Platforms: `android/` · `ios/` · `web/`
+
 ## Structure
 
 ```
