@@ -13,21 +13,21 @@ Strictly per CLAUDE.md. Nothing else.
 
 | Screen | Status |
 |--------|--------|
-| Home Feed | **Done** (mock data) |
-| Create Selection | **Next** |
-| Create Playdate | **Next** |
-| Create Post | **Next** |
-| Playdate Detail | **Next** |
-| Post Detail | **Next** |
-| Profile | **Next** (placeholder tab only) |
+| Home Feed | **Done** (mock + Riverpod) |
+| Create Selection | **Done** |
+| Create Playdate | **Done** |
+| Create Post | **Done** |
+| Playdate Detail | **Done** |
+| Post Detail | **Done** |
+| Profile | **Done** (mock user + their cards) |
 
 ## Navigation
 
 | Tab | Status |
 |-----|--------|
-| Home | **Done** → Home Feed |
-| Create | **Placeholder** (no Create Selection yet) |
-| Profile | **Placeholder** |
+| Home | **Done** → Feed + Detail |
+| Create | **Done** → Selection → forms |
+| Profile | **Done** |
 
 ## Rules
 
