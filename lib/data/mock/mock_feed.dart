@@ -3,7 +3,7 @@ import '../models/mom_user.dart';
 import '../models/playdate.dart';
 import '../models/post.dart';
 
-/// Local mock moms for SoCal playdate matching.
+/// Fictional mock moms for demos/tests (not real people).
 abstract final class MockUsers {
   static const soojin = MomUser(
     id: 'u_soojin',

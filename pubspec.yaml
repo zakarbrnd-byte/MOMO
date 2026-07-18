@@ -1,5 +1,5 @@
 name: momo
-description: Playdate matching app for Korean moms.
+description: Flutter MVP helping Korean moms in the US connect through playdates and posts.
 publish_to: "none"
 version: 0.1.0+1
 

@@ -5,7 +5,6 @@
 .pub/
 build/
 flutter_*.png
-LinkedInMeetsFlutter.png
 .flutter-plugins
 .flutter-plugins-dependencies
 
@@ -22,13 +21,27 @@ LinkedInMeetsFlutter.png
 .DS_Store
 Thumbs.db
 
-# Secrets
+# Secrets & local env (never commit)
 .env
 .env.*
+!.env.example
+*.pem
+*.p12
+*.key
+
+# Mobile / backend credential files (not used in MVP; ignore if added later)
+**/google-services.json
+**/GoogleService-Info.plist
+**/firebase_options.dart
+**/supabase/.temp/
+key.properties
+**/*.keystore
+**/*.jks
 
 # Platform build artifacts
 **/android/local.properties
 **/android/.gradle/
+**/android/captures/
 **/ios/Pods/
 **/ios/.symlinks/
 **/ios/Flutter/Flutter.podspec

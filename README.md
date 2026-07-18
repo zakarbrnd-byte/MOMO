@@ -1,65 +1,147 @@
 # MOMO
 
-Playdate matching app for Korean moms. MVP 0.1.
+MOMO is a Flutter MVP app helping Korean moms in the US connect through playdates and community posts.
 
-## Stack
+## Project overview
 
-- Flutter (Material 3)
-- Mock data only (no backend, no auth)
-- `flutter_riverpod` declared (`ProviderScope` in `main.dart`) — **no providers in use yet**
-- Current state: local `setState` (tabs) + static `MockFeed`
+MOMO is a mobile-first MVP focused on **offline connection**. The core product idea is simple:
 
-## Status
+> Everything is a Card.
 
-| Area | Status |
-|------|--------|
-| Home Feed | Done (mixed Playdate/Post cards) |
-| Create / Profile tabs | Placeholders |
-| Detail / Create forms | Not built yet |
+There are only two card types in MVP:
 
-See `docs/03_MVP_Features.md` and `docs/04_User_Flow.md`.
+1. **Playdate Card** — time, place, host, optional age range  
+2. **Post Card** — short mom-to-mom note in the feed  
 
-## Run
+No backend yet. The Home Feed uses **local mock data** so the UI can be tested on real devices before recruiting early users.
+
+## Current MVP features
+
+| Feature | Status |
+|---------|--------|
+| Home feed with mixed Playdate + Post cards | Done |
+| Shared card design system (`BaseCard`) | Done |
+| Bottom navigation: Home · Create · Profile | Done |
+| Create tab | Placeholder (create flow not built) |
+| Profile tab | Placeholder |
+| Playdate / Post detail screens | Not built |
+| Create Playdate / Create Post forms | Not built |
+| Auth / backend / chat / notifications | Out of scope for this MVP |
+
+Honest status details: [`MOMO_MVP_STATUS.md`](MOMO_MVP_STATUS.md)
+
+## Technology stack
+
+- **Flutter** (Material 3)
+- **Dart** SDK `^3.5.0`
+- **Mock data only** (no network, no auth)
+- `flutter_riverpod` is listed in `pubspec.yaml` and wraps the app with `ProviderScope`, but **no providers are used yet** (tabs use local `setState`; feed reads `MockFeed`)
+
+## Current development status
+
+MVP **UI foundation** is ready for device testing of the feed:
+
+- Warm minimal theme  
+- Scrollable Home Feed  
+- Reusable Playdate / Post cards  
+
+Create flow and detail screens are **not** ready for user testing of posting or RSVP.
+
+Near-term goal after this public prep:
+
+1. Test UI on real devices  
+2. Recruit ~5 moms for early feedback  
+3. Iterate based on what they try first  
+
+## Future roadmap
+
+After the feed is validated with moms:
+
+- Create Selection → Create Playdate / Create Post  
+- Playdate Detail / Post Detail  
+- Real Profile (mock user + their cards)  
+- Later (not MVP): auth, backend, search, chat, notifications, business listings  
+
+Product rules live in [`CLAUDE.md`](CLAUDE.md).
+
+## How to run locally
+
+### Requirements
+
+- Flutter stable (3.22+ recommended)
+- Chrome **or** an Android device/emulator  
+- Xcode / macOS required for iOS builds (not available on all environments)
+
+### Setup
 
 ```bash
 flutter pub get
-flutter run
+flutter doctor
 ```
 
-Platforms: `android/` · `ios/` · `web/`
+### Run
 
-## Structure
+```bash
+# Web
+flutter run -d chrome
 
+# Android
+flutter run -d android
+
+# List devices
+flutter devices
 ```
+
+### Tests
+
+```bash
+flutter analyze
+flutter test
+```
+
+### Android APK (debug / local testing)
+
+```bash
+flutter build apk
+```
+
+Output typically: `build/app/outputs/flutter-apk/app-release.apk`  
+Note: release signing currently uses **debug keys** (fine for internal testing, not store publish).
+
+### iOS
+
+```bash
+flutter run -d ios
+# or
+flutter build ios
+```
+
+Requires macOS + Xcode. This cloud/Linux environment cannot build for a physical iPhone.
+
+## Project structure
+
+```text
 lib/
-  main.dart              # Entry + ProviderScope
-  app.dart               # MaterialApp
-  core/theme/            # Design system tokens
-  navigation/            # Home · Create · Profile shell
-  features/home/         # Home Feed (Done)
-  features/create/       # Placeholder → Create Selection/forms (Next)
-  features/profile/      # Placeholder → Profile (Next)
-  data/models/           # Playdate, Post, FeedItem, MomUser
-  data/mock/             # Mock feed data
-  shared/widgets/cards/  # BaseCard, PlaydateCard, PostCard
+  main.dart / app.dart
+  core/theme/              # Design tokens
+  navigation/              # Home · Create · Profile shell
+  features/home/           # Home Feed
+  features/create/         # Placeholder
+  features/profile/        # Placeholder
+  data/models/             # Playdate, Post, FeedItem, MomUser
+  data/mock/               # Fictional mock feed
+  shared/widgets/cards/    # BaseCard, PlaydateCard, PostCard
+test/                      # Widget + unit tests
+android/ ios/ web/         # Platform runners
+docs/                      # Product notes
 ```
 
-### Feature folder convention (upcoming — no moves yet)
+## Security
 
-| Feature | Own screens / files under |
-|---------|---------------------------|
-| Home feed | `features/home/` |
-| Create selection + forms | `features/create/` |
-| Playdate detail (and playdate-specific UI) | `features/playdate/` *(add when Detail lands)* |
-| Post detail (and post-specific UI) | `features/post/` *(add when Detail lands)* |
-| Profile | `features/profile/` |
-| Shared card widgets | `shared/widgets/cards/` |
-| Models / mock | `data/models/`, `data/mock/` |
+- MVP has **no API keys** or backend credentials  
+- Copy [`.env.example`](.env.example) only if you add services later — never commit real secrets  
+- Mock users in `lib/data/mock/` are **fictional**
 
-Do not relocate files until the matching screen is implemented.
+## License / contribution
 
-## Design notes
-
-Feed card chrome: `BaseCard` + `AppCardStyle` (see `docs/06_Design_System.md`).
-
-See `CLAUDE.md` and `docs/` for product scope.
+Private → public prep in progress. Contribution guide TBD after early user testing.
