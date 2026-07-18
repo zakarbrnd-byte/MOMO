@@ -43,9 +43,11 @@ void main() {
   testWidgets('Home feed shows empty state when there are no cards',
       (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.light,
-        home: const HomeFeedScreen(items: []),
+      ProviderScope(
+        child: MaterialApp(
+          theme: AppTheme.light,
+          home: const HomeFeedScreen(items: []),
+        ),
       ),
     );
 
@@ -78,9 +80,11 @@ void main() {
     ];
 
     await tester.pumpWidget(
-      MaterialApp(
-        theme: AppTheme.light,
-        home: HomeFeedScreen(items: items, now: MockFeed.now),
+      ProviderScope(
+        child: MaterialApp(
+          theme: AppTheme.light,
+          home: HomeFeedScreen(items: items, now: MockFeed.now),
+        ),
       ),
     );
 

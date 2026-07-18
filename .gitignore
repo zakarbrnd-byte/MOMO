@@ -49,3 +49,4 @@ key.properties
 **/macos/Flutter/ephemeral/
 **/windows/flutter/ephemeral/
 **/linux/flutter/ephemeral/
+/momo/

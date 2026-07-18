@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:momo/app.dart';
-import 'package:momo/features/create/create_placeholder_screen.dart';
+import 'package:momo/features/create/create_selection_screen.dart';
 import 'package:momo/features/home/home_feed_screen.dart';
-import 'package:momo/features/profile/profile_placeholder_screen.dart';
+import 'package:momo/features/profile/profile_screen.dart';
 import 'package:momo/navigation/main_shell.dart';
 
 void main() {
@@ -24,19 +24,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.byType(CreatePlaceholderScreen, skipOffstage: false),
+      find.byType(CreateSelectionScreen, skipOffstage: false),
       findsOneWidget,
     );
-    expect(find.text('Create'), findsWidgets);
+    expect(find.text('What would you like to share?'), findsOneWidget);
 
     await tester.tap(find.text('Profile').last);
     await tester.pumpAndSettle();
 
-    expect(
-      find.byType(ProfilePlaceholderScreen, skipOffstage: false),
-      findsOneWidget,
-    );
-    expect(find.text('Profile'), findsWidgets);
+    expect(find.byType(ProfileScreen, skipOffstage: false), findsOneWidget);
+    expect(find.text('Your cards on MOMO (mock)'), findsOneWidget);
 
     await tester.tap(find.text('Home').last);
     await tester.pumpAndSettle();
@@ -53,29 +50,15 @@ void main() {
       ),
     );
 
-    // IndexedStack builds all children; offstage ones need skipOffstage: false.
     expect(find.byType(HomeFeedScreen, skipOffstage: false), findsOneWidget);
     expect(
-      find.byType(CreatePlaceholderScreen, skipOffstage: false),
+      find.byType(CreateSelectionScreen, skipOffstage: false),
       findsOneWidget,
     );
-    expect(
-      find.byType(ProfilePlaceholderScreen, skipOffstage: false),
-      findsOneWidget,
-    );
+    expect(find.byType(ProfileScreen, skipOffstage: false), findsOneWidget);
 
     await tester.tap(find.text('Create').last);
     await tester.pumpAndSettle();
-
-    expect(find.byType(HomeFeedScreen, skipOffstage: false), findsOneWidget);
-    expect(
-      find.byType(CreatePlaceholderScreen, skipOffstage: false),
-      findsOneWidget,
-    );
-    expect(
-      find.byType(ProfilePlaceholderScreen, skipOffstage: false),
-      findsOneWidget,
-    );
 
     final nav = tester.widget<NavigationBar>(find.byType(NavigationBar));
     expect(nav.selectedIndex, 1);
