@@ -28,5 +28,4 @@ abstract final class AppColors {
 
   // Feedback (kept quiet; use sparingly)
   static const Color danger = Color(0xFFC44B4B);
-  static const Color success = Color(0xFF5A8F6B);
 }
