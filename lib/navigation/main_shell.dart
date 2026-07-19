@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../features/create/create_placeholder_screen.dart';
-import '../features/home/home_placeholder_screen.dart';
-import '../features/profile/profile_placeholder_screen.dart';
+import '../features/create/create_screen.dart';
+import '../features/home/home_screen.dart';
+import '../features/profile/profile_screen.dart';
 
 /// Bottom navigation: Home · Create · Profile (CLAUDE.md).
 class MainShell extends StatefulWidget {
@@ -39,9 +39,9 @@ class _MainShellState extends State<MainShell> {
       body: IndexedStack(
         index: _index,
         children: const [
-          HomePlaceholderScreen(),
-          CreatePlaceholderScreen(),
-          ProfilePlaceholderScreen(),
+          HomeScreen(),
+          CreateScreen(),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
