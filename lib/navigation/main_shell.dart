@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/create/create_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/profile/profile_screen.dart';
+import '../providers/main_tab_provider.dart';
 
 /// Bottom navigation: Home · Create · Profile (CLAUDE.md).
-class MainShell extends StatefulWidget {
+class MainShell extends ConsumerWidget {
   const MainShell({super.key});
-
-  @override
-  State<MainShell> createState() => _MainShellState();
-}
-
-class _MainShellState extends State<MainShell> {
-  int _index = 0;
 
   static const _destinations = [
     NavigationDestination(
@@ -34,10 +29,12 @@ class _MainShellState extends State<MainShell> {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final index = ref.watch(mainTabProvider);
+
     return Scaffold(
       body: IndexedStack(
-        index: _index,
+        index: index,
         children: const [
           HomeScreen(),
           CreateScreen(),
@@ -45,10 +42,10 @@ class _MainShellState extends State<MainShell> {
         ],
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
+        selectedIndex: index,
         destinations: _destinations,
-        onDestinationSelected: (index) {
-          setState(() => _index = index);
+        onDestinationSelected: (selected) {
+          ref.read(mainTabProvider.notifier).state = selected;
         },
       ),
     );

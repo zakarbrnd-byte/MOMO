@@ -14,6 +14,32 @@ class PlaydateNotifier extends Notifier<List<Playdate>> {
     state = [playdate, ...state];
   }
 
+  /// Builds a playdate from form fields and prepends it to local state.
+  void createPlaydate({
+    required String title,
+    required String date,
+    required String time,
+    required String location,
+    required String childAge,
+    required String description,
+    String? hostName,
+  }) {
+    addPlaydate(
+      Playdate(
+        id: 'pd_${DateTime.now().millisecondsSinceEpoch}',
+        title: title.trim(),
+        date: date.trim(),
+        time: time.trim(),
+        location: location.trim(),
+        childAge: childAge.trim(),
+        description: description.trim(),
+        hostName: hostName?.trim().isNotEmpty == true
+            ? hostName!.trim()
+            : mockProfile.displayName,
+      ),
+    );
+  }
+
   void updatePlaydate(Playdate playdate) {
     state = [
       for (final item in state)

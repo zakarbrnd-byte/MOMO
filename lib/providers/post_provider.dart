@@ -14,6 +14,24 @@ class PostNotifier extends Notifier<List<Post>> {
     state = [post, ...state];
   }
 
+  /// Builds a post from form fields and prepends it to local state.
+  void createPost({
+    required String title,
+    required String content,
+    String? authorName,
+  }) {
+    addPost(
+      Post(
+        id: 'po_${DateTime.now().millisecondsSinceEpoch}',
+        title: title.trim(),
+        content: content.trim(),
+        authorName: authorName?.trim().isNotEmpty == true
+            ? authorName!.trim()
+            : mockProfile.displayName,
+      ),
+    );
+  }
+
   void updatePost(Post post) {
     state = [
       for (final item in state)
