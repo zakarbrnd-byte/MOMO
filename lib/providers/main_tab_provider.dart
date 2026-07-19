@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Bottom-nav index: 0 Home · 1 Create · 2 Profile
-final mainTabProvider = StateProvider<int>((ref) => 0);
+import '../navigation/app_navigation.dart';
+
+/// Bottom-nav index: [MainTabs.home] · [MainTabs.create] · [MainTabs.profile]
+final mainTabProvider = StateProvider<int>((ref) => MainTabs.home);

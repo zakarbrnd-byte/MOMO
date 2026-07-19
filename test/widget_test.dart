@@ -10,6 +10,7 @@ void main() {
         child: MomoApp(),
       ),
     );
+    await tester.pumpAndSettle();
 
     expect(find.text('MOMO'), findsOneWidget);
     expect(find.text('Home'), findsWidgets);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../navigation/app_navigation.dart';
 import 'create_playdate_screen.dart';
 import 'create_post_screen.dart';
 
@@ -9,6 +10,8 @@ class CreateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Create')),
       body: Padding(
@@ -17,10 +20,13 @@ class CreateScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'What would you like to create?',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+              'What would you like to share?',
+              style: textTheme.titleMedium,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'You can create two types of content for the community.',
+              style: textTheme.bodyMedium,
             ),
             const SizedBox(height: 20),
             Expanded(
@@ -29,10 +35,9 @@ class CreateScreen extends StatelessWidget {
                 title: 'Create Playdate',
                 subtitle: 'Invite moms to meet offline',
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const CreatePlaydateScreen(),
-                    ),
+                  AppNavigation.pushPage(
+                    context,
+                    const CreatePlaydateScreen(),
                   );
                 },
               ),
@@ -44,10 +49,9 @@ class CreateScreen extends StatelessWidget {
                 title: 'Create Post',
                 subtitle: 'Ask a question or share an idea',
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const CreatePostScreen(),
-                    ),
+                  AppNavigation.pushPage(
+                    context,
+                    const CreatePostScreen(),
                   );
                 },
               ),

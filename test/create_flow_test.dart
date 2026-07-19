@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:momo/app.dart';
+import 'package:momo/navigation/app_navigation.dart';
 import 'package:momo/providers/main_tab_provider.dart';
 import 'package:momo/providers/playdate_provider.dart';
 import 'package:momo/providers/post_provider.dart';
@@ -20,6 +21,7 @@ void main() {
         child: const MomoApp(),
       ),
     );
+    await tester.pumpAndSettle();
   }
 
   Future<void> openCreatePlaydate(WidgetTester tester) async {
@@ -48,7 +50,7 @@ void main() {
     addTearDown(container.dispose);
     await pumpApp(tester, container);
 
-    final initialCount = container.read(playdateProvider).length;
+    final initialCount = container.read(playdateProvider).requireValue.length;
     await openCreatePlaydate(tester);
 
     final fields = find.byType(TextFormField);
@@ -59,7 +61,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Please select a date'), findsOneWidget);
-    expect(container.read(playdateProvider).length, initialCount);
+    expect(container.read(playdateProvider).requireValue.length, initialCount);
   });
 
   testWidgets('Create Playdate succeeds without time', (tester) async {
@@ -77,7 +79,7 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
 
-    expect(container.read(mainTabProvider), 0);
+    expect(container.read(mainTabProvider), MainTabs.home);
     expect(find.text('Playdate created successfully!'), findsOneWidget);
     expect(find.text('Park Play Date'), findsOneWidget);
     expect(find.text('Irvine Park'), findsOneWidget);
@@ -119,7 +121,7 @@ void main() {
     addTearDown(container.dispose);
     await pumpApp(tester, container);
 
-    final initialCount = container.read(playdateProvider).length;
+    final initialCount = container.read(playdateProvider).requireValue.length;
     await openCreatePlaydate(tester);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
@@ -128,7 +130,7 @@ void main() {
     expect(find.text('Please enter a title'), findsOneWidget);
     expect(find.text('Please select a date'), findsOneWidget);
     expect(find.text('Please select a location'), findsOneWidget);
-    expect(container.read(playdateProvider).length, initialCount);
+    expect(container.read(playdateProvider).requireValue.length, initialCount);
   });
 
   testWidgets('Create Post blocks empty form with validation', (tester) async {
@@ -136,7 +138,7 @@ void main() {
     addTearDown(container.dispose);
     await pumpApp(tester, container);
 
-    final initialCount = container.read(postProvider).length;
+    final initialCount = container.read(postProvider).requireValue.length;
 
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
@@ -148,7 +150,7 @@ void main() {
 
     expect(find.text('Please enter a post title'), findsOneWidget);
     expect(find.text('Please write some content'), findsOneWidget);
-    expect(container.read(postProvider).length, initialCount);
+    expect(container.read(postProvider).requireValue.length, initialCount);
   });
 
   testWidgets('Create Post appears on Home feed', (tester) async {
@@ -171,7 +173,7 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
     await tester.pumpAndSettle();
 
-    expect(container.read(mainTabProvider), 0);
+    expect(container.read(mainTabProvider), MainTabs.home);
     expect(find.text('Post created successfully!'), findsOneWidget);
     expect(find.text('Best playground recommendations?'), findsOneWidget);
   });

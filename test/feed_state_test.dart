@@ -12,6 +12,7 @@ void main() {
         child: MomoApp(),
       ),
     );
+    await tester.pumpAndSettle();
 
     expect(find.text('Saturday Park Playdate'), findsOneWidget);
     expect(find.text('Anyone free near Seolleung this week?'), findsOneWidget);
@@ -27,10 +28,12 @@ void main() {
         child: const MomoApp(),
       ),
     );
+    await tester.pumpAndSettle();
 
     container.read(playdateProvider.notifier).addPlaydate(
           const Playdate(
             id: 'pd_test',
+            creatorId: 'mom_host',
             title: 'Test Park Meetup',
             date: 'Mon, Jul 20',
             time: '9:00 AM',

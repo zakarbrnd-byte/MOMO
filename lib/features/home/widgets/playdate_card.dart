@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../models/playdate.dart';
+import '../../../providers/current_user_provider.dart';
 
-class PlaydateCard extends StatelessWidget {
+class PlaydateCard extends ConsumerWidget {
   const PlaydateCard({
     super.key,
     required this.playdate,
@@ -14,8 +16,9 @@ class PlaydateCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+    final isOwned = playdate.isOwner(ref.watch(currentUserProvider).id);
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -54,14 +57,32 @@ class PlaydateCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(playdate.title, style: textTheme.titleLarge),
+              if (isOwned) ...[
+                const SizedBox(height: 6),
+                Text(
+                  'Created by you',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: AppColors.primaryDark,
+                  ),
+                ),
+              ],
               const SizedBox(height: 12),
               _MetaRow(icon: Icons.calendar_today_outlined, label: playdate.date),
-              const SizedBox(height: 6),
-              _MetaRow(icon: Icons.access_time, label: playdate.time),
+              if (playdate.time.trim().isNotEmpty) ...[
+                const SizedBox(height: 6),
+                _MetaRow(icon: Icons.access_time, label: playdate.time),
+              ],
               const SizedBox(height: 6),
               _MetaRow(icon: Icons.place_outlined, label: playdate.location),
+              if (playdate.childAge.trim().isNotEmpty) ...[
+                const SizedBox(height: 6),
+                _MetaRow(icon: Icons.child_care_outlined, label: playdate.childAge),
+              ],
               const SizedBox(height: 6),
-              _MetaRow(icon: Icons.child_care_outlined, label: playdate.childAge),
+              _MetaRow(
+                icon: Icons.groups_outlined,
+                label: playdate.participantsLabel,
+              ),
             ],
           ),
         ),

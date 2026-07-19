@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
-import '../../providers/main_tab_provider.dart';
+import '../../navigation/app_navigation.dart';
 import '../../providers/playdate_provider.dart';
 
 class CreatePlaydateScreen extends ConsumerStatefulWidget {
@@ -20,6 +21,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
   final _timeController = TextEditingController();
   final _locationController = TextEditingController();
   final _childAgeController = TextEditingController();
+  final _capacityController = TextEditingController();
   final _descriptionController = TextEditingController();
 
   DateTime? _selectedDate;
@@ -34,8 +36,16 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
     _timeController.dispose();
     _locationController.dispose();
     _childAgeController.dispose();
+    _capacityController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  /// Empty → unlimited (`null`). Otherwise a positive integer.
+  int? _parseCapacity() {
+    final raw = _capacityController.text.trim();
+    if (raw.isEmpty) return null;
+    return int.tryParse(raw);
   }
 
   String _formatDate(DateTime date) {
@@ -106,14 +116,15 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
           location: _locationController.text,
           childAge: _childAgeController.text,
           description: _descriptionController.text,
+          maxParticipants: _parseCapacity(),
         );
 
-    ref.read(mainTabProvider.notifier).state = 0;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Playdate created successfully!')),
+    if (!mounted) return;
+    AppNavigation.completeCreateAndGoHome(
+      context,
+      ref,
+      successMessage: 'Playdate created successfully!',
     );
-    Navigator.of(context).pop();
   }
 
   @override
@@ -184,6 +195,25 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
               enabled: !_isSubmitting,
             ),
             _Field(
+              key: const Key('playdate_capacity_field'),
+              controller: _capacityController,
+              label: 'Maximum Participants (Optional)',
+              hint: 'Example: 5',
+              helperText: 'Leave empty for unlimited spots',
+              enabled: !_isSubmitting,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              validator: (value) {
+                final raw = value?.trim() ?? '';
+                if (raw.isEmpty) return null;
+                final parsed = int.tryParse(raw);
+                if (parsed == null || parsed <= 0) {
+                  return 'Please enter a valid participant limit';
+                }
+                return null;
+              },
+            ),
+            _Field(
               controller: _descriptionController,
               label: 'Description (Optional)',
               hint: 'Share a few details for other moms',
@@ -215,20 +245,27 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
 
 class _Field extends StatelessWidget {
   const _Field({
+    super.key,
     required this.controller,
     required this.label,
     required this.hint,
+    this.helperText,
     this.maxLines = 1,
     this.enabled = true,
     this.validator,
+    this.keyboardType,
+    this.inputFormatters,
   });
 
   final TextEditingController controller;
   final String label;
   final String hint;
+  final String? helperText;
   final int maxLines;
   final bool enabled;
   final FormFieldValidator<String>? validator;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -239,9 +276,12 @@ class _Field extends StatelessWidget {
         maxLines: maxLines,
         enabled: enabled,
         validator: validator,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
+          helperText: helperText,
           filled: true,
           fillColor: AppColors.surface,
           border: OutlineInputBorder(

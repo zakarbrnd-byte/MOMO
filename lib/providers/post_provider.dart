@@ -3,15 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/mock_feed.dart';
 import '../models/post.dart';
 
-/// In-memory post list. Seeded from mock data; ready to swap for a repository later.
-class PostNotifier extends Notifier<List<Post>> {
+/// In-memory posts as [AsyncValue] for loading / data / error UX.
+/// Seeded from mock data; swap [build] for a repository later.
+class PostNotifier extends AsyncNotifier<List<Post>> {
   @override
-  List<Post> build() => List<Post>.from(mockPosts);
+  Future<List<Post>> build() async {
+    return List<Post>.from(mockPosts);
+  }
 
-  List<Post> get posts => state;
+  List<Post> get posts => state.valueOrNull ?? const [];
 
   void addPost(Post post) {
-    state = [post, ...state];
+    state = AsyncData([post, ...posts]);
   }
 
   /// Builds a post from form fields and prepends it to local state.
@@ -33,11 +36,12 @@ class PostNotifier extends Notifier<List<Post>> {
   }
 
   void updatePost(Post post) {
-    state = [
-      for (final item in state)
+    state = AsyncData([
+      for (final item in posts)
         if (item.id == post.id) post else item,
-    ];
+    ]);
   }
 }
 
-final postProvider = NotifierProvider<PostNotifier, List<Post>>(PostNotifier.new);
+final postProvider =
+    AsyncNotifierProvider<PostNotifier, List<Post>>(PostNotifier.new);

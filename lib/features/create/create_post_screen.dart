@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
-import '../../providers/main_tab_provider.dart';
+import '../../navigation/app_navigation.dart';
 import '../../providers/post_provider.dart';
 
 class CreatePostScreen extends ConsumerStatefulWidget {
@@ -43,12 +43,12 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
           content: _contentController.text,
         );
 
-    ref.read(mainTabProvider.notifier).state = 0;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Post created successfully!')),
+    if (!mounted) return;
+    AppNavigation.completeCreateAndGoHome(
+      context,
+      ref,
+      successMessage: 'Post created successfully!',
     );
-    Navigator.of(context).pop();
   }
 
   @override
