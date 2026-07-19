@@ -1,10 +1,14 @@
 # User Flow
 
 ## Browse
-Home Feed → Playdate Detail or Post Detail
+
+Home Feed → tap Playdate or Post card → Detail → back
 
 ## Create
-Create → Create Selection → Create Playdate or Create Post → Home Feed
+
+Create tab → Create Playdate **or** Create Post → fill form → Save/Post  
+*(Today: snackbar + pop. Phase 2: item appears on Home Feed.)*
 
 ## Profile
-Profile
+
+Profile tab → view mock profile info

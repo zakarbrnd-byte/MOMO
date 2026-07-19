@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../data/mock_feed.dart';
+import '../../models/playdate.dart';
+import '../../providers/playdate_provider.dart';
 
-class CreatePlaydateScreen extends StatefulWidget {
+class CreatePlaydateScreen extends ConsumerStatefulWidget {
   const CreatePlaydateScreen({super.key});
 
   @override
-  State<CreatePlaydateScreen> createState() => _CreatePlaydateScreenState();
+  ConsumerState<CreatePlaydateScreen> createState() =>
+      _CreatePlaydateScreenState();
 }
 
-class _CreatePlaydateScreenState extends State<CreatePlaydateScreen> {
+class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _dateController = TextEditingController();
@@ -32,8 +37,21 @@ class _CreatePlaydateScreenState extends State<CreatePlaydateScreen> {
   void _save() {
     if (!_formKey.currentState!.validate()) return;
 
+    final playdate = Playdate(
+      id: 'pd_${DateTime.now().millisecondsSinceEpoch}',
+      title: _titleController.text.trim(),
+      date: _dateController.text.trim(),
+      time: _timeController.text.trim(),
+      location: _locationController.text.trim(),
+      childAge: _childAgeController.text.trim(),
+      description: _descriptionController.text.trim(),
+      hostName: mockProfile.displayName,
+    );
+
+    ref.read(playdateProvider.notifier).addPlaydate(playdate);
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Playdate saved (mock)')),
+      const SnackBar(content: Text('Playdate saved')),
     );
     Navigator.of(context).pop();
   }

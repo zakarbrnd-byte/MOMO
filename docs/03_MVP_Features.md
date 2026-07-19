@@ -1,26 +1,16 @@
 # MVP Features
 
-Strictly per CLAUDE.md. Nothing else.
+Canonical detail: [`../MVP_SPEC.md`](../MVP_SPEC.md).
 
-## Cards
-1. Playdate Card
-2. Post Card
+## Status: Implemented (Phase 1)
 
-## Screens
-- Home Feed
-- Create Selection
-- Create Playdate
-- Create Post
-- Playdate Detail
-- Post Detail
-- Profile
+- Bottom nav: Home · Create · Profile
+- Home feed: Playdate cards + Post cards
+- Detail screens for both card types
+- Create selection + Create Playdate / Create Post forms
+- Profile placeholder
+- Local mock data
 
-## Navigation
-- Home
-- Create
-- Profile
+## Explicitly excluded
 
-## Rules
-- Mock data only
-- No backend
-- No comments, photos, search, chat, notifications, or business
+Business listings, marketplace, chat, payments, comments, photos, search, notifications, complex matching, auth, backend.

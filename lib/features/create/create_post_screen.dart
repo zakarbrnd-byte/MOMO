@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../data/mock_feed.dart';
+import '../../models/post.dart';
+import '../../providers/post_provider.dart';
 
-class CreatePostScreen extends StatefulWidget {
+class CreatePostScreen extends ConsumerStatefulWidget {
   const CreatePostScreen({super.key});
 
   @override
-  State<CreatePostScreen> createState() => _CreatePostScreenState();
+  ConsumerState<CreatePostScreen> createState() => _CreatePostScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
+class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
@@ -24,8 +28,17 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   void _post() {
     if (!_formKey.currentState!.validate()) return;
 
+    final post = Post(
+      id: 'po_${DateTime.now().millisecondsSinceEpoch}',
+      title: _titleController.text.trim(),
+      content: _contentController.text.trim(),
+      authorName: mockProfile.displayName,
+    );
+
+    ref.read(postProvider.notifier).addPost(post);
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Post published (mock)')),
+      const SnackBar(content: Text('Post published')),
     );
     Navigator.of(context).pop();
   }

@@ -80,14 +80,7 @@ const mockPosts = [
   postIndoorSpots,
 ];
 
-/// Mixed home feed: playdates and posts interleaved.
-const mockFeedItems = <FeedItem>[
-  PlaydateFeedItem(playdateSaturdayPark),
-  PostFeedItem(postSeolleung),
-  PlaydateFeedItem(playdateLibrary),
-  PostFeedItem(postIndoorSpots),
-  PlaydateFeedItem(playdateCafe),
-];
+/// Seed data for providers. Home feed is composed via [feedProvider].
 
 const mockProfile = (
   displayName: 'Jiwoo Mom',

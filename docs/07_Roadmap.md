@@ -1,14 +1,11 @@
 # Roadmap
 
-## MVP 0.1 (only)
-- Playdate Card
-- Post Card
-- Home Feed
-- Create Selection
-- Create Playdate
-- Create Post
-- Playdate Detail
-- Post Detail
-- Profile
+Canonical plan: [`../DEVELOPMENT_PLAN.md`](../DEVELOPMENT_PLAN.md).
 
-No further versions in scope until MVP is done.
+| Phase | Status | Summary |
+|-------|--------|---------|
+| 1 | Completed | Foundation, nav, feed, cards, create/detail, mock data |
+| 2 | Next | Local Riverpod state, create → feed, join, UX |
+| 3 | Future | Auth, backend, real profiles, realtime |
+
+No marketplace / chat / payments on this roadmap.
