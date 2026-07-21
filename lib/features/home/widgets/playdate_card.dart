@@ -37,14 +37,13 @@ class PlaydateCard extends ConsumerWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.12),
+                      color: AppColors.primarySoft,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       'Playdate',
                       style: textTheme.labelLarge?.copyWith(
                         color: AppColors.primary,
-                        fontSize: 12,
                       ),
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../debug/debug_overlay.dart';
 import '../features/create/create_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/profile/profile_screen.dart';
@@ -61,22 +62,27 @@ class _MainShellState extends ConsumerState<MainShell> {
   Widget build(BuildContext context) {
     final index = ref.watch(mainTabProvider);
 
-    return Scaffold(
-      body: IndexedStack(
-        index: index,
-        children: [
-          _TabNavigator(navigatorKey: _homeNavKey, root: const HomeScreen()),
-          _TabNavigator(navigatorKey: _createNavKey, root: const CreateScreen()),
-          _TabNavigator(
-            navigatorKey: _profileNavKey,
-            root: const ProfileScreen(),
-          ),
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: index,
-        destinations: _destinations,
-        onDestinationSelected: _onTabSelected,
+    return DebugOverlay(
+      child: Scaffold(
+        body: IndexedStack(
+          index: index,
+          children: [
+            _TabNavigator(navigatorKey: _homeNavKey, root: const HomeScreen()),
+            _TabNavigator(
+              navigatorKey: _createNavKey,
+              root: const CreateScreen(),
+            ),
+            _TabNavigator(
+              navigatorKey: _profileNavKey,
+              root: const ProfileScreen(),
+            ),
+          ],
+        ),
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: index,
+          destinations: _destinations,
+          onDestinationSelected: _onTabSelected,
+        ),
       ),
     );
   }

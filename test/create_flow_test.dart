@@ -3,10 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:momo/app.dart';
+import 'package:momo/core/async/mutation_notifier.dart';
+import 'package:momo/core/async/simulated_backend.dart';
+import 'package:momo/core/widgets/error_view.dart';
+import 'package:momo/core/widgets/loading_view.dart';
 import 'package:momo/navigation/app_navigation.dart';
 import 'package:momo/providers/main_tab_provider.dart';
 import 'package:momo/providers/playdate_provider.dart';
 import 'package:momo/providers/post_provider.dart';
+
+import 'support/test_overrides.dart';
 
 void main() {
   Future<void> pumpApp(WidgetTester tester, ProviderContainer container) async {
@@ -22,6 +28,14 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+  }
+
+  ProviderContainer newContainer({List<Override> extra = const []}) {
+    final container = ProviderContainer(
+      overrides: [...testBackendOverrides, ...extra],
+    );
+    addTearDown(container.dispose);
+    return container;
   }
 
   Future<void> openCreatePlaydate(WidgetTester tester) async {
@@ -46,8 +60,7 @@ void main() {
   }
 
   testWidgets('Create Playdate blocks submit without date', (tester) async {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
+    final container = newContainer();
     await pumpApp(tester, container);
 
     final initialCount = container.read(playdateProvider).requireValue.length;
@@ -65,8 +78,7 @@ void main() {
   });
 
   testWidgets('Create Playdate succeeds without time', (tester) async {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
+    final container = newContainer();
     await pumpApp(tester, container);
 
     await openCreatePlaydate(tester);
@@ -87,8 +99,7 @@ void main() {
   });
 
   testWidgets('Create Playdate succeeds with selected time', (tester) async {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
+    final container = newContainer();
     await pumpApp(tester, container);
 
     await openCreatePlaydate(tester);
@@ -117,8 +128,7 @@ void main() {
   });
 
   testWidgets('Create Playdate blocks empty form with validation', (tester) async {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
+    final container = newContainer();
     await pumpApp(tester, container);
 
     final initialCount = container.read(playdateProvider).requireValue.length;
@@ -134,8 +144,7 @@ void main() {
   });
 
   testWidgets('Create Post blocks empty form with validation', (tester) async {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
+    final container = newContainer();
     await pumpApp(tester, container);
 
     final initialCount = container.read(postProvider).requireValue.length;
@@ -154,8 +163,7 @@ void main() {
   });
 
   testWidgets('Create Post appears on Home feed', (tester) async {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
+    final container = newContainer();
     await pumpApp(tester, container);
 
     await tester.tap(find.byIcon(Icons.add_circle_outline));
@@ -177,4 +185,108 @@ void main() {
     expect(find.text('Post created successfully!'), findsOneWidget);
     expect(find.text('Best playground recommendations?'), findsOneWidget);
   });
+
+  testWidgets('Create Playdate shows loading then success', (tester) async {
+    final container = ProviderContainer(
+      overrides: [
+        simulatedBackendProvider.overrideWith(
+          () => _DelayedBackend(const Duration(milliseconds: 400)),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await pumpApp(tester, container);
+
+    await openCreatePlaydate(tester);
+    final fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Loading Flow Playdate');
+    await selectDateFromPicker(tester);
+    await tester.enterText(fields.at(3), 'Irvine Park');
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.pump();
+    expect(find.byType(LoadingView), findsOneWidget);
+    expect(find.text('Loading...'), findsOneWidget);
+
+    await tester.pump(const Duration(milliseconds: 450));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Loading Flow Playdate'), findsOneWidget);
+    expect(find.text('Playdate created successfully!'), findsOneWidget);
+  });
+
+  testWidgets('Create error then retry succeeds', (tester) async {
+    final container = newContainer();
+    await pumpApp(tester, container);
+
+    container.read(simulatedBackendProvider.notifier).armFailure();
+
+    await openCreatePlaydate(tester);
+    final fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Retry Playdate');
+    await selectDateFromPicker(tester);
+    await tester.enterText(fields.at(3), 'Irvine Park');
+
+    final before = container.read(playdateProvider).requireValue.length;
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ErrorView), findsOneWidget);
+    expect(find.text('Could not create playdate'), findsOneWidget);
+    expect(container.read(playdateProvider).requireValue.length, before);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Try again'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Retry Playdate'), findsOneWidget);
+    expect(container.read(playdateProvider).requireValue.length, before + 1);
+  });
+
+  testWidgets('Double tap Create only adds one playdate', (tester) async {
+    final container = ProviderContainer(
+      overrides: [
+        simulatedBackendProvider.overrideWith(
+          () => _DelayedBackend(const Duration(milliseconds: 300)),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await pumpApp(tester, container);
+
+    await openCreatePlaydate(tester);
+    final fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Single Create');
+    await selectDateFromPicker(tester);
+    await tester.enterText(fields.at(3), 'Irvine Park');
+
+    final before = container.read(playdateProvider).requireValue.length;
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.pump();
+    await tester.tap(find.text('Create Playdate'));
+    await tester.pump();
+
+    final mid = container.read(createPlaydateMutationProvider);
+    expect(mid.isLoading, isTrue);
+
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pumpAndSettle();
+
+    final created = container
+        .read(playdateProvider)
+        .requireValue
+        .where((item) => item.title == 'Single Create');
+    expect(created.length, 1);
+    expect(container.read(playdateProvider).requireValue.length, before + 1);
+  });
+}
+
+class _DelayedBackend extends SimulatedBackendNotifier {
+  _DelayedBackend(this.delay);
+
+  final Duration delay;
+
+  @override
+  SimulatedBackendConfig build() => SimulatedBackendConfig(delay: delay);
 }

@@ -4,10 +4,11 @@ import '../data/mock_feed.dart';
 import '../models/playdate.dart';
 import 'current_user_provider.dart';
 
-/// In-memory playdate store.
+/// In-memory playdate store as [AsyncValue] (feed load lifecycle).
 ///
-/// Owns create / join / leave / cancel mutations.
-/// UI should only call these methods — never mutate lists locally.
+/// Mutations that need Idle → Loading → Success | Error should run through
+/// [MutationNotifier] (see `createPlaydateMutationProvider`) so UI stays
+/// backend-ready. Local writes here remain synchronous.
 class PlaydateNotifier extends AsyncNotifier<List<Playdate>> {
   @override
   Future<List<Playdate>> build() async {

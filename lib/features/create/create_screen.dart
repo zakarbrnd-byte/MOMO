@@ -93,7 +93,7 @@ class _ActionCard extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.12),
+                  color: AppColors.primarySoft,
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: Icon(icon, size: 32, color: AppColors.primary),

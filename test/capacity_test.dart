@@ -6,6 +6,8 @@ import 'package:momo/app.dart';
 import 'package:momo/data/mock_user.dart';
 import 'package:momo/providers/playdate_provider.dart';
 
+import 'support/test_overrides.dart';
+
 void main() {
   Future<ProviderContainer> pumpApp(WidgetTester tester) async {
     tester.view.physicalSize = const Size(400, 1000);
@@ -13,7 +15,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    final container = ProviderContainer();
+    final container = ProviderContainer(overrides: testBackendOverrides);
     addTearDown(container.dispose);
 
     await tester.pumpWidget(

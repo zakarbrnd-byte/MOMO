@@ -39,9 +39,8 @@ class PostCard extends StatelessWidget {
                     ),
                     child: Text(
                       'Post',
-                      style: textTheme.labelLarge?.copyWith(
+                      style: textTheme.labelMedium?.copyWith(
                         color: AppColors.textSecondary,
-                        fontSize: 12,
                       ),
                     ),
                   ),

@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/async/mutation_notifier.dart';
+import '../../core/models/async_state.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/error_view.dart';
+import '../../core/widgets/loading_view.dart';
+import '../../debug/debug_provider.dart';
 import '../../navigation/app_navigation.dart';
 import '../../providers/playdate_provider.dart';
 
@@ -27,7 +32,6 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   AutovalidateMode _autoValidateMode = AutovalidateMode.disabled;
-  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -41,7 +45,6 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
     super.dispose();
   }
 
-  /// Empty → unlimited (`null`). Otherwise a positive integer.
   int? _parseCapacity() {
     final raw = _capacityController.text.trim();
     if (raw.isEmpty) return null;
@@ -59,8 +62,11 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
     );
   }
 
+  bool get _isBusy =>
+      ref.read(createPlaydateMutationProvider).isLoading;
+
   Future<void> _pickDate() async {
-    if (_isSubmitting) return;
+    if (_isBusy) return;
 
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -82,7 +88,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
   }
 
   Future<void> _pickTime() async {
-    if (_isSubmitting) return;
+    if (_isBusy) return;
 
     final picked = await showTimePicker(
       context: context,
@@ -98,28 +104,35 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
     });
   }
 
-  void _save() {
-    if (_isSubmitting) return;
+  Future<void> _save({bool fromRetry = false}) async {
+    if (_isBusy) return;
 
-    setState(() {
-      _autoValidateMode = AutovalidateMode.onUserInteraction;
-    });
+    if (!fromRetry) {
+      setState(() {
+        _autoValidateMode = AutovalidateMode.onUserInteraction;
+      });
 
-    if (!_formKey.currentState!.validate()) return;
+      if (!_formKey.currentState!.validate()) return;
+    }
 
-    setState(() => _isSubmitting = true);
+    final succeeded = await ref.read(createPlaydateMutationProvider.notifier).run(
+      () {
+        ref.read(playdateProvider.notifier).createPlaydate(
+              title: _titleController.text,
+              date: _dateController.text,
+              time: _timeController.text,
+              location: _locationController.text,
+              childAge: _childAgeController.text,
+              description: _descriptionController.text,
+              maxParticipants: _parseCapacity(),
+            );
+      },
+    );
 
-    ref.read(playdateProvider.notifier).createPlaydate(
-          title: _titleController.text,
-          date: _dateController.text,
-          time: _timeController.text,
-          location: _locationController.text,
-          childAge: _childAgeController.text,
-          description: _descriptionController.text,
-          maxParticipants: _parseCapacity(),
-        );
+    if (!succeeded || !mounted) return;
 
-    if (!mounted) return;
+    ref.read(debugSessionProvider.notifier).recordAction('Create Playdate');
+
     AppNavigation.completeCreateAndGoHome(
       context,
       ref,
@@ -129,116 +142,130 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mutation = ref.watch(createPlaydateMutationProvider);
+    final isBusy = mutation.isLoading;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Create Playdate')),
-      body: Form(
-        key: _formKey,
-        autovalidateMode: _autoValidateMode,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-          children: [
-            _Field(
-              controller: _titleController,
-              label: 'Title',
-              hint: 'e.g. Saturday Park Playdate',
-              enabled: !_isSubmitting,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please enter a title';
-                }
-                return null;
-              },
-            ),
-            _PickerField(
-              key: const Key('playdate_date_field'),
-              controller: _dateController,
-              label: 'Date',
-              hint: 'Select Date',
-              icon: Icons.calendar_today_outlined,
-              enabled: !_isSubmitting,
-              onTap: _pickDate,
-              validator: (value) {
-                if (_selectedDate == null ||
-                    value == null ||
-                    value.trim().isEmpty) {
-                  return 'Please select a date';
-                }
-                return null;
-              },
-            ),
-            _PickerField(
-              key: const Key('playdate_time_field'),
-              controller: _timeController,
-              label: 'Time (Optional)',
-              hint: 'Select Time',
-              helperText: 'Example: 10:30 AM',
-              icon: Icons.access_time,
-              enabled: !_isSubmitting,
-              onTap: _pickTime,
-            ),
-            _Field(
-              controller: _locationController,
-              label: 'Location',
-              hint: 'e.g. Irvine Park',
-              enabled: !_isSubmitting,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please select a location';
-                }
-                return null;
-              },
-            ),
-            _Field(
-              controller: _childAgeController,
-              label: 'Child Age (Optional)',
-              hint: 'Example: 2-4 years old',
-              enabled: !_isSubmitting,
-            ),
-            _Field(
-              key: const Key('playdate_capacity_field'),
-              controller: _capacityController,
-              label: 'Maximum Participants (Optional)',
-              hint: 'Example: 5',
-              helperText: 'Leave empty for unlimited spots',
-              enabled: !_isSubmitting,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              validator: (value) {
-                final raw = value?.trim() ?? '';
-                if (raw.isEmpty) return null;
-                final parsed = int.tryParse(raw);
-                if (parsed == null || parsed <= 0) {
-                  return 'Please enter a valid participant limit';
-                }
-                return null;
-              },
-            ),
-            _Field(
-              controller: _descriptionController,
-              label: 'Description (Optional)',
-              hint: 'Share a few details for other moms',
-              maxLines: 4,
-              enabled: !_isSubmitting,
-            ),
-            const SizedBox(height: 8),
-            FilledButton(
-              onPressed: _isSubmitting ? null : _save,
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                disabledBackgroundColor:
-                    AppColors.primary.withValues(alpha: 0.6),
-                disabledForegroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+      body: switch (mutation) {
+        AsyncOpLoading() => const LoadingView(
+            title: 'Loading...',
+            message: 'Please wait.',
+          ),
+        AsyncOpError(:final message) => ErrorView(
+            title: 'Could not create playdate',
+            message: message,
+            onRetry: () => _save(fromRetry: true),
+          ),
+        _ => Form(
+            key: _formKey,
+            autovalidateMode: _autoValidateMode,
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              children: [
+                _Field(
+                  controller: _titleController,
+                  label: 'Title',
+                  hint: 'e.g. Saturday Park Playdate',
+                  enabled: !isBusy,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              child: Text(_isSubmitting ? 'Creating...' : 'Create Playdate'),
+                _PickerField(
+                  key: const Key('playdate_date_field'),
+                  controller: _dateController,
+                  label: 'Date',
+                  hint: 'Select Date',
+                  icon: Icons.calendar_today_outlined,
+                  enabled: !isBusy,
+                  onTap: _pickDate,
+                  validator: (value) {
+                    if (_selectedDate == null ||
+                        value == null ||
+                        value.trim().isEmpty) {
+                      return 'Please select a date';
+                    }
+                    return null;
+                  },
+                ),
+                _PickerField(
+                  key: const Key('playdate_time_field'),
+                  controller: _timeController,
+                  label: 'Time (Optional)',
+                  hint: 'Select Time',
+                  helperText: 'Example: 10:30 AM',
+                  icon: Icons.access_time,
+                  enabled: !isBusy,
+                  onTap: _pickTime,
+                ),
+                _Field(
+                  controller: _locationController,
+                  label: 'Location',
+                  hint: 'e.g. Irvine Park',
+                  enabled: !isBusy,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Please select a location';
+                    }
+                    return null;
+                  },
+                ),
+                _Field(
+                  controller: _childAgeController,
+                  label: 'Child Age (Optional)',
+                  hint: 'Example: 2-4 years old',
+                  enabled: !isBusy,
+                ),
+                _Field(
+                  key: const Key('playdate_capacity_field'),
+                  controller: _capacityController,
+                  label: 'Maximum Participants (Optional)',
+                  hint: 'Example: 5',
+                  helperText: 'Leave empty for unlimited spots',
+                  enabled: !isBusy,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  validator: (value) {
+                    final raw = value?.trim() ?? '';
+                    if (raw.isEmpty) return null;
+                    final parsed = int.tryParse(raw);
+                    if (parsed == null || parsed <= 0) {
+                      return 'Please enter a valid participant limit';
+                    }
+                    return null;
+                  },
+                ),
+                _Field(
+                  controller: _descriptionController,
+                  label: 'Description (Optional)',
+                  hint: 'Share a few details for other moms',
+                  maxLines: 4,
+                  enabled: !isBusy,
+                ),
+                const SizedBox(height: 8),
+                FilledButton(
+                  onPressed: isBusy ? null : _save,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor:
+                        AppColors.primary.withValues(alpha: 0.6),
+                    disabledForegroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(52),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: Text(isBusy ? 'Creating...' : 'Create Playdate'),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+      },
     );
   }
 }

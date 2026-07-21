@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/theme/app_colors.dart';
 import '../../core/widgets/empty_state.dart';
+import '../../core/widgets/error_view.dart';
+import '../../core/widgets/loading_view.dart';
 import '../../data/mock_feed.dart';
 import '../../navigation/app_navigation.dart';
 import '../../providers/feed_provider.dart';
@@ -27,10 +28,13 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('MOMO')),
       body: feedAsync.when(
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
+        loading: () => const LoadingView(
+          title: 'Loading...',
+          message: 'Please wait.',
         ),
-        error: (_, __) => _FeedError(
+        error: (error, _) => ErrorView(
+          title: 'Something went wrong',
+          message: error.toString(),
           onRetry: () {
             ref.invalidate(playdateProvider);
             ref.invalidate(postProvider);
@@ -110,39 +114,5 @@ class _FeedCard extends StatelessWidget {
           },
         ),
     };
-  }
-}
-
-class _FeedError extends StatelessWidget {
-  const _FeedError({required this.onRetry});
-
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Something went wrong.', style: textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text('Try again.', style: textTheme.bodyMedium),
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: onRetry,
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text('Try again'),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

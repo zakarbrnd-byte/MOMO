@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/mock_feed.dart';
 import '../models/post.dart';
 
-/// In-memory posts as [AsyncValue] for loading / data / error UX.
-/// Seeded from mock data; swap [build] for a repository later.
+/// In-memory posts as [AsyncValue] (feed load lifecycle).
+///
+/// Create mutations use [createPostMutationProvider] for Idle → Loading →
+/// Success | Error. Swap [build] for a repository later.
 class PostNotifier extends AsyncNotifier<List<Post>> {
   @override
   Future<List<Post>> build() async {
