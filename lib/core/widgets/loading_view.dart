@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_spacing.dart';
 
 /// Centered loading indicator shared by all async flows.
 class LoadingView extends StatelessWidget {
@@ -22,13 +23,13 @@ class LoadingView extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: AppSpacing.allXl,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const CircularProgressIndicator(color: AppColors.primary),
             if (title != null) ...[
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.xl),
               Text(
                 title!,
                 style: textTheme.titleMedium,
@@ -36,7 +37,9 @@ class LoadingView extends StatelessWidget {
               ),
             ],
             if (message != null) ...[
-              SizedBox(height: title == null ? 20 : 8),
+              SizedBox(
+                height: title == null ? AppSpacing.xl : AppSpacing.sm,
+              ),
               Text(
                 message!,
                 style: textTheme.bodyMedium?.copyWith(

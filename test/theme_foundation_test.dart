@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:momo/core/theme/app_colors.dart';
+import 'package:momo/core/theme/app_spacing.dart';
 import 'package:momo/core/theme/app_text_styles.dart';
 import 'package:momo/core/theme/app_theme.dart';
 
@@ -30,5 +31,18 @@ void main() {
     expect(AppTextStyles.bodySmall.fontSize, 14);
     expect(AppTextStyles.caption.fontSize, 12);
     expect(AppTextStyles.button.fontWeight, FontWeight.w600);
+  });
+
+  test('AppSpacing exposes scale and card helpers', () {
+    expect(AppSpacing.xs, 4);
+    expect(AppSpacing.sm, 8);
+    expect(AppSpacing.md, 12);
+    expect(AppSpacing.lg, 16);
+    expect(AppSpacing.xl, 24);
+    expect(AppSpacing.xxl, 32);
+    expect(AppSpacing.xxxl, 48);
+    expect(AppSpacing.cardPadding, const EdgeInsets.all(24));
+    expect(AppSpacing.cardTitleGap, AppSpacing.md);
+    expect(AppSpacing.cardContentGap, AppSpacing.sm);
   });
 }

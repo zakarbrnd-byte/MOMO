@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../models/playdate.dart';
 import '../../../providers/current_user_provider.dart';
 
@@ -25,17 +26,14 @@ class PlaydateCard extends ConsumerWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: AppSpacing.cardPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
+                    padding: AppSpacing.chipPadding,
                     decoration: BoxDecoration(
                       color: AppColors.primarySoft,
                       borderRadius: BorderRadius.circular(8),
@@ -54,10 +52,10 @@ class PlaydateCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.cardTitleGap),
               Text(playdate.title, style: textTheme.titleLarge),
               if (isOwned) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.cardContentGap),
                 Text(
                   'Created by you',
                   style: textTheme.bodyMedium?.copyWith(
@@ -65,19 +63,22 @@ class PlaydateCard extends ConsumerWidget {
                   ),
                 ),
               ],
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.cardTitleGap),
               _MetaRow(icon: Icons.calendar_today_outlined, label: playdate.date),
               if (playdate.time.trim().isNotEmpty) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpacing.cardContentGap),
                 _MetaRow(icon: Icons.access_time, label: playdate.time),
               ],
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpacing.cardContentGap),
               _MetaRow(icon: Icons.place_outlined, label: playdate.location),
               if (playdate.childAge.trim().isNotEmpty) ...[
-                const SizedBox(height: 6),
-                _MetaRow(icon: Icons.child_care_outlined, label: playdate.childAge),
+                const SizedBox(height: AppSpacing.cardContentGap),
+                _MetaRow(
+                  icon: Icons.child_care_outlined,
+                  label: playdate.childAge,
+                ),
               ],
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpacing.cardContentGap),
               _MetaRow(
                 icon: Icons.groups_outlined,
                 label: playdate.participantsLabel,
@@ -101,7 +102,7 @@ class _MetaRow extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 16, color: AppColors.textSecondary),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
             label,

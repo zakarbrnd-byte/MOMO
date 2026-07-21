@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../models/playdate.dart';
 import '../../providers/current_user_provider.dart';
 import '../../providers/playdate_provider.dart';
@@ -22,7 +23,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+          padding: AppSpacing.actionBar,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -34,7 +35,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                 textAlign: TextAlign.center,
               ),
               if (joinState.isOwnerState) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   playdate.participantsLabel,
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -42,7 +43,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                 ),
               ],
               if (joinState.isFullState) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Playdate Full',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -51,7 +52,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                   textAlign: TextAlign.center,
                 ),
               ],
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpacing.md),
               switch (joinState) {
                 PlaydateJoinState.owner => Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -74,7 +75,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                         ),
                         child: const Text('Edit Playdate'),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       FilledButton(
                         onPressed: () => _confirmCancel(context, ref, userId),
                         style: FilledButton.styleFrom(

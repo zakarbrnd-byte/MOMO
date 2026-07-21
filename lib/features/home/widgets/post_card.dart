@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_spacing.dart';
 import '../../../models/post.dart';
 
 class PostCard extends StatelessWidget {
@@ -22,17 +23,14 @@ class PostCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: AppSpacing.cardPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
+                    padding: AppSpacing.chipPadding,
                     decoration: BoxDecoration(
                       color: AppColors.textSecondary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
@@ -51,9 +49,9 @@ class PostCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.cardTitleGap),
               Text(post.title, style: textTheme.titleLarge),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.cardContentGap),
               Text(
                 post.content,
                 style: textTheme.bodyLarge?.copyWith(

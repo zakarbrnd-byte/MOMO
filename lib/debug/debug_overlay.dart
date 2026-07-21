@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/models/async_state.dart';
 import '../core/theme/app_colors.dart';
+import '../core/theme/app_spacing.dart';
 import '../core/widgets/error_view.dart';
 import '../core/widgets/loading_view.dart';
 import 'debug_fab.dart';
@@ -52,8 +53,8 @@ class DebugOverlay extends ConsumerWidget {
             ),
           ),
         const Positioned(
-          right: 16,
-          bottom: 96,
+          right: AppSpacing.lg,
+          bottom: AppSpacing.xxxl * 2,
           child: DebugFab(),
         ),
       ],

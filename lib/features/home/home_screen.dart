@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/empty_state.dart';
 import '../../core/widgets/error_view.dart';
 import '../../core/widgets/loading_view.dart';
@@ -45,7 +46,7 @@ class HomeScreen extends ConsumerWidget {
           final posts = postsAsync.valueOrNull ?? const [];
 
           return ListView(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+            padding: AppSpacing.page,
             children: [
               if (playdates.isEmpty) ...[
                 EmptyState(
@@ -59,7 +60,7 @@ class HomeScreen extends ConsumerWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
               ],
               if (posts.isEmpty) ...[
                 EmptyState(
@@ -73,10 +74,10 @@ class HomeScreen extends ConsumerWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
               ],
               for (var i = 0; i < feedItems.length; i++) ...[
-                if (i > 0) const SizedBox(height: 16),
+                if (i > 0) const SizedBox(height: AppSpacing.lg),
                 _FeedCard(item: feedItems[i]),
               ],
             ],

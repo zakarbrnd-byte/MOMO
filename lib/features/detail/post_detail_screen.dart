@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../models/post.dart';
 
 class PostDetailScreen extends StatelessWidget {
@@ -22,15 +23,15 @@ class PostDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Post')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+        padding: AppSpacing.pageForm,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: textTheme.headlineMedium),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: AppSpacing.allLg,
                 child: Row(
                   children: [
                     CircleAvatar(
@@ -43,13 +44,13 @@ class PostDetailScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(author, style: textTheme.titleMedium),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             'Shared with the MOMO community',
                             style: textTheme.bodyMedium,
@@ -61,9 +62,9 @@ class PostDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             Text('Post', style: textTheme.titleMedium),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpacing.md),
             SelectableText(
               content,
               style: textTheme.bodyLarge?.copyWith(

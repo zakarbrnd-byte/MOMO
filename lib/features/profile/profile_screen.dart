@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../data/mock_feed.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+        padding: AppSpacing.pageForm,
         children: [
           Center(
             child: CircleAvatar(
@@ -28,47 +29,47 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             profile.displayName,
             style: textTheme.headlineMedium,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             profile.neighborhood,
             style: textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xl),
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: AppSpacing.cardPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('About', style: textTheme.titleMedium),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.cardTitleGap),
                   _InfoRow(label: 'Child', value: profile.childInfo),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.cardTitleGap),
                   Text('Bio', style: textTheme.bodyMedium),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(profile.bio, style: textTheme.bodyLarge),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: AppSpacing.cardPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Activity', style: textTheme.titleMedium),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.cardTitleGap),
                   const _InfoRow(label: 'Playdates hosted', value: '3'),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.cardContentGap),
                   const _InfoRow(label: 'Posts', value: '2'),
                 ],
               ),

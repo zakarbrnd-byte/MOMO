@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../models/playdate.dart';
 import '../../providers/playdate_provider.dart';
 import 'playdate_join_action_bar.dart';
@@ -40,17 +41,17 @@ class PlaydateDetailScreen extends ConsumerWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+              padding: AppSpacing.page,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: textTheme.headlineMedium),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'Hosted by $host',
                     style: textTheme.bodyMedium,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   _InfoCard(
                     children: [
                       _DetailRow(
@@ -96,9 +97,9 @@ class PlaydateDetailScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Text('Description', style: textTheme.titleMedium),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AppSpacing.md),
                   Text(
                     hasDescription
                         ? latest.description.trim()
@@ -130,7 +131,12 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 6),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          AppSpacing.lg,
+          AppSpacing.lg,
+          AppSpacing.sm,
+        ),
         child: Column(children: children),
       ),
     );
@@ -155,7 +161,7 @@ class _DetailRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -164,13 +170,13 @@ class _DetailRow extends StatelessWidget {
             size: 20,
             color: muted ? AppColors.textSecondary : AppColors.primary,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label, style: textTheme.bodyMedium),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   value,
                   style: textTheme.bodyLarge?.copyWith(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_spacing.dart';
 
 /// Shared error + retry layout for async failures.
 class ErrorView extends StatelessWidget {
@@ -23,7 +24,7 @@ class ErrorView extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: AppSpacing.allXl,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -32,13 +33,13 @@ class ErrorView extends StatelessWidget {
               size: 48,
               color: AppColors.primaryDark,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               title,
               style: textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               message,
               style: textTheme.bodyMedium?.copyWith(
@@ -46,7 +47,7 @@ class ErrorView extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xl),
             FilledButton(
               onPressed: onRetry,
               style: FilledButton.styleFrom(

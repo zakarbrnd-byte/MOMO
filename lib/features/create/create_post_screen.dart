@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/async/mutation_notifier.dart';
 import '../../core/models/async_state.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/error_view.dart';
 import '../../core/widgets/loading_view.dart';
 import '../../debug/debug_provider.dart';
@@ -85,7 +86,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
             key: _formKey,
             autovalidateMode: _autoValidateMode,
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              padding: AppSpacing.pageForm,
               children: [
                 TextFormField(
                   controller: _titleController,
@@ -99,7 +100,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 TextFormField(
                   controller: _contentController,
                   maxLines: 6,
@@ -112,7 +113,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 FilledButton(
                   onPressed: isBusy ? null : _post,
                   style: FilledButton.styleFrom(

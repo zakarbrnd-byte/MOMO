@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/async/mutation_notifier.dart';
 import '../../core/models/async_state.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/error_view.dart';
 import '../../core/widgets/loading_view.dart';
 import '../../debug/debug_provider.dart';
@@ -161,7 +162,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
             key: _formKey,
             autovalidateMode: _autoValidateMode,
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              padding: AppSpacing.pageForm,
               children: [
                 _Field(
                   controller: _titleController,
@@ -246,7 +247,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
                   maxLines: 4,
                   enabled: !isBusy,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 FilledButton(
                   onPressed: isBusy ? null : _save,
                   style: FilledButton.styleFrom(
@@ -297,7 +298,7 @@ class _Field extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
@@ -350,7 +351,7 @@ class _PickerField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: TextFormField(
         controller: controller,
         readOnly: true,

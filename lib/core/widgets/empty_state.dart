@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_spacing.dart';
 
 /// Reusable empty-state block: explain the gap, then offer a clear CTA.
 class EmptyState extends StatelessWidget {
@@ -23,7 +24,7 @@ class EmptyState extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        padding: AppSpacing.emptyStatePadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -32,13 +33,13 @@ class EmptyState extends StatelessWidget {
               style: textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               message,
               style: textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.xl),
             FilledButton(
               onPressed: onPressed,
               style: FilledButton.styleFrom(
