@@ -4,29 +4,22 @@ Short snapshot for agents. Prefer this + `CLAUDE.md` before inventing scope.
 
 ## Version
 
-MOMO MVP 0.1 — **Phase 1 complete**
+MOMO MVP 0.1 — Phase 3 in progress (repository layer added)
 
 ## What exists in code
 
-- Flutter + Material 3 theme
+- Flutter + Material 3 + design system (`core/theme`, `core/widgets`)
 - Bottom nav: Home / Create / Profile (`MainShell`)
-- Home feed from `lib/data/mock_feed.dart`
-- Playdate + Post models, cards, detail screens
-- Create Playdate / Create Post forms (local validation; no feed write)
-- Profile mock placeholder
-- Riverpod: `ProviderScope` only
-
-## Current focus (Phase 2)
-
-- Connect Create → Home feed via local Riverpod state
-- Join playdate (local)
-- UX polish
+- Riverpod providers for playdates, posts, feed, user, tabs
+- **Repository layer:** providers → repository → **data source** → mock seed
+- Seed data in `lib/data/mock_feed.dart` (consumed by mock **data sources** only for feed)
+- Create / join / leave / cancel update local repository state → Home feed
+- Profile still reads `mockProfile` directly (no profile repository yet)
 
 ## Hard constraints
 
-- Mock / local only — no backend
+- Mock / local only — no backend / Supabase yet
 - No Business / marketplace
-- No Community tab beyond the three nav items
 - No comments, photos, search, chat, notifications, payments
 
 ## Docs map

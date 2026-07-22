@@ -73,7 +73,7 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Please select a date'), findsOneWidget);
+    expect(find.text('Please select a date.'), findsOneWidget);
     expect(container.read(playdateProvider).requireValue.length, initialCount);
   });
 
@@ -95,7 +95,7 @@ void main() {
     expect(find.text('Playdate created successfully!'), findsOneWidget);
     expect(find.text('Park Play Date'), findsOneWidget);
     expect(find.text('Irvine Park'), findsOneWidget);
-    expect(find.text('Please select a date'), findsNothing);
+    expect(find.text('Please select a date.'), findsNothing);
   });
 
   testWidgets('Create Playdate succeeds with selected time', (tester) async {
@@ -137,9 +137,9 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Please enter a title'), findsOneWidget);
-    expect(find.text('Please select a date'), findsOneWidget);
-    expect(find.text('Please select a location'), findsOneWidget);
+    expect(find.text('Please enter a title.'), findsOneWidget);
+    expect(find.text('Please select a date.'), findsOneWidget);
+    expect(find.text('Please enter a location.'), findsOneWidget);
     expect(container.read(playdateProvider).requireValue.length, initialCount);
   });
 
@@ -157,8 +157,8 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Please enter a post title'), findsOneWidget);
-    expect(find.text('Please write some content'), findsOneWidget);
+    expect(find.text('Please enter a title.'), findsOneWidget);
+    expect(find.text('Please enter content.'), findsOneWidget);
     expect(container.read(postProvider).requireValue.length, initialCount);
   });
 

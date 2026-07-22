@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/widgets/momo_success_banner.dart';
 import '../../models/playdate.dart';
 import '../../providers/current_user_provider.dart';
 import '../../providers/playdate_provider.dart';
@@ -96,10 +97,9 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                           .read(playdateProvider.notifier)
                           .leavePlaydate(playdate.id, userId);
                       if (left && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('You left this playdate.'),
-                          ),
+                        MomoSuccessBanner.show(
+                          context,
+                          'You left this playdate.',
                         );
                       }
                     },
@@ -119,10 +119,9 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                           .read(playdateProvider.notifier)
                           .joinPlaydate(playdate.id, userId);
                       if (joined && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Joined successfully!'),
-                          ),
+                        MomoSuccessBanner.show(
+                          context,
+                          'Joined successfully!',
                         );
                       }
                     },
@@ -174,9 +173,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
         .cancelPlaydate(playdate.id, userId);
 
     if (cancelled && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Playdate cancelled.')),
-      );
+      MomoSuccessBanner.show(context, 'Playdate cancelled.');
       Navigator.of(context).pop();
     }
   }

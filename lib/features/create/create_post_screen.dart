@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/async/mutation_notifier.dart';
+import '../../core/forms/form_validators.dart';
 import '../../core/models/async_state.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_spacing.dart';
-import '../../core/widgets/error_view.dart';
-import '../../core/widgets/loading_view.dart';
+import '../../core/widgets/momo_button.dart';
+import '../../core/widgets/momo_error.dart';
+import '../../core/widgets/momo_loading.dart';
+import '../../core/widgets/momo_form_body.dart';
+import '../../core/widgets/momo_text_field.dart';
 import '../../debug/debug_provider.dart';
 import '../../navigation/app_navigation.dart';
 import '../../providers/post_provider.dart';
@@ -20,6 +22,8 @@ class CreatePostScreen extends ConsumerStatefulWidget {
 
 class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _titleFocus = FocusNode();
+  final _contentFocus = FocusNode();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
 
@@ -27,6 +31,8 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
 
   @override
   void dispose() {
+    _titleFocus.dispose();
+    _contentFocus.dispose();
     _titleController.dispose();
     _contentController.dispose();
     super.dispose();
@@ -36,6 +42,7 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
 
   Future<void> _post({bool fromRetry = false}) async {
     if (_isBusy) return;
+    FocusScope.of(context).unfocus();
 
     if (!fromRetry) {
       setState(() {
@@ -69,15 +76,16 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
   Widget build(BuildContext context) {
     final mutation = ref.watch(createPostMutationProvider);
     final isBusy = mutation.isLoading;
+    final fieldsEnabled = !isBusy;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Create Post')),
       body: switch (mutation) {
-        AsyncOpLoading() => const LoadingView(
+        AsyncOpLoading() => const MomoLoading(
             title: 'Loading...',
             message: 'Please wait.',
           ),
-        AsyncOpError(:final message) => ErrorView(
+        AsyncOpError(:final message) => MomoError(
             title: 'Could not create post',
             message: message,
             onRetry: () => _post(fromRetry: true),
@@ -85,71 +93,62 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
         _ => Form(
             key: _formKey,
             autovalidateMode: _autoValidateMode,
-            child: ListView(
-              padding: AppSpacing.pageForm,
+            child: MomoFormBody(
               children: [
-                TextFormField(
+                MomoTextField(
                   controller: _titleController,
-                  enabled: !isBusy,
-                  decoration:
-                      _decoration('Title', 'What do you want to share?'),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Please enter a post title';
-                    }
-                    return null;
-                  },
+                  focusNode: _titleFocus,
+                  label: 'Title',
+                  hint: 'What do you want to share?',
+                  enabled: fieldsEnabled,
+                  textInputAction: TextInputAction.next,
+                  maxLength: FormValidators.shortTitleMax,
+                  onFieldSubmitted: (_) => _contentFocus.requestFocus(),
+                  validator: FormValidators.combine([
+                    (value) => FormValidators.requiredTrimmed(
+                          value,
+                          FormValidators.titleRequired,
+                        ),
+                    (value) => FormValidators.maxLength(
+                          value,
+                          FormValidators.shortTitleMax,
+                          fieldLabel: 'Title',
+                        ),
+                  ]),
                 ),
-                const SizedBox(height: AppSpacing.lg),
-                TextFormField(
+                MomoTextField(
                   controller: _contentController,
+                  focusNode: _contentFocus,
+                  label: 'Content',
+                  hint: 'Write your post…',
                   maxLines: 6,
-                  enabled: !isBusy,
-                  decoration: _decoration('Content', 'Write your post…'),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Please write some content';
-                    }
-                    return null;
-                  },
+                  minLines: 4,
+                  maxLength: FormValidators.longTextMax,
+                  enabled: fieldsEnabled,
+                  textInputAction: TextInputAction.newline,
+                  validator: FormValidators.combine([
+                    (value) => FormValidators.requiredTrimmed(
+                          value,
+                          FormValidators.contentRequired,
+                        ),
+                    (value) => FormValidators.maxLength(
+                          value,
+                          FormValidators.longTextMax,
+                          fieldLabel: 'Content',
+                        ),
+                  ]),
                 ),
-                const SizedBox(height: AppSpacing.xl),
-                FilledButton(
-                  onPressed: isBusy ? null : _post,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor:
-                        AppColors.primary.withValues(alpha: 0.6),
-                    disabledForegroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(52),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: Text(isBusy ? 'Creating...' : 'Create Post'),
+                const MomoFormSubmitGap(),
+                MomoButton(
+                  label: 'Create Post',
+                  isLoading: isBusy,
+                  enabled: fieldsEnabled,
+                  onPressed: _post,
                 ),
               ],
             ),
           ),
       },
-    );
-  }
-
-  InputDecoration _decoration(String label, String hint) {
-    return InputDecoration(
-      labelText: label,
-      hintText: hint,
-      filled: true,
-      fillColor: AppColors.surface,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: AppColors.border),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: AppColors.border),
-      ),
     );
   }
 }

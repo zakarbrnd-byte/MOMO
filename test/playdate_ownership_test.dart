@@ -67,7 +67,7 @@ void main() {
         .firstWhere((item) => item.title == 'Owned Park Day');
 
     expect(created.creatorId, currentUser.id);
-    expect(created.joinedUserIds, isEmpty);
+    expect(created.participantIds, isEmpty);
     expect(created.participantsLabel, '0 / 3 joined');
     expect(find.text('Created by you'), findsWidgets);
   });

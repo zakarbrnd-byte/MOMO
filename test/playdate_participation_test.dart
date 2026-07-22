@@ -7,7 +7,7 @@ import 'package:momo/providers/playdate_provider.dart';
 
 void main() {
   group('Playdate model helpers', () {
-    test('participantCount derives from joinedUserIds', () {
+    test('participantCount derives from participantIds', () {
       const playdate = Playdate(
         id: 'p1',
         creatorId: 'host_1',
@@ -18,7 +18,7 @@ void main() {
         childAge: '',
         description: '',
         hostName: 'Host',
-        joinedUserIds: ['a', 'b'],
+        participantIds: ['a', 'b'],
         maxParticipants: 5,
       );
 
@@ -40,7 +40,7 @@ void main() {
         childAge: '',
         description: '',
         hostName: 'Host',
-        joinedUserIds: ['a', 'b', 'c'],
+        participantIds: ['a', 'b', 'c'],
         maxParticipants: null,
       );
 
@@ -60,7 +60,7 @@ void main() {
         childAge: '',
         description: '',
         hostName: 'Host',
-        joinedUserIds: ['a', 'b', 'c', 'd', 'e'],
+        participantIds: ['a', 'b', 'c', 'd', 'e'],
         maxParticipants: 5,
       );
 
@@ -81,7 +81,7 @@ void main() {
         childAge: '',
         description: '',
         hostName: 'Host',
-        joinedUserIds: ['mom_a'],
+        participantIds: ['mom_a'],
         maxParticipants: 5,
       );
 

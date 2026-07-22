@@ -1,22 +1,44 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/mock_feed.dart';
 import '../models/post.dart';
+import '../repositories/post_repository.dart';
+import '../repositories/repository_providers.dart';
+
+/// Reads a [Future] that completes synchronously (mock [SynchronousFuture]).
+T _readSync<T>(Future<T> future) {
+  late T value;
+  var completed = false;
+  future.then((result) {
+    value = result;
+    completed = true;
+  });
+  assert(
+    completed,
+    'PostRepository Futures must complete synchronously in the mock MVP.',
+  );
+  return value;
+}
 
 /// In-memory posts as [AsyncValue] (feed load lifecycle).
 ///
+/// Data access goes through [PostRepository] only.
 /// Create mutations use [createPostMutationProvider] for Idle → Loading →
-/// Success | Error. Swap [build] for a repository later.
+/// Success | Error.
 class PostNotifier extends AsyncNotifier<List<Post>> {
+  PostRepository get _repo => ref.read(postRepositoryProvider);
+
   @override
-  Future<List<Post>> build() async {
-    return List<Post>.from(mockPosts);
-  }
+  Future<List<Post>> build() => _repo.getPosts();
 
   List<Post> get posts => state.valueOrNull ?? const [];
 
+  void _refresh() {
+    state = AsyncData(_readSync(_repo.getPosts()));
+  }
+
   void addPost(Post post) {
-    state = AsyncData([post, ...posts]);
+    _readSync(_repo.updatePost(post));
+    _refresh();
   }
 
   /// Builds a post from form fields and prepends it to local state.
@@ -25,23 +47,19 @@ class PostNotifier extends AsyncNotifier<List<Post>> {
     required String content,
     String? authorName,
   }) {
-    addPost(
-      Post(
-        id: 'po_${DateTime.now().millisecondsSinceEpoch}',
-        title: title.trim(),
-        content: content.trim(),
-        authorName: authorName?.trim().isNotEmpty == true
-            ? authorName!.trim()
-            : mockProfile.displayName,
+    _readSync(
+      _repo.createPost(
+        title: title,
+        content: content,
+        authorName: authorName,
       ),
     );
+    _refresh();
   }
 
   void updatePost(Post post) {
-    state = AsyncData([
-      for (final item in posts)
-        if (item.id == post.id) post else item,
-    ]);
+    _readSync(_repo.updatePost(post));
+    _refresh();
   }
 }
 

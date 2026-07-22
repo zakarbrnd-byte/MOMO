@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/widgets/momo_card.dart';
 import '../../models/playdate.dart';
 import '../../providers/playdate_provider.dart';
 import 'playdate_join_action_bar.dart';
@@ -52,50 +53,53 @@ class PlaydateDetailScreen extends ConsumerWidget {
                     style: textTheme.bodyMedium,
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  _InfoCard(
-                    children: [
-                      _DetailRow(
-                        icon: Icons.place_outlined,
-                        label: 'Location',
-                        value: location,
-                      ),
-                      _DetailRow(
-                        icon: Icons.calendar_today_outlined,
-                        label: 'Date',
-                        value: date,
-                      ),
-                      if (hasTime)
+                  MomoCard(
+                    padding: AppSpacing.cardDetailPadding,
+                    child: Column(
+                      children: [
                         _DetailRow(
-                          icon: Icons.access_time,
-                          label: 'Time',
-                          value: latest.time.trim(),
-                        )
-                      else
-                        const _DetailRow(
-                          icon: Icons.access_time,
-                          label: 'Time',
-                          value: 'Time not specified',
-                          muted: true,
+                          icon: Icons.place_outlined,
+                          label: 'Location',
+                          value: location,
                         ),
-                      if (hasChildAge)
                         _DetailRow(
-                          icon: Icons.child_care_outlined,
-                          label: 'Child Age',
-                          value: latest.childAge.trim(),
-                        )
-                      else
-                        const _DetailRow(
-                          icon: Icons.child_care_outlined,
-                          label: 'Child Age',
-                          value: 'Not specified',
-                          muted: true,
+                          icon: Icons.calendar_today_outlined,
+                          label: 'Date',
+                          value: date,
                         ),
-                      _DetailRow(
-                        icon: Icons.groups_outlined,
-                        label: 'Participants',
-                        value: latest.participantsLabel,
-                      ),
-                    ],
+                        if (hasTime)
+                          _DetailRow(
+                            icon: Icons.access_time,
+                            label: 'Time',
+                            value: latest.time.trim(),
+                          )
+                        else
+                          const _DetailRow(
+                            icon: Icons.access_time,
+                            label: 'Time',
+                            value: 'Time not specified',
+                            muted: true,
+                          ),
+                        if (hasChildAge)
+                          _DetailRow(
+                            icon: Icons.child_care_outlined,
+                            label: 'Child Age',
+                            value: latest.childAge.trim(),
+                          )
+                        else
+                          const _DetailRow(
+                            icon: Icons.child_care_outlined,
+                            label: 'Child Age',
+                            value: 'Not specified',
+                            muted: true,
+                          ),
+                        _DetailRow(
+                          icon: Icons.groups_outlined,
+                          label: 'Participants',
+                          value: latest.participantsLabel,
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   Text('Description', style: textTheme.titleMedium),
@@ -117,27 +121,6 @@ class PlaydateDetailScreen extends ConsumerWidget {
           ),
           PlaydateJoinActionBar(playdate: latest),
         ],
-      ),
-    );
-  }
-}
-
-class _InfoCard extends StatelessWidget {
-  const _InfoCard({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.lg,
-          AppSpacing.lg,
-          AppSpacing.lg,
-          AppSpacing.sm,
-        ),
-        child: Column(children: children),
       ),
     );
   }

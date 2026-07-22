@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/widgets/momo_card.dart';
 import '../../data/mock_feed.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -42,37 +43,31 @@ class ProfileScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),
-          Card(
-            child: Padding(
-              padding: AppSpacing.cardPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('About', style: textTheme.titleMedium),
-                  const SizedBox(height: AppSpacing.cardTitleGap),
-                  _InfoRow(label: 'Child', value: profile.childInfo),
-                  const SizedBox(height: AppSpacing.cardTitleGap),
-                  Text('Bio', style: textTheme.bodyMedium),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(profile.bio, style: textTheme.bodyLarge),
-                ],
-              ),
+          MomoCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('About', style: textTheme.titleMedium),
+                const SizedBox(height: AppSpacing.cardTitleGap),
+                _InfoRow(label: 'Child', value: profile.childInfo),
+                const SizedBox(height: AppSpacing.cardTitleGap),
+                Text('Bio', style: textTheme.bodyMedium),
+                const SizedBox(height: AppSpacing.xs),
+                Text(profile.bio, style: textTheme.bodyLarge),
+              ],
             ),
           ),
-          const SizedBox(height: AppSpacing.lg),
-          Card(
-            child: Padding(
-              padding: AppSpacing.cardPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Activity', style: textTheme.titleMedium),
-                  const SizedBox(height: AppSpacing.cardTitleGap),
-                  const _InfoRow(label: 'Playdates hosted', value: '3'),
-                  const SizedBox(height: AppSpacing.cardContentGap),
-                  const _InfoRow(label: 'Posts', value: '2'),
-                ],
-              ),
+          const SizedBox(height: AppSpacing.cardListGap),
+          MomoCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Activity', style: textTheme.titleMedium),
+                const SizedBox(height: AppSpacing.cardTitleGap),
+                const _InfoRow(label: 'Playdates hosted', value: '3'),
+                const SizedBox(height: AppSpacing.cardContentGap),
+                const _InfoRow(label: 'Posts', value: '2'),
+              ],
             ),
           ),
         ],

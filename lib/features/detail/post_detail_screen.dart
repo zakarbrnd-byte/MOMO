@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/widgets/momo_card.dart';
 import '../../models/post.dart';
 
 class PostDetailScreen extends StatelessWidget {
@@ -29,37 +30,35 @@ class PostDetailScreen extends StatelessWidget {
           children: [
             Text(title, style: textTheme.headlineMedium),
             const SizedBox(height: AppSpacing.lg),
-            Card(
-              child: Padding(
-                padding: AppSpacing.allLg,
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: AppColors.primary.withValues(alpha: 0.15),
-                      child: Text(
-                        _initials(author),
-                        style: textTheme.labelLarge?.copyWith(
-                          color: AppColors.primary,
+            MomoCard(
+              padding: AppSpacing.allLg,
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                    child: Text(
+                      _initials(author),
+                      style: textTheme.labelLarge?.copyWith(
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(author, style: textTheme.titleMedium),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Shared with the MOMO community',
+                          style: textTheme.bodyMedium,
                         ),
-                      ),
+                      ],
                     ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(author, style: textTheme.titleMedium),
-                          const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            'Shared with the MOMO community',
-                            style: textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: AppSpacing.xl),

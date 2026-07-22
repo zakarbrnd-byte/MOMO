@@ -109,7 +109,7 @@ void main() {
     await tester.enterText(capacity, '0');
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
-    expect(find.text('Please enter a valid participant limit'), findsOneWidget);
+    expect(find.text('Please enter a valid participant limit.'), findsOneWidget);
 
     await tester.enterText(capacity, '');
     // digitsOnly blocks letters; set invalid via controller for non-digit case
@@ -122,7 +122,7 @@ void main() {
     field.controller!.text = 'abc';
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
-    expect(find.text('Please enter a valid participant limit'), findsOneWidget);
+    expect(find.text('Please enter a valid participant limit.'), findsOneWidget);
   });
 
   testWidgets('Unlimited mock playdate label has no capacity slash', (tester) async {

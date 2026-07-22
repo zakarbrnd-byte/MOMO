@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/widgets/momo_card.dart';
 import '../../navigation/app_navigation.dart';
 import 'create_playdate_screen.dart';
 import 'create_post_screen.dart';
@@ -81,35 +82,30 @@ class _ActionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: AppSpacing.allXl,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppColors.primarySoft,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: Icon(icon, size: 32, color: AppColors.primary),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              Text(title, style: textTheme.headlineMedium),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                subtitle,
-                style: textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-            ],
+    return MomoCard(
+      onTap: onTap,
+      padding: AppSpacing.allXl,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: AppColors.primarySoft,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Icon(icon, size: 32, color: AppColors.primary),
           ),
-        ),
+          const SizedBox(height: AppSpacing.xl),
+          Text(title, style: textTheme.headlineMedium),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            subtitle,
+            style: textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

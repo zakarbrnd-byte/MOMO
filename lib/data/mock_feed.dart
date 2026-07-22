@@ -2,22 +2,9 @@ import '../models/playdate.dart';
 import '../models/post.dart';
 import 'mock_user.dart';
 
-sealed class FeedItem {
-  const FeedItem();
-}
-
-class PlaydateFeedItem extends FeedItem {
-  const PlaydateFeedItem(this.playdate);
-
-  final Playdate playdate;
-}
-
-class PostFeedItem extends FeedItem {
-  const PostFeedItem(this.post);
-
-  final Post post;
-}
-
+/// Seed playdates / posts for [MockPlaydateDataSource] / [MockPostDataSource].
+///
+/// Do not import from UI or providers — go through repository → data source.
 const playdateSaturdayPark = Playdate(
   id: 'pd1',
   creatorId: 'mom_sora',
@@ -29,7 +16,7 @@ const playdateSaturdayPark = Playdate(
   description:
       'Easy morning meetup at the playground. Bring snacks and sunscreen. Looking for 2–3 moms nearby!',
   hostName: 'Sora Kim',
-  joinedUserIds: ['mom_yuna', 'mom_eunji'],
+  participantIds: ['mom_yuna', 'mom_eunji'],
   maxParticipants: 5,
 );
 
@@ -44,7 +31,7 @@ const playdateLibrary = Playdate(
   description:
       'Quiet story session then free play in the kids corner. Perfect for rainy days.',
   hostName: 'Minji Park',
-  joinedUserIds: ['mom_eunji', 'mom_hyejin', 'mom_sora'],
+  participantIds: ['mom_eunji', 'mom_hyejin', 'mom_sora'],
   maxParticipants: null, // unlimited
 );
 
@@ -59,7 +46,7 @@ const playdateCafe = Playdate(
   description:
       'Kids color while moms chat. Tables reserved near the play mat area.',
   hostName: 'Hyejin Lee',
-  joinedUserIds: [
+  participantIds: [
     'mom_minji',
     'mom_yuna',
     'mom_eunji',
@@ -80,7 +67,7 @@ const playdateNearFull = Playdate(
   childAge: '1–3 years',
   description: 'Indoor soft play for little ones. One spot left!',
   hostName: 'Yuna Choi',
-  joinedUserIds: ['mom_minji', 'mom_eunji', 'mom_hyejin', 'mom_sora'],
+  participantIds: ['mom_minji', 'mom_eunji', 'mom_hyejin', 'mom_sora'],
   maxParticipants: 5,
 );
 
@@ -95,7 +82,7 @@ const playdateOwnedByDemo = Playdate(
   childAge: '3–6 years',
   description: 'Casual morning walk. Strollers welcome!',
   hostName: 'Demo User',
-  joinedUserIds: ['mom_yuna'],
+  participantIds: ['mom_yuna'],
   maxParticipants: 4,
 );
 
@@ -105,6 +92,7 @@ const postSeolleung = Post(
   content:
       'My 4-year-old loves outdoor play. Looking for a casual afternoon hang — park or café both fine.',
   authorName: 'Yuna Choi',
+  creatorId: 'mom_yuna',
 );
 
 const postIndoorSpots = Post(
@@ -113,6 +101,7 @@ const postIndoorSpots = Post(
   content:
       'New to Gangnam. What are your go-to places when it’s too hot outside? Soft play or libraries preferred.',
   authorName: 'Eunji Han',
+  creatorId: 'mom_eunji',
 );
 
 const mockPlaydates = [
@@ -128,8 +117,7 @@ const mockPosts = [
   postIndoorSpots,
 ];
 
-/// Seed data for providers. Home feed is composed via [feedProvider].
-
+/// Profile placeholder until a profile repository exists.
 const mockProfile = (
   displayName: 'Jiwoo Mom',
   neighborhood: 'Songpa-gu, Seoul',

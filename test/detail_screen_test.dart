@@ -20,7 +20,7 @@ void main() {
       childAge: '2-4 years old',
       description: 'Bring snacks and sunscreen.',
       hostName: 'Jiwoo Mom',
-      joinedUserIds: ['mom_a', 'mom_b'],
+      participantIds: ['mom_a', 'mom_b'],
       maxParticipants: 5,
     );
 

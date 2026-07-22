@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/widgets/momo_success_banner.dart';
 import '../providers/main_tab_provider.dart';
 
 /// Bottom-nav indices for [mainTabProvider].
@@ -31,9 +32,11 @@ abstract final class AppNavigation {
     final messenger = ScaffoldMessenger.of(context);
     popToTabRoot(context);
     selectTab(ref, MainTabs.home);
-    messenger
-      ..clearSnackBars()
-      ..showSnackBar(SnackBar(content: Text(successMessage)));
+    MomoSuccessBanner.show(
+      context,
+      successMessage,
+      messenger: messenger,
+    );
   }
 
   /// Push a page on the current tab navigator.

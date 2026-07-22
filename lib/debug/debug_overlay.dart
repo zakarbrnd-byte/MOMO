@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/models/async_state.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_spacing.dart';
-import '../core/widgets/error_view.dart';
-import '../core/widgets/loading_view.dart';
+import '../core/widgets/momo_error.dart';
+import '../core/widgets/momo_loading.dart';
 import 'debug_fab.dart';
 import 'debug_provider.dart';
 
@@ -33,7 +33,7 @@ class DebugOverlay extends ConsumerWidget {
           const Positioned.fill(
             child: Material(
               color: AppColors.background,
-              child: LoadingView(
+              child: MomoLoading(
                 title: 'Loading...',
                 message: 'Please wait.',
               ),
@@ -43,7 +43,7 @@ class DebugOverlay extends ConsumerWidget {
           Positioned.fill(
             child: Material(
               color: AppColors.background,
-              child: ErrorView(
+              child: MomoError(
                 title: 'Something went wrong',
                 message: message,
                 onRetry: () {

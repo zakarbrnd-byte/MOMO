@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_spacing.dart';
-import '../../core/widgets/empty_state.dart';
-import '../../core/widgets/error_view.dart';
-import '../../core/widgets/loading_view.dart';
-import '../../data/mock_feed.dart';
+import '../../core/widgets/momo_empty_state.dart';
+import '../../core/widgets/momo_error.dart';
+import '../../core/widgets/momo_loading.dart';
+import '../../models/feed_item.dart';
 import '../../navigation/app_navigation.dart';
 import '../../providers/feed_provider.dart';
 import '../../providers/playdate_provider.dart';
@@ -29,11 +29,11 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('MOMO')),
       body: feedAsync.when(
-        loading: () => const LoadingView(
+        loading: () => const MomoLoading(
           title: 'Loading...',
           message: 'Please wait.',
         ),
-        error: (error, _) => ErrorView(
+        error: (error, _) => MomoError(
           title: 'Something went wrong',
           message: error.toString(),
           onRetry: () {
@@ -49,7 +49,7 @@ class HomeScreen extends ConsumerWidget {
             padding: AppSpacing.page,
             children: [
               if (playdates.isEmpty) ...[
-                EmptyState(
+                MomoEmptyState(
                   title: '아직 등록된 Play Date가 없습니다.',
                   message: '첫 번째 모임을 만들어보세요.',
                   buttonText: 'Create Playdate',
@@ -60,10 +60,10 @@ class HomeScreen extends ConsumerWidget {
                     );
                   },
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.cardListGap),
               ],
               if (posts.isEmpty) ...[
-                EmptyState(
+                MomoEmptyState(
                   title: '아직 게시글이 없습니다.',
                   message: '첫 번째 이야기를 공유해보세요.',
                   buttonText: 'Create Post',
@@ -74,10 +74,10 @@ class HomeScreen extends ConsumerWidget {
                     );
                   },
                 ),
-                const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.cardListGap),
               ],
               for (var i = 0; i < feedItems.length; i++) ...[
-                if (i > 0) const SizedBox(height: AppSpacing.lg),
+                if (i > 0) const SizedBox(height: AppSpacing.cardListGap),
                 _FeedCard(item: feedItems[i]),
               ],
             ],

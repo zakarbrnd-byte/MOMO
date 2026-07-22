@@ -44,5 +44,9 @@ void main() {
     expect(AppSpacing.cardPadding, const EdgeInsets.all(24));
     expect(AppSpacing.cardTitleGap, AppSpacing.md);
     expect(AppSpacing.cardContentGap, AppSpacing.sm);
+    expect(AppSpacing.cardRadius, 20);
+    expect(AppSpacing.cardListGap, AppSpacing.lg);
+    expect(AppSpacing.formFieldGap, AppSpacing.lg);
+    expect(AppSpacing.formSubmitGap, AppSpacing.xl);
   });
 }

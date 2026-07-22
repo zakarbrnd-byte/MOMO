@@ -1,7 +1,11 @@
+import 'entity_status.dart';
+
 /// Domain model for a playdate.
 ///
-/// Ownership ([creatorId]) is separate from participation ([joinedUserIds]).
+/// Ownership ([creatorId]) is separate from participation ([participantIds]).
 /// Counts and full-state are derived — never persisted separately.
+///
+/// [hostName] is a denormalized display field for MVP UI.
 class Playdate {
   const Playdate({
     required this.id,
@@ -13,8 +17,11 @@ class Playdate {
     required this.childAge,
     required this.description,
     required this.hostName,
-    this.joinedUserIds = const [],
+    this.participantIds = const [],
     this.maxParticipants,
+    this.status = PlaydateStatus.active,
+    this.createdAt,
+    this.updatedAt,
   });
 
   final String id;
@@ -28,19 +35,31 @@ class Playdate {
   final String location;
   final String childAge;
   final String description;
+
+  /// Display name of the host (denormalized for MVP cards/detail).
   final String hostName;
 
-  /// Participant user IDs (source of truth for join/leave).
-  final List<String> joinedUserIds;
+  /// Participant user IDs (source of truth for join/leave in MVP).
+  final List<String> participantIds;
 
   /// Optional capacity. `null` means unlimited.
   final int? maxParticipants;
 
+  final PlaydateStatus status;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  /// Soft-cancel flag derived from [status] (soft-delete reserved for backend).
+  bool get isCancelled => status == PlaydateStatus.cancelled;
+
   /// Derived count — do not store separately.
-  int get participantCount => joinedUserIds.length;
+  int get participantCount => participantIds.length;
 
   /// Alias kept for call-site clarity in older code paths.
   int get currentParticipants => participantCount;
+
+  /// Backward-compatible alias for [participantIds].
+  List<String> get joinedUserIds => participantIds;
 
   bool get hasCapacityLimit => maxParticipants != null;
 
@@ -49,7 +68,7 @@ class Playdate {
 
   bool isOwner(String userId) => creatorId == userId;
 
-  bool hasUserJoined(String userId) => joinedUserIds.contains(userId);
+  bool hasUserJoined(String userId) => participantIds.contains(userId);
 
   /// Backward-compatible alias for [hasUserJoined].
   bool isJoinedBy(String userId) => hasUserJoined(userId);
@@ -80,8 +99,11 @@ class Playdate {
     String? childAge,
     String? description,
     String? hostName,
-    List<String>? joinedUserIds,
+    List<String>? participantIds,
     Object? maxParticipants = _unset,
+    PlaydateStatus? status,
+    Object? createdAt = _unset,
+    Object? updatedAt = _unset,
   }) {
     return Playdate(
       id: id ?? this.id,
@@ -93,10 +115,17 @@ class Playdate {
       childAge: childAge ?? this.childAge,
       description: description ?? this.description,
       hostName: hostName ?? this.hostName,
-      joinedUserIds: joinedUserIds ?? this.joinedUserIds,
+      participantIds: participantIds ?? this.participantIds,
       maxParticipants: identical(maxParticipants, _unset)
           ? this.maxParticipants
           : maxParticipants as int?,
+      status: status ?? this.status,
+      createdAt: identical(createdAt, _unset)
+          ? this.createdAt
+          : createdAt as DateTime?,
+      updatedAt: identical(updatedAt, _unset)
+          ? this.updatedAt
+          : updatedAt as DateTime?,
     );
   }
 }

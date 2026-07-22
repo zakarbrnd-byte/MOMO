@@ -1,3 +1,4 @@
+import '../models/child.dart';
 import '../models/user.dart';
 
 /// Simulated signed-in user for local MVP.
@@ -8,5 +9,9 @@ const currentUserId = 'user_001';
 
 const currentUser = User(
   id: currentUserId,
-  name: 'Demo User',
+  displayName: 'Demo User',
+  location: 'Songpa-gu, Seoul',
+  children: [
+    Child(id: 'child_001', displayName: 'Daughter', ageLabel: '4'),
+  ],
 );

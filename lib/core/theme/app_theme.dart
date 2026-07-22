@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
+import 'app_spacing.dart';
 import 'app_text_styles.dart';
 
 /// Global [ThemeData] for MOMO — built only from design tokens.
@@ -37,7 +38,7 @@ abstract final class AppTheme {
         color: AppColors.card,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
           side: const BorderSide(color: AppColors.border),
         ),
         margin: EdgeInsets.zero,

@@ -37,6 +37,12 @@ abstract final class AppSpacing {
   /// Create-form body with extra bottom room for the primary button.
   static const EdgeInsets pageForm = EdgeInsets.fromLTRB(xl, sm, xl, xxl);
 
+  /// Vertical gap between stacked form fields.
+  static const double formFieldGap = lg;
+
+  /// Space above the primary submit button in a form.
+  static const double formSubmitGap = xl;
+
   /// Create-tab selection screen inset.
   static const EdgeInsets pageCreate = EdgeInsets.fromLTRB(xl, md, xl, xl);
 
@@ -46,10 +52,24 @@ abstract final class AppSpacing {
     vertical: md,
   );
 
-  // --- Card spacing (prep for future MomoCard) ---
+  // --- Card spacing / shape ---
+
+  /// Corner radius for [MomoCard] and feed cards.
+  static const double cardRadius = 20;
+
+  /// Gap between cards in a vertical list (Home feed).
+  static const double cardListGap = lg;
 
   /// Inner padding for feed / profile cards.
   static const EdgeInsets cardPadding = EdgeInsets.all(xl);
+
+  /// Slightly tighter padding for dense detail info cards.
+  static const EdgeInsets cardDetailPadding = EdgeInsets.fromLTRB(
+    lg,
+    lg,
+    lg,
+    sm,
+  );
 
   /// Space between card title and following content.
   static const double cardTitleGap = md;

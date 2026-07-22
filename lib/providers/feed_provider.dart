@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/mock_feed.dart';
+import '../models/feed_item.dart';
 import '../models/playdate.dart';
 import '../models/post.dart';
 import 'playdate_provider.dart';
