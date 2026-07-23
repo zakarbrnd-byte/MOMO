@@ -7,33 +7,194 @@ MOMO is a Flutter client with feature-first folders under `lib/`. MVP data is lo
 ```
 UI (features/*)
     ↓
-Riverpod providers  (domain models only — never DTOs or data sources)
+Riverpod feature providers  (domain + AsyncOpState / AsyncValue only)
     ↓
-Repository          (business rules, caching later, chooses data source)
+Repository providers        (interfaces — DI)
     ↓
-Data Source         (raw read/write)
+Repository implementations
     ↓
-Mock store / future Supabase
+Data source providers       (interfaces — DI)
+    ↓
+Mock / future Supabase data sources
 ```
+
+---
+
+## Dependency injection (Phase 3.4.6)
+
+**Dependency injection (DI)** means callers receive collaborators from the outside instead of constructing them. In MOMO, Riverpod is the DI container:
+
+| Provider | Exposes | Default binding |
+|----------|---------|-----------------|
+| `playdateDataSourceProvider` | `PlaydateDataSource` | `MockPlaydateDataSource` |
+| `postDataSourceProvider` | `PostDataSource` | `MockPostDataSource` |
+| `profileDataSourceProvider` | `ProfileDataSource` | `MockProfileDataSource` |
+| `userDataSourceProvider` | `UserDataSource` | `MockUserDataSource` |
+| `playdateRepositoryProvider` | `PlaydateRepository` | `PlaydateRepositoryImpl` |
+| `postRepositoryProvider` | `PostRepository` | `PostRepositoryImpl` |
+| `profileRepositoryProvider` | `ProfileRepository` | `ProfileRepositoryImpl` |
+| `userRepositoryProvider` | `UserRepository` | `UserRepositoryImpl` |
+
+**Why Riverpod for DI**
+
+- Same tool already used for app state (`ProviderScope` in `main.dart`)
+- Feature notifiers `ref.watch` repository **interfaces** only
+- Tests / future backends override bindings without changing UI code
+
+**Swap mock → Supabase (no UI changes)**
+
+```dart
+// Option A — swap data source only (keep PlaydateRepositoryImpl)
+playdateDataSourceProvider.overrideWithValue(SupabasePlaydateDataSource(...))
+
+// Option B — swap entire repository
+playdateRepositoryProvider.overrideWithValue(SupabasePlaydateRepository(...))
+```
+
+**Testing**
+
+Helpers in `test/support/test_overrides.dart`:
+
+- `overridePlaydateRepository` / `overridePostRepository`
+- `overridePlaydateDataSource` / `overridePostDataSource`
+- `testBackendOverrides` (instant simulated backend)
+
+```
+ProviderScope(overrides: [overridePlaydateRepository(fake)])
+  → feature providers
+  → fake repository
+```
+
+Composition root files:
+
+- `lib/data/datasources/data_source_providers.dart`
+- `lib/repositories/repository_providers.dart`
+
+Feature providers (`playdate_provider`, `post_provider`) must **not** import mock/impl classes.
+
+---
+
+## Backend request flow (Phase 3.4.5)
+
+Every future backend operation (create, read, update, delete, join, leave, login, …) follows the same path:
+
+```
+User
+ ↓
+Tap button
+ ↓
+Provider
+ ↓
+Repository
+ ↓
+Data Source
+ ↓
+API (future)
+ ↓
+Database (future)
+ ↓
+API response
+ ↓
+Data Source
+ ↓
+Repository   (DTO → Domain, Result)
+ ↓
+Provider     (AsyncOpState / AsyncValue)
+ ↓
+UI refresh   (MomoLoading / MomoError / list / banner)
+```
+
+### Request lifecycle (mutations)
+
+```
+Idle
+ ↓
+Loading          ← MutationNotifier / AsyncOpLoading
+ ↓
+Success          ← AsyncOpSuccess → navigate / snackbar / refresh list
+ ↓
+Error            ← AsyncOpError → MomoError + Retry
+ ↓
+Retry            ← calls the same Provider → Repository path again
+```
+
+| State | Who owns it | UI |
+|-------|-------------|-----|
+| Idle | `MutationNotifier` | Form / action controls enabled |
+| Loading | `MutationNotifier` | `MomoLoading` |
+| Success | `MutationNotifier` + list providers | Navigate / `MomoSuccessBanner` / refreshed feed |
+| Error | `MutationNotifier` | `MomoError` + retry |
+| List load | `AsyncNotifier` (`AsyncValue`) | `MomoLoading` / `MomoError` / cards |
+
+### Current flows (where each layer starts / ends)
+
+| Operation | UI | Provider | Repository | Data source |
+|-----------|----|----------|------------|-------------|
+| **Load feed** | `HomeScreen` | `feedProvider` ← `playdateProvider` / `postProvider` | `load()` | `getPlaydates` / `getPosts` |
+| **Create playdate** | Create screen + `createPlaydateMutationProvider` | `PlaydateNotifier.createPlaydate` | `create()` → `Result` | `createPlaydate` |
+| **Create post** | Create screen + `createPostMutationProvider` | `PostNotifier.createPost` | `create()` → `Result` | `createPost` |
+| **Join / Leave** | `PlaydateJoinActionBar` | `joinPlaydate` / `leavePlaydate` | `join()` / `leave()` → `Result` | `joinPlaydate` / `leavePlaydate` |
+| **Cancel** | Join action bar | `cancelPlaydate` | `delete()` → `Result` | `deletePlaydate` |
+
+**No UI bypasses repositories** for playdate, post, profile, or current user. Join/leave update list state immediately today; wire `playdateParticipationMutationProvider` later for full Loading/Error UI.
+
+### Error propagation
+
+```
+API / rule failure
+ → Data Source (raw false / throw)
+ → Repository maps to Result.failure(message)
+ → Provider maps Result → bool / throw for MutationNotifier
+ → MutationNotifier → AsyncOpError
+ → UI MomoError (retry)
+```
+
+Repositories **never** show snackbars or dialogs.
+
+### Response mapping (serialization)
+
+```
+Database row (future)
+ → JSON
+ → DTO (`lib/dto/*_dto.dart` fromJson)
+ → Domain (`toDomain()`)
+ → Provider
+ → UI
+```
+
+Today mock sources already hold domain objects; repositories still round-trip through DTOs on `load()` to keep the boundary warm.
+
+### Repository method conventions
+
+| Method | Role | Return |
+|--------|------|--------|
+| `load()` | Read collection | `Future<List<T>>` |
+| `create(...)` | Insert | `Future<Result<bool>>` |
+| `update(entity)` | Upsert | `Future<Result<bool>>` |
+| `delete(...)` | Remove | `Future<Result<bool>>` |
+| `join` / `leave` | Participation | `Future<Result<bool>>` |
+
+Prefer [Result](lib/core/result/result.dart) over throwing for expected business failures. Use [MutationNotifier.runResult](lib/core/async/mutation_notifier.dart) when driving Idle→Loading→Success|Error from a `Result`.
+
+---
 
 ## Repository vs Data Source
 
 | | Repository | Data Source |
 |--|------------|-------------|
-| Knows about | Domain rules, DTOs, which source to use | Storage / API only |
-| Examples | Owner cannot join; capacity checks; map DTO→domain | Insert row, fetch list, update participants |
-| Swapped when | Rarely (API to app stays stable) | Mock → Supabase (or cache + remote) |
-| Seen by providers? | Yes (via interface) | **No** |
+| Knows about | Domain rules, DTOs, Result, which source | Storage / API only |
+| Examples | Owner cannot join; capacity; DTO→domain | Insert row, fetch list |
+| Swapped when | Rarely | Mock → Supabase |
+| Seen by providers? | Yes | **No** |
 
-**Future Supabase:** implement `SupabasePlaydateDataSource` / `SupabasePostDataSource`, override `playdateDataSourceProvider` / `postDataSourceProvider`. Repositories, providers, and UI stay unchanged. Optional later: repository talks to local cache + remote source.
+**Future Supabase:** implement `Supabase*DataSource`, override `*DataSourceProvider`. Repositories, providers, and UI stay unchanged.
 
 ## DTO vs Domain Model
 
 | | Domain (`lib/models/`) | DTO (`lib/dto/`) |
 |--|------------------------|------------------|
 | Purpose | App logic & UI | Wire format for API / DB JSON |
-| Used by | UI, providers | Data layer (repos / sources) |
-| Serialization | None | `fromJson` / `toJson` |
+| Used by | UI, providers | Data layer only |
 
 **Providers must never use DTOs or data sources.**
 
@@ -41,12 +202,12 @@ Mock store / future Supabase
 
 | Layer | Responsibility |
 |-------|----------------|
-| `providers/` | Riverpod notifiers → repositories only |
-| `repositories/` | Interfaces + impls (rules + DTO mapping) |
-| `data/datasources/` | Raw persistence contracts + mock impls |
-| `data/` | Seed constants (`mock_feed`, `mock_user`) |
-| `dto/` | JSON DTOs + domain mapping |
-| `models/` | Domain entities |
+| `providers/` | Riverpod notifiers → `ref.watch(*RepositoryProvider)` |
+| `repositories/` | Interfaces + impls + `repository_providers.dart` |
+| `data/datasources/` | Contracts + mock impls + `data_source_providers.dart` |
+| `dto/` | JSON ⇄ domain |
+| `core/result/` | `Result` success/failure |
+| `core/async/` | `MutationNotifier`, `AsyncOpState`, request-flow notes |
 
 ## Folder structure (data-related)
 
@@ -54,56 +215,25 @@ Mock store / future Supabase
 lib/
 ├── models/
 ├── dto/
+├── core/result/result.dart
+├── core/async/
+│   ├── async_state.dart          (via models/async_state)
+│   ├── mutation_notifier.dart
+│   └── backend_request_flow.dart
 ├── data/
 │   ├── mock_feed.dart
 │   ├── mock_user.dart
 │   └── datasources/
-│       ├── playdate_data_source.dart
-│       ├── post_data_source.dart
-│       └── mock/
-│           ├── mock_playdate_data_source.dart
-│           └── mock_post_data_source.dart
 ├── repositories/
-│   ├── playdate_repository.dart
-│   ├── playdate_repository_impl.dart
-│   ├── post_repository.dart
-│   ├── post_repository_impl.dart
-│   └── repository_providers.dart
 └── providers/
 ```
 
-## Data flow (Phase 3.4.4)
-
-```
-HomeScreen → feedProvider → playdateProvider / postProvider
-                                    ↓
-                         PlaydateRepositoryImpl / PostRepositoryImpl
-                                    ↓
-                         MockPlaydateDataSource / MockPostDataSource
-                                    ↓
-                         mock_feed.dart seed lists
-```
-
-Create / join / leave / cancel: repository applies rules → data source mutates store → providers refresh from `getPlaydates()` / `getPosts()`.
-
 ## Models
 
-- **User:** id, displayName, profileImageUrl, location, children, createdAt, updatedAt (`name` alias → displayName)
-- **Playdate:** id, title, description, location, date, time, childAge, hostName, maxParticipants, participantIds, creatorId, status, createdAt, updatedAt (`isCancelled` derived from status)
-- **Post:** id, title, content, authorName, creatorId, status, createdAt, updatedAt
-- **Participant:** userId, playdateId, joinedAt, status (future join table; MVP uses `participantIds`)
-- **Child:** id, displayName, ageLabel (nested under User)
-- **FeedItem:** sealed — `PlaydateFeedItem` | `PostFeedItem`
-
-Dates/times on playdates remain display strings in MVP. Entity timestamps use `DateTime?`.
-
-## UI
-
-- Material 3 via `AppTheme.light`
-- Shared feedback widgets under `core/widgets/`
+- **User, Playdate, Post, Participant, Child, Profile, FeedItem** — see prior phase notes.
+- Playdate `date` / `time` remain display strings in MVP.
 
 ## Constraints
 
 - No backend, auth, or remote persistence yet
-- Do not introduce marketplace, chat, payments, or complex matching
-- Profile still reads `mockProfile` directly (no profile repository yet)
+- See `BACKEND_MIGRATION_CHECKLIST.md` before Phase 4 / Supabase

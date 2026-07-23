@@ -1,13 +1,21 @@
+import '../core/result/result.dart';
 import '../models/playdate.dart';
 
-/// Contract for playdate access used by providers.
+/// Standard playdate repository API (backend-request flow).
 ///
-/// Persistence is provided by a [PlaydateDataSource] (mock today, Supabase later).
-/// Implementations: [PlaydateRepositoryImpl].
+/// Convention (all async):
+/// - [load] — read list
+/// - [create] / [update] / [delete] — write
+/// - [join] / [leave] — participation
+///
+/// Mutations return [Result] so failures propagate without UI knowledge.
+/// Success payloads use `true` as a void stand-in.
 abstract class PlaydateRepository {
-  Future<List<Playdate>> getPlaydates();
+  /// Load all playdates (future: GET /playdates).
+  Future<List<Playdate>> load();
 
-  Future<void> createPlaydate({
+  /// Create a playdate (future: POST /playdates).
+  Future<Result<bool>> create({
     required String title,
     required String date,
     required String time,
@@ -19,13 +27,13 @@ abstract class PlaydateRepository {
     int? maxParticipants,
   });
 
-  /// Replaces by id, or inserts at the front when the id is new.
-  Future<void> updatePlaydate(Playdate playdate);
+  /// Replace or insert by id (future: PATCH /playdates/:id).
+  Future<Result<bool>> update(Playdate playdate);
 
-  /// Cancels/deletes a playdate. Only the creator may delete.
-  Future<bool> deletePlaydate(String playdateId, String requestingUserId);
+  /// Cancel/delete. Only the creator may delete.
+  Future<Result<bool>> delete(String playdateId, String requestingUserId);
 
-  Future<bool> joinPlaydate(String playdateId, String userId);
+  Future<Result<bool>> join(String playdateId, String userId);
 
-  Future<bool> leavePlaydate(String playdateId, String userId);
+  Future<Result<bool>> leave(String playdateId, String userId);
 }

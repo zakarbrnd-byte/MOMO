@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/result/result.dart';
 import '../models/post.dart';
 import '../repositories/post_repository.dart';
 import '../repositories/repository_providers.dart';
@@ -19,25 +20,27 @@ T _readSync<T>(Future<T> future) {
   return value;
 }
 
-/// In-memory posts as [AsyncValue] (feed load lifecycle).
+bool _ok(Result<bool> result) => result.isSuccess;
+
+/// Posts as [AsyncValue] (feed load lifecycle).
 ///
-/// Data access goes through [PostRepository] only.
+/// Request path: UI → this provider → [PostRepository] → data source.
 /// Create mutations use [createPostMutationProvider] for Idle → Loading →
 /// Success | Error.
 class PostNotifier extends AsyncNotifier<List<Post>> {
-  PostRepository get _repo => ref.read(postRepositoryProvider);
+  PostRepository get _repo => ref.watch(postRepositoryProvider);
 
   @override
-  Future<List<Post>> build() => _repo.getPosts();
+  Future<List<Post>> build() => _repo.load();
 
   List<Post> get posts => state.valueOrNull ?? const [];
 
   void _refresh() {
-    state = AsyncData(_readSync(_repo.getPosts()));
+    state = AsyncData(_readSync(_repo.load()));
   }
 
   void addPost(Post post) {
-    _readSync(_repo.updatePost(post));
+    _readSync(_repo.update(post));
     _refresh();
   }
 
@@ -47,18 +50,24 @@ class PostNotifier extends AsyncNotifier<List<Post>> {
     required String content,
     String? authorName,
   }) {
-    _readSync(
-      _repo.createPost(
+    final result = _readSync(
+      _repo.create(
         title: title,
         content: content,
         authorName: authorName,
       ),
     );
+    if (!_ok(result)) {
+      throw Exception(result.errorOrNull ?? 'Could not create post.');
+    }
     _refresh();
   }
 
   void updatePost(Post post) {
-    _readSync(_repo.updatePost(post));
+    final result = _readSync(_repo.update(post));
+    if (!_ok(result)) {
+      throw Exception(result.errorOrNull ?? 'Could not update post.');
+    }
     _refresh();
   }
 }

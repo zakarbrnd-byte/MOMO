@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../../models/playdate.dart';
 import '../../mock_feed.dart';
 import '../playdate_data_source.dart';
+import 'mock_profile_data_source.dart';
 
 /// In-memory playdate store seeded from [mockPlaydates].
 ///
@@ -42,7 +43,7 @@ class MockPlaydateDataSource implements PlaydateDataSource {
       description: description.trim(),
       hostName: hostName?.trim().isNotEmpty == true
           ? hostName!.trim()
-          : mockProfile.displayName,
+          : seedProfile.displayName,
       participantIds: const [],
       maxParticipants: maxParticipants,
       createdAt: now,

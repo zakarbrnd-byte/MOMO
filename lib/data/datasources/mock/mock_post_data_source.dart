@@ -4,6 +4,7 @@ import '../../../models/post.dart';
 import '../../mock_feed.dart';
 import '../../mock_user.dart';
 import '../post_data_source.dart';
+import 'mock_profile_data_source.dart';
 
 /// In-memory post store seeded from [mockPosts].
 ///
@@ -32,7 +33,7 @@ class MockPostDataSource implements PostDataSource {
       content: content.trim(),
       authorName: authorName?.trim().isNotEmpty == true
           ? authorName!.trim()
-          : mockProfile.displayName,
+          : seedProfile.displayName,
       creatorId: currentUserId,
       createdAt: now,
       updatedAt: now,

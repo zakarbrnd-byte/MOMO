@@ -1,20 +1,23 @@
+import '../core/result/result.dart';
 import '../models/post.dart';
 
-/// Contract for post access used by providers.
+/// Standard post repository API (backend-request flow).
 ///
-/// Persistence is provided by a [PostDataSource] (mock today, Supabase later).
-/// Implementations: [PostRepositoryImpl].
+/// Convention: [load], [create], [update], [delete] — all async;
+/// mutations return [Result] (`true` on success).
 abstract class PostRepository {
-  Future<List<Post>> getPosts();
+  /// Load all posts (future: GET /posts).
+  Future<List<Post>> load();
 
-  Future<void> createPost({
+  /// Create a post (future: POST /posts).
+  Future<Result<bool>> create({
     required String title,
     required String content,
     String? authorName,
   });
 
-  /// Replaces by id, or inserts at the front when the id is new.
-  Future<void> updatePost(Post post);
+  /// Replace or insert by id (future: PATCH /posts/:id).
+  Future<Result<bool>> update(Post post);
 
-  Future<bool> deletePost(String postId);
+  Future<Result<bool>> delete(String postId);
 }

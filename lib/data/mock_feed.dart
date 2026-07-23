@@ -116,12 +116,3 @@ const mockPosts = [
   postSeolleung,
   postIndoorSpots,
 ];
-
-/// Profile placeholder until a profile repository exists.
-const mockProfile = (
-  displayName: 'Jiwoo Mom',
-  neighborhood: 'Songpa-gu, Seoul',
-  childInfo: 'Daughter, age 4',
-  bio:
-      'Looking for friendly playdates nearby. Love parks, libraries, and quiet café mornings.',
-);

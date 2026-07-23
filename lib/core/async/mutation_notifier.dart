@@ -3,11 +3,15 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/async_state.dart';
+import '../result/result.dart';
 import 'simulated_backend.dart';
 
 /// Runs a single async mutation with Idle → Loading → Success | Error.
 ///
 /// Prevents overlapping runs while [AsyncOpLoading]. Shared by create/join/etc.
+///
+/// Prefer [runResult] when the repository returns [Result] so failures become
+/// [AsyncOpError] without throwing.
 class MutationNotifier extends AutoDisposeNotifier<AsyncOpState<void>> {
   bool _disposed = false;
 
@@ -24,6 +28,16 @@ class MutationNotifier extends AutoDisposeNotifier<AsyncOpState<void>> {
   ///
   /// Returns `false` if already busy, failed, or disposed mid-flight.
   Future<bool> run(FutureOr<void> Function() action) async {
+    return runResult(() async {
+      await action();
+      return const Success(true);
+    });
+  }
+
+  /// Same lifecycle as [run], mapping [Result.failure] → [AsyncOpError].
+  Future<bool> runResult(
+    FutureOr<Result<bool>> Function() action,
+  ) async {
     if (isBusy) return false;
 
     state = const AsyncOpLoading();
@@ -41,11 +55,20 @@ class MutationNotifier extends AutoDisposeNotifier<AsyncOpState<void>> {
         throw Exception('Request failed. Please try again.');
       }
 
-      await action();
+      final result = await action();
 
       if (_disposed) return false;
-      state = const AsyncOpSuccess(null);
-      return true;
+
+      return result.when(
+        success: (_) {
+          state = const AsyncOpSuccess(null);
+          return true;
+        },
+        failure: (message) {
+          state = AsyncOpError(message: message);
+          return false;
+        },
+      );
     } catch (error) {
       if (_disposed) return false;
       state = AsyncOpError(

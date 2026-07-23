@@ -4,44 +4,40 @@ Community app for Korean mothers in the US.
 
 **MVP goal:** Help moms discover and create local playdates, and share parenting-related posts.
 
-Version: **MVP 0.1** · Status: **Phase 1 complete** (UI + mock data)
+Version: **MVP 0.1** · Status: **Phase 3.4 complete (architecture freeze)** → next **Phase 3.5 UI/UX validation**
 
 ## Current features
 
 | Area | Status |
 |------|--------|
-| Flutter app shell + Material theme | Done |
+| Flutter app shell + Material 3 + design system | Done |
 | Bottom nav: Home · Create · Profile | Done |
-| Home feed (Playdate + Post cards) | Done |
-| Detail screens (Playdate, Post) | Done |
-| Create selection + forms | Done |
-| Profile (placeholder mock) | Done |
-| Local mock data | Done |
-| Backend / auth | Not started |
-| Create → feed persistence | Not started |
+| Home feed (Playdate + Post) via Riverpod | Done |
+| Detail screens + Join / Leave / Cancel | Done |
+| Create Playdate / Post → feed (local) | Done |
+| Profile via providers (mock data source) | Done |
+| Repository + data source + DI layer | Done |
+| Backend / auth / Supabase | Not started |
 
 ## Tech stack
 
 - **Framework:** Flutter
-- **State management:** Riverpod (`ProviderScope` wired; feature providers not yet used)
-- **UI:** Material Design 3
-- **Data:** Local mock data only (`lib/data/mock_feed.dart`)
+- **State:** Riverpod (feature providers + DI)
+- **UI:** Material 3 + shared `core/widgets`
+- **Data:** Mock data sources only (swap-ready for Supabase)
 
-## Project structure
+## Project structure (simplified)
 
 ```
 lib/
-  main.dart                 # Entry + ProviderScope
-  app.dart                  # MaterialApp
-  core/theme/               # Colors + theme
-  navigation/               # MainShell (bottom nav)
-  features/
-    home/                   # Feed + card widgets
-    create/                 # Selection + playdate/post forms
-    detail/                 # Playdate + post detail
-    profile/                # Profile screen
-  models/                   # Playdate, Post
-  data/                     # Mock feed + profile
+  main.dart                 # ProviderScope
+  providers/                # Feature state
+  repositories/             # Interfaces + impls + DI
+  data/datasources/         # Interfaces + mock impls + DI
+  dto/                      # JSON ⇄ domain
+  models/                   # Domain
+  features/                 # UI only
+  core/                     # Theme, widgets, async, result
 ```
 
 ## Run
@@ -51,23 +47,22 @@ flutter pub get
 flutter run
 ```
 
-**Windows note:** The project path must not contain `#` (Flutter rejects it). If the repo lives under a folder like `#1 ZAKAR`, run from a junction/symlink without `#`, e.g. `C:\Users\Tim\Projects\ZAKAR-MOMO`, or ensure `flutter` is on PATH (`C:\Users\Tim\flutter\bin`).
-
-Devices currently used in development: Chrome (web). Windows desktop / Android toolchains are optional and may not be configured.
+**Windows note:** The project path must not contain `#`. Prefer a junction without `#`, e.g. `C:\Users\Tim\Projects\ZAKAR-MOMO`.
 
 ## Documentation
 
 | File | Purpose |
 |------|---------|
-| [MVP_SPEC.md](MVP_SPEC.md) | Scope, users, included / excluded |
-| [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) | Phases: completed / next / future |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Folders, navigation, data flow |
-| [CLAUDE.md](CLAUDE.md) | Agent / contributor rules |
-| [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) | Short current-state snapshot |
-| [docs/](docs/) | Supporting product notes (synced to MVP) |
+| [MVP_SPEC.md](MVP_SPEC.md) | Scope in / out |
+| [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) | Phases |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Live architecture detail |
+| [docs/ARCHITECTURE_FREEZE.md](docs/ARCHITECTURE_FREEZE.md) | **Frozen baseline (3.4.8)** |
+| [BACKEND_MIGRATION_CHECKLIST.md](BACKEND_MIGRATION_CHECKLIST.md) | Pre-Supabase checklist |
+| [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) | Short snapshot |
+| [CLAUDE.md](CLAUDE.md) | Agent rules |
 
 ## Development status
 
-- **Completed:** Phase 1 — foundation, navigation, feed, cards, create/detail screens, mock data
-- **Next:** Phase 2 — local state (Riverpod), create → feed, join, UX polish
-- **Future:** Phase 3 — auth, backend, richer profiles, realtime community
+- **Completed:** Phases 1–3.4 — foundation, local state, design system, repositories, DTOs, DI, migration readiness, **architecture freeze**
+- **Next:** Phase 3.5 — UI/UX validation (layout/visual/UX only; respect freeze rules)
+- **Future:** Phase 4 — auth, Supabase, real persistence

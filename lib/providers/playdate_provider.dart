@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/result/result.dart';
 import '../models/playdate.dart';
 import '../repositories/playdate_repository.dart';
 import '../repositories/repository_providers.dart';
@@ -22,25 +23,27 @@ T _readSync<T>(Future<T> future) {
   return value;
 }
 
-/// In-memory playdate store as [AsyncValue] (feed load lifecycle).
+bool _ok(Result<bool> result) => result.isSuccess;
+
+/// Playdate list as [AsyncValue] (feed load lifecycle).
 ///
-/// Data access goes through [PlaydateRepository] only.
+/// Request path: UI → this provider → [PlaydateRepository] → data source.
 /// Mutations that need Idle → Loading → Success | Error should run through
 /// [MutationNotifier] (see `createPlaydateMutationProvider`).
 class PlaydateNotifier extends AsyncNotifier<List<Playdate>> {
-  PlaydateRepository get _repo => ref.read(playdateRepositoryProvider);
+  PlaydateRepository get _repo => ref.watch(playdateRepositoryProvider);
 
   @override
-  Future<List<Playdate>> build() => _repo.getPlaydates();
+  Future<List<Playdate>> build() => _repo.load();
 
   List<Playdate> get playdates => state.valueOrNull ?? const [];
 
   void _refresh() {
-    state = AsyncData(_readSync(_repo.getPlaydates()));
+    state = AsyncData(_readSync(_repo.load()));
   }
 
   void addPlaydate(Playdate playdate) {
-    _readSync(_repo.updatePlaydate(playdate));
+    _readSync(_repo.update(playdate));
     _refresh();
   }
 
@@ -58,8 +61,8 @@ class PlaydateNotifier extends AsyncNotifier<List<Playdate>> {
     int? maxParticipants,
   }) {
     final creatorId = hostUserId ?? ref.read(currentUserProvider).id;
-    _readSync(
-      _repo.createPlaydate(
+    final result = _readSync(
+      _repo.create(
         title: title,
         date: date,
         time: time,
@@ -71,35 +74,50 @@ class PlaydateNotifier extends AsyncNotifier<List<Playdate>> {
         maxParticipants: maxParticipants,
       ),
     );
+    if (!_ok(result)) {
+      throw Exception(result.errorOrNull ?? 'Could not create playdate.');
+    }
     _refresh();
   }
 
   void updatePlaydate(Playdate playdate) {
-    _readSync(_repo.updatePlaydate(playdate));
+    final result = _readSync(_repo.update(playdate));
+    if (!_ok(result)) {
+      throw Exception(result.errorOrNull ?? 'Could not update playdate.');
+    }
     _refresh();
   }
 
   /// Adds [userId] to participants.
   /// Owners cannot join their own playdate.
   bool joinPlaydate(String playdateId, String userId) {
-    final ok = _readSync(_repo.joinPlaydate(playdateId, userId));
-    if (ok) _refresh();
-    return ok;
+    final result = _readSync(_repo.join(playdateId, userId));
+    if (_ok(result)) {
+      _refresh();
+      return true;
+    }
+    return false;
   }
 
   /// Removes [userId] from participants.
   /// Owners cannot "leave" as a participant.
   bool leavePlaydate(String playdateId, String userId) {
-    final ok = _readSync(_repo.leavePlaydate(playdateId, userId));
-    if (ok) _refresh();
-    return ok;
+    final result = _readSync(_repo.leave(playdateId, userId));
+    if (_ok(result)) {
+      _refresh();
+      return true;
+    }
+    return false;
   }
 
   /// Removes a playdate. Only the creator ([userId]) may cancel.
   bool cancelPlaydate(String playdateId, String userId) {
-    final ok = _readSync(_repo.deletePlaydate(playdateId, userId));
-    if (ok) _refresh();
-    return ok;
+    final result = _readSync(_repo.delete(playdateId, userId));
+    if (_ok(result)) {
+      _refresh();
+      return true;
+    }
+    return false;
   }
 
   bool joinAsCurrentUser(String playdateId) {
