@@ -1,0 +1,20 @@
+# These owners are requested for review on PRs that touch matching paths.
+# GitHub requires the CODEOWNERS file in .github/, docs/, or repo root.
+# Update handles when the team grows.
+
+# Default — repository owner
+*       @zakarbrnd-byte
+
+# CI/CD and repo governance — require owner review
+/.github/                @zakarbrnd-byte
+/docs/cicd/              @zakarbrnd-byte
+/CONTRIBUTING.md         @zakarbrnd-byte
+/CODEOWNERS              @zakarbrnd-byte
+
+# App core / architecture freeze surfaces
+/lib/core/               @zakarbrnd-byte
+/lib/repositories/       @zakarbrnd-byte
+/lib/data/datasources/   @zakarbrnd-byte
+/lib/dto/                @zakarbrnd-byte
+/lib/models/             @zakarbrnd-byte
+/pubspec.yaml            @zakarbrnd-byte
