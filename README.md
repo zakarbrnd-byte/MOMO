@@ -66,3 +66,35 @@ flutter run
 - **Completed:** Phases 1–3.4 — foundation, local state, design system, repositories, DTOs, DI, migration readiness, **architecture freeze**
 - **Next:** Phase 3.5 — UI/UX validation (layout/visual/UX only; respect freeze rules)
 - **Future:** Phase 4 — auth, Supabase, real persistence
+
+# Web Deployment
+
+**URL:** https://zakarbrnd-byte.github.io/MOMO/
+
+## How deployment works
+
+1. Push (or merge) to `main`.
+2. GitHub Actions runs [`.github/workflows/flutter-web.yml`](.github/workflows/flutter-web.yml):
+   - Installs Flutter **stable** (cached)
+   - `flutter pub get` → `flutter analyze` → `flutter test`
+   - `flutter build web --release` with the correct `--base-href` for this repo
+   - Uploads `build/web` via `actions/upload-pages-artifact`
+   - Deploys with official `actions/deploy-pages`
+3. The site updates on GitHub Pages (usually within a minute after a green run).
+
+**One-time setup:** Repo **Settings → Pages → Build and deployment → Source: GitHub Actions**. After that, deploys are automatic.
+
+## Force redeploy
+
+- GitHub → **Actions** → **Flutter Web → GitHub Pages** → **Run workflow** (`workflow_dispatch`), or
+- Push an empty commit to `main`: `git commit --allow-empty -m "chore: redeploy web" && git push`
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| Actions fails at “Deploy to GitHub Pages” | Enable Pages source = **GitHub Actions** (see one-time setup). Approve the `github-pages` environment if required. |
+| Blank page / missing JS & assets | Confirm `--base-href` is `/MOMO/` (workflow uses `actions/configure-pages`). Hard-refresh the browser. |
+| 404 on refresh of a deep path | Workflow copies `index.html` → `404.html` and adds `.nojekyll`. Re-run the workflow if those steps were skipped. |
+| Analyze / tests fail the deploy | Fix locally with `flutter analyze` and `flutter test`, then push again. |
+| Stale site after a green deploy | Wait for the Pages deployment to finish; check the workflow’s **deploy** job URL output. |

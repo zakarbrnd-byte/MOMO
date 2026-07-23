@@ -2,17 +2,17 @@
 <html>
 <head>
   <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+    Base href for Flutter Web asset + route resolution.
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+    Local / root hosting: "/"
+    GitHub Pages project site: "/MOMO/"  (set automatically via
+    `flutter build web --base-href ...` in .github/workflows/flutter-web.yml)
+
+    Must start and end with "/". Do not hard-code a production path here —
+    CI replaces $FLUTTER_BASE_HREF at build time.
 
     For more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
   -->
   <base href="$FLUTTER_BASE_HREF">
 
