@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Architecture freeze rules
+    url: https://github.com/zakarbrnd-byte/MOMO/blob/main/docs/ARCHITECTURE_FREEZE.md
+    about: Read before proposing structural changes
+  - name: CI/CD documentation
+    url: https://github.com/zakarbrnd-byte/MOMO/blob/main/docs/cicd/README.md
+    about: Pipelines, environments, and deploy URLs
