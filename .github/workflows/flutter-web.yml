@@ -1,0 +1,128 @@
+# =============================================================================
+# MOMO — Flutter Web → GitHub Pages (CI/CD)
+# =============================================================================
+# Every push to `main` builds a production Flutter Web bundle and deploys it
+# to GitHub Pages using the official Pages Actions (no third-party deployers).
+#
+# First-time repo setup (one-time, manual):
+#   Settings → Pages → Build and deployment → Source: "GitHub Actions"
+# After that, deploys are fully automatic.
+#
+# Live URL (project site):
+#   https://zakarbrnd-byte.github.io/MOMO/
+# =============================================================================
+
+name: Flutter Web → GitHub Pages
+
+on:
+  # Deploy whenever main is updated.
+  push:
+    branches:
+      - main
+
+  # Allow manual re-deploy from the Actions tab (force redeploy).
+  workflow_dispatch:
+
+# Least-privilege defaults; deploy job elevates Pages permissions below.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One production Pages deploy at a time. Do not cancel an in-flight deploy.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Build: analyze, test, release-build web, upload Pages artifact
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build Flutter Web
+    runs-on: ubuntu-latest
+
+    steps:
+      # Full checkout so Flutter tooling can read pubspec, lib/, web/, tests.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Official Pages helper — exposes base_path / origin / etc. for this site.
+      # For a project site this is typically "/MOMO" (no trailing slash).
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      # Install Flutter stable and cache the SDK + pub dependencies between runs.
+      - name: Setup Flutter (stable)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Ensure the web target is enabled on the CI runner.
+      - name: Enable Flutter web
+        run: flutter config --enable-web
+
+      # Resolve packages (uses the Flutter/pub cache from flutter-action).
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Fail the pipeline on static analysis issues before shipping.
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      # Fail the pipeline if unit/widget tests fail.
+      - name: Test
+        run: flutter test
+
+      # Production web build.
+      # --base-href must start AND end with "/" so asset URLs resolve under
+      # https://<user>.github.io/<repo>/ (project Pages site).
+      - name: Build web (release)
+        run: |
+          BASE_PATH="${{ steps.pages.outputs.base_path }}"
+          # configure-pages returns "" for user/org root sites; use "/" then.
+          if [ -z "$BASE_PATH" ] || [ "$BASE_PATH" = "/" ]; then
+            BASE_HREF="/"
+          else
+            BASE_HREF="${BASE_PATH%/}/"
+          fi
+          echo "Building with --base-href=${BASE_HREF}"
+          flutter build web --release --base-href "${BASE_HREF}"
+
+      # GitHub Pages SPA / Flutter routing safety:
+      # - .nojekyll prevents Jekyll from dropping files that start with "_"
+      #   (CanvasKit / wasm assets often live under underscored paths).
+      # - 404.html = index.html so unknown paths still load the Flutter shell
+      #   when path-based URLs are used later.
+      - name: Prepare Pages routing files
+        run: |
+          touch build/web/.nojekyll
+          cp build/web/index.html build/web/404.html
+
+      # MUST use upload-pages-artifact (not upload-artifact) for deploy-pages.
+      # include-hidden-files keeps Flutter's .last_build_id and .nojekyll.
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+          include-hidden-files: true
+
+  # ---------------------------------------------------------------------------
+  # Deploy: publish the uploaded artifact to the github-pages environment
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # Official deployer — publishes the pages artifact from the build job.
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
