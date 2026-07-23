@@ -1,0 +1,180 @@
+# =============================================================================
+# Deploy Production — push to `main`
+# Why: `main` is the only production branch. Green builds auto-deploy to GitHub
+#      Pages (custom domain: https://momo.zakarbrand.com when configured).
+#
+# Strategy: assemble a dual-path site so develop preview under /preview/ is
+# preserved when production redeploys (GitHub Pages replaces the whole site).
+# =============================================================================
+
+name: Deploy Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  actions: read
+
+concurrency:
+  group: pages-production
+  cancel-in-progress: false
+
+env:
+  # Override via repo Variables when custom domain is live (use "/").
+  # Until then, project Pages URL needs "/MOMO/".
+  BASE_HREF: ${{ vars.MOMO_BASE_HREF || '/MOMO/' }}
+  PREVIEW_BASE_HREF: ${{ vars.MOMO_PREVIEW_BASE_HREF || '/MOMO/preview/' }}
+  PRODUCTION_URL: ${{ vars.MOMO_PRODUCTION_URL || 'https://zakarbrnd-byte.github.io/MOMO/' }}
+  PREVIEW_URL: ${{ vars.MOMO_PREVIEW_URL || 'https://zakarbrnd-byte.github.io/MOMO/preview/' }}
+
+jobs:
+  build:
+    name: Build production web
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment:
+      name: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test
+
+      - name: Build web (release)
+        run: |
+          BASE_HREF="${BASE_HREF}"
+          case "$BASE_HREF" in
+            */) ;;
+            *) BASE_HREF="${BASE_HREF}/" ;;
+          esac
+          echo "BASE_HREF=${BASE_HREF}"
+          flutter build web --release --base-href "${BASE_HREF}"
+
+      - name: Stamp build metadata
+        run: |
+          touch build/web/.nojekyll
+          cp build/web/index.html build/web/404.html
+          {
+            echo "env=production"
+            echo "sha=${{ github.sha }}"
+            echo "built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "base_href=${BASE_HREF}"
+          } > build/web/deploy-meta.txt
+
+      - name: Upload production fragment artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-web
+          path: build/web
+          retention-days: 30
+          include-hidden-files: true
+
+      - name: Cache production fragment (for preview assembler)
+        uses: actions/cache/save@v4
+        with:
+          path: build/web
+          key: momo-production-web-${{ github.sha }}-${{ github.run_id }}
+
+      - name: Failure notification
+        if: failure()
+        run: |
+          echo "::error title=Production build failed::main branch failed analyze/test/build. Production was NOT deployed."
+          {
+            echo "## Production build FAILED"
+            echo "SHA: \`${{ github.sha }}\`"
+            echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  assemble-and-deploy:
+    name: Assemble site + deploy Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout placeholders
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/pages-placeholders
+          sparse-checkout-cone-mode: true
+
+      - name: Download production fragment
+        uses: actions/download-artifact@v4
+        with:
+          name: production-web
+          path: staging
+
+      - name: Restore latest preview fragment (best effort)
+        uses: actions/cache/restore@v4
+        id: preview-cache
+        with:
+          path: preview-fragment
+          key: momo-preview-web-placeholder
+          restore-keys: |
+            momo-preview-web-
+
+      - name: Merge preview into staging
+        run: |
+          set -euo pipefail
+          if [ -d preview-fragment ] && [ -f preview-fragment/index.html ]; then
+            echo "Preserving preview site under staging/preview/"
+            rm -rf staging/preview
+            mkdir -p staging/preview
+            cp -a preview-fragment/. staging/preview/
+            cp -f staging/preview/index.html staging/preview/404.html || true
+            touch staging/preview/.nojekyll || true
+          else
+            echo "No cached preview found — writing placeholder at /preview/"
+            mkdir -p staging/preview
+            cp .github/pages-placeholders/preview-missing.html staging/preview/index.html
+            cp staging/preview/index.html staging/preview/404.html
+            touch staging/preview/.nojekyll
+          fi
+          touch staging/.nojekyll
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: staging
+          include-hidden-files: true
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Deployment summary
+        if: always()
+        run: |
+          {
+            echo "## Production deploy"
+            echo ""
+            echo "| Item | Value |"
+            echo "|------|-------|"
+            echo "| Status | ${{ job.status }} |"
+            echo "| Pages URL | ${{ steps.deployment.outputs.page_url || env.PRODUCTION_URL }} |"
+            echo "| Custom domain (target) | https://momo.zakarbrand.com |"
+            echo "| Preview path | ${{ env.PREVIEW_URL }} |"
+            echo "| SHA | \`${{ github.sha }}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Failure notification
+        if: failure()
+        run: echo "::error title=Production deploy failed::Pages deploy did not complete. Check environment protection + Pages source = GitHub Actions."

@@ -1,0 +1,35 @@
+# =============================================================================
+# Composite action: setup Flutter + caches + pub get
+# Why: Keep every CI/CD workflow DRY and consistent (same channel, caches, flags).
+# =============================================================================
+name: Setup Flutter
+description: Install Flutter stable, enable web, restore caches, run pub get
+
+inputs:
+  channel:
+    description: Flutter channel
+    required: false
+    default: stable
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Flutter SDK (with SDK + pub cache)
+      uses: subosito/flutter-action@v2
+      with:
+        channel: ${{ inputs.channel }}
+        cache: true
+
+    - name: Enable Flutter web
+      shell: bash
+      run: flutter config --enable-web
+
+    - name: Flutter / Dart versions (debug)
+      shell: bash
+      run: |
+        flutter --version
+        dart --version
+
+    - name: Install dependencies (pub get)
+      shell: bash
+      run: flutter pub get

@@ -1,0 +1,117 @@
+# =============================================================================
+# CI — Pull Requests & quality gate (no deployment)
+# Why: Every PR from humans or AI agents must pass analyze/test/build before
+#      merge into develop or main. Keeps production green and reduces conflicts.
+# =============================================================================
+
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - release/**
+  # Also validate feature/hotfix pushes early (optional signal for agents).
+  push:
+    branches:
+      - feature/**
+      - hotfix/**
+      - cursor/**
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Analyze · Test · Build Web
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test --reporter expanded
+
+      # PR / feature builds use a neutral base-href; deployment workflows set the real one.
+      - name: Build web (release, no deploy)
+        run: flutter build web --release --base-href /
+
+      - name: Prepare artifact metadata
+        run: |
+          touch build/web/.nojekyll
+          cp build/web/index.html build/web/404.html
+          echo "built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" > build/web/ci-build.txt
+          echo "sha=${{ github.sha }}" >> build/web/ci-build.txt
+          echo "ref=${{ github.ref }}" >> build/web/ci-build.txt
+
+      - name: Upload web build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build-ci-${{ github.event.pull_request.number || github.run_id }}
+          path: build/web
+          if-no-files-found: error
+          retention-days: 14
+          include-hidden-files: true
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## CI summary"
+            echo ""
+            echo "| Check | Result |"
+            echo "|-------|--------|"
+            echo "| Analyze | ${{ job.status }} (see steps) |"
+            echo "| SHA | \`${{ github.sha }}\` |"
+            echo "| Ref | \`${{ github.ref }}\` |"
+            echo ""
+            echo "Artifact: \`web-build-ci-${{ github.event.pull_request.number || github.run_id }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Failure notification (PR comment)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## CI failed
+
+            The **CI** workflow failed on \`${{ github.sha }}\`.
+
+            Please run locally:
+            \`\`\`bash
+            flutter pub get
+            flutter analyze --fatal-infos
+            flutter test
+            flutter build web --release
+            \`\`\`
+
+            [View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Failure annotation
+        if: failure()
+        run: |
+          echo "::error title=CI failed::Analyze, test, or web build failed. See job logs and summary."
