@@ -1,0 +1,86 @@
+# MOMO — Flutter Web → GitHub Pages
+# Triggers on every push to main. Builds, tests, and deploys with official Pages actions.
+
+name: Flutter Web
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Analyze · Test · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Flutter (stable, cached)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Enable web
+        run: flutter config --enable-web
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test
+
+      - name: Build web (release)
+        run: |
+          BASE_PATH="${{ steps.pages.outputs.base_path }}"
+          if [ -z "$BASE_PATH" ] || [ "$BASE_PATH" = "/" ]; then
+            BASE_HREF="/"
+          else
+            BASE_HREF="${BASE_PATH%/}/"
+          fi
+          echo "Building with --base-href=${BASE_HREF}"
+          flutter build web --release --base-href "${BASE_HREF}"
+
+      - name: Prepare Pages files
+        run: |
+          touch build/web/.nojekyll
+          cp build/web/index.html build/web/404.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+          include-hidden-files: true
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
