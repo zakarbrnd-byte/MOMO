@@ -17,8 +17,12 @@ class PlaydateDto {
     required this.childAge,
     required this.description,
     required this.hostName,
+    this.hostChildLabel,
     this.participantIds = const [],
     this.maxParticipants,
+    this.viewCount = 0,
+    this.commentCount = 0,
+    this.likeCount = 0,
     this.status = PlaydateStatus.active,
     this.createdAt,
     this.updatedAt,
@@ -33,8 +37,12 @@ class PlaydateDto {
   final String childAge;
   final String description;
   final String hostName;
+  final String? hostChildLabel;
   final List<String> participantIds;
   final int? maxParticipants;
+  final int viewCount;
+  final int commentCount;
+  final int likeCount;
   final PlaydateStatus status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -50,8 +58,13 @@ class PlaydateDto {
       childAge: JsonConverters.stringFromJson(json['childAge']),
       description: JsonConverters.stringFromJson(json['description']),
       hostName: JsonConverters.stringFromJson(json['hostName']),
+      hostChildLabel:
+          JsonConverters.nullableStringFromJson(json['hostChildLabel']),
       participantIds: JsonConverters.stringListFromJson(json['participantIds']),
       maxParticipants: JsonConverters.intFromJson(json['maxParticipants']),
+      viewCount: JsonConverters.intFromJson(json['viewCount']) ?? 0,
+      commentCount: JsonConverters.intFromJson(json['commentCount']) ?? 0,
+      likeCount: JsonConverters.intFromJson(json['likeCount']) ?? 0,
       status: JsonConverters.enumFromJson(
         json['status'],
         PlaydateStatus.values,
@@ -73,8 +86,12 @@ class PlaydateDto {
       'childAge': childAge,
       'description': description,
       'hostName': hostName,
+      if (hostChildLabel != null) 'hostChildLabel': hostChildLabel,
       'participantIds': participantIds,
       'maxParticipants': maxParticipants,
+      'viewCount': viewCount,
+      'commentCount': commentCount,
+      'likeCount': likeCount,
       'status': JsonConverters.enumToJson(status),
       if (createdAt != null)
         'createdAt': JsonConverters.dateTimeToJson(createdAt),
@@ -94,8 +111,12 @@ class PlaydateDto {
       childAge: childAge,
       description: description,
       hostName: hostName,
+      hostChildLabel: hostChildLabel,
       participantIds: List<String>.from(participantIds),
       maxParticipants: maxParticipants,
+      viewCount: viewCount,
+      commentCount: commentCount,
+      likeCount: likeCount,
       status: status,
       createdAt: createdAt,
       updatedAt: updatedAt,
@@ -113,8 +134,12 @@ class PlaydateDto {
       childAge: playdate.childAge,
       description: playdate.description,
       hostName: playdate.hostName,
+      hostChildLabel: playdate.hostChildLabel,
       participantIds: List<String>.from(playdate.participantIds),
       maxParticipants: playdate.maxParticipants,
+      viewCount: playdate.viewCount,
+      commentCount: playdate.commentCount,
+      likeCount: playdate.likeCount,
       status: playdate.status,
       createdAt: playdate.createdAt,
       updatedAt: playdate.updatedAt,

@@ -15,27 +15,27 @@ class CreateScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Create')),
+      appBar: AppBar(title: const Text('만들기')),
       body: Padding(
         padding: AppSpacing.pageCreate,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'What would you like to share?',
+              '무엇을 공유할까요?',
               style: textTheme.titleMedium,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'You can create two types of content for the community.',
+              '플레이데이트로 만나거나, 육아톡에 질문을 남겨보세요.',
               style: textTheme.bodyMedium,
             ),
             const SizedBox(height: AppSpacing.xl),
             Expanded(
               child: _ActionCard(
                 icon: Icons.event_available_outlined,
-                title: 'Create Playdate',
-                subtitle: 'Invite moms to meet offline',
+                title: '플레이데이트 만들기',
+                subtitle: '우리 동네 엄마들과 오프라인으로 만나요',
                 onTap: () {
                   AppNavigation.pushPage(
                     context,
@@ -48,8 +48,8 @@ class CreateScreen extends StatelessWidget {
             Expanded(
               child: _ActionCard(
                 icon: Icons.edit_note_outlined,
-                title: 'Create Post',
-                subtitle: 'Ask a question or share an idea',
+                title: '글 작성하기',
+                subtitle: '육아 질문이나 동네 정보를 나눠요',
                 onTap: () {
                   AppNavigation.pushPage(
                     context,
@@ -98,7 +98,8 @@ class _ActionCard extends StatelessWidget {
             child: Icon(icon, size: 32, color: AppColors.primary),
           ),
           const SizedBox(height: AppSpacing.xl),
-          Text(title, style: textTheme.headlineMedium),
+          Text(title,
+              style: textTheme.headlineMedium, textAlign: TextAlign.center),
           const SizedBox(height: AppSpacing.sm),
           Text(
             subtitle,

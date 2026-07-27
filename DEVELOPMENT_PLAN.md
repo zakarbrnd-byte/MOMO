@@ -30,26 +30,41 @@ Shipped in MVP 0.1:
 
 ---
 
-## Phase 2 — Next development
+## Phase 2 — Local state (Completed)
 
-Focus: make create/browse interactive with **local state**, still no backend.
-
-- [ ] Connect Create flow to Home Feed (new items appear in feed)
-- [ ] Implement Riverpod providers for feed / create / profile state
-- [ ] Replace mock-only interaction with local in-memory state
-- [ ] Improve form validation and error UX
-- [ ] Add Join functionality for playdates (local state)
-- [ ] UX/UI polish (spacing, empty states, feedback)
-
-**Still out of scope in Phase 2:** auth, backend, chat, payments, marketplace.
+- [x] Connect Create flow to Home Feed
+- [x] Riverpod providers for feed / create / profile
+- [x] Local in-memory join / leave / ownership
+- [x] Form validation and empty/error UX
 
 ---
 
-## Phase 3 — Future
+## Phase 3.4 — Architecture freeze (Completed)
+
+- [x] Repository + data source + DTO + DI layers
+- [x] Freeze baseline (`docs/ARCHITECTURE_FREEZE.md`)
+
+---
+
+## Phase 3.5 — UI redesign (In progress)
+
+Playdate-first Korean mom community (SoCal). MissyUSA-inspired content usefulness; not a forum clone.
+
+- [x] Home hierarchy: CTA → upcoming playdates → popular → recent → categories → filtered feed
+- [x] Feed filters + category discovery via providers
+- [x] Playdate / Post card redesign + engagement metrics (display-only)
+- [x] Detail + create visual refinement (Korean copy)
+- [x] Mock engagement + category fields (reviewed model exception)
+- [x] Tests + design docs
+
+**Out of scope in 3.5:** interactive likes/comments/views, auth, Supabase, notifications, five-tab nav rewrite.
+
+---
+
+## Phase 4 — Future
 
 - [ ] Authentication
-- [ ] Backend database / API
+- [ ] Backend database / API (Supabase)
 - [ ] Real user profiles (edit, persistence)
 - [ ] Real-time community features
-
-Order and stack for Phase 3 are TBD after Phase 2 validates local flows.
+- [ ] Interactive likes / comments / view tracking (when product scopes them)

@@ -23,7 +23,7 @@ void main() {
       );
 
       expect(playdate.participantCount, 2);
-      expect(playdate.participantsLabel, '2 / 5 joined');
+      expect(playdate.participantsLabel, '2 / 5명');
       expect(playdate.isFull, isFalse);
       expect(playdate.isOwner('host_1'), isTrue);
       expect(playdate.isOwner('a'), isFalse);
@@ -46,7 +46,7 @@ void main() {
 
       expect(playdate.hasCapacityLimit, isFalse);
       expect(playdate.isFull, isFalse);
-      expect(playdate.participantsLabel, '3 joined');
+      expect(playdate.participantsLabel, '3명');
     });
 
     test('isFull when at capacity', () {
@@ -88,15 +88,15 @@ void main() {
       expect(playdate.joinStateFor(currentUser.id), PlaydateJoinState.join);
       expect(
         playdate.joinStateFor('mom_a').actionLabel,
-        'Leave Playdate',
+        '나가기',
       );
       expect(
         playdate.joinStateFor(currentUser.id).actionLabel,
-        'Join Playdate',
+        '참여하기',
       );
       expect(
         playdate.joinStateFor('host_1').actionLabel,
-        'My Playdate',
+        '내가 만든 모임',
       );
     });
   });

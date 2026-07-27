@@ -161,7 +161,7 @@ If a Phase 3.5 task seems to need a reviewed change, stop and confirm before edi
 | Phase | Status |
 |-------|--------|
 | 3.4.x Backend architecture preparation | **Complete / frozen** |
-| 3.5 UI/UX validation | **Next** |
+| 3.5 UI redesign (playdate-first community) | **In progress** |
 | 4 Backend / auth / Supabase | **Future** |
 
 **Freeze readiness:** Ready for Phase 3.5 UI validation against this baseline.

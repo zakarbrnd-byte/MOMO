@@ -42,8 +42,13 @@ void main() {
     await pumpApp(tester);
 
     expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('킨더 도시락 보통 뭐 싸주시나요?'),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('킨더 도시락 보통 뭐 싸주시나요?'), findsOneWidget);
-    expect(find.text('아직 등록된 Play Date가 없습니다.'), findsNothing);
+    expect(find.text('아직 등록된 플레이데이트가 없습니다.'), findsNothing);
     expect(find.text('아직 게시글이 없습니다.'), findsNothing);
   });
 
@@ -56,15 +61,14 @@ void main() {
     );
 
     expect(find.byType(EmptyState), findsOneWidget);
-    expect(find.text('아직 등록된 Play Date가 없습니다.'), findsOneWidget);
+    expect(find.text('아직 등록된 플레이데이트가 없습니다.'), findsOneWidget);
     expect(find.text('첫 번째 모임을 만들어보세요.'), findsOneWidget);
-    expect(
-        find.widgetWithText(FilledButton, 'Create Playdate'), findsOneWidget);
+    expect(find.text('플레이데이트 만들기'), findsWidgets);
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.text('플레이데이트 만들기').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Create Playdate'), findsWidgets);
+    expect(find.text('플레이데이트 만들기'), findsWidgets);
     expect(find.byType(TextFormField), findsWidgets);
   });
 
@@ -76,15 +80,22 @@ void main() {
       ],
     );
 
-    expect(find.byType(EmptyState), findsOneWidget);
+    final createButton = find.text('글 작성하기');
+    await tester.scrollUntilVisible(
+      createButton,
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('아직 게시글이 없습니다.'), findsOneWidget);
     expect(find.text('첫 번째 이야기를 공유해보세요.'), findsOneWidget);
-    expect(find.widgetWithText(FilledButton, 'Create Post'), findsOneWidget);
+    expect(createButton, findsWidgets);
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
+    await tester.ensureVisible(createButton.first);
+    await tester.pumpAndSettle();
+    await tester.tap(createButton.first);
     await tester.pumpAndSettle();
 
-    expect(find.text('Create Post'), findsWidgets);
+    expect(find.text('글 작성하기'), findsWidgets);
     expect(find.byType(TextFormField), findsWidgets);
   });
 
@@ -98,8 +109,12 @@ void main() {
       ],
     );
 
-    expect(find.byType(EmptyState), findsNWidgets(2));
-    expect(find.text('아직 등록된 Play Date가 없습니다.'), findsOneWidget);
+    expect(find.text('아직 등록된 플레이데이트가 없습니다.'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('아직 게시글이 없습니다.'),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('아직 게시글이 없습니다.'), findsOneWidget);
   });
 }

@@ -13,6 +13,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('MOMO'), findsOneWidget);
-    expect(find.text('Home'), findsWidgets);
+    expect(find.text('홈'), findsWidgets);
   });
 }

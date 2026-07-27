@@ -31,7 +31,7 @@ void main() {
   Future<void> openCreatePlaydate(WidgetTester tester) async {
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Playdate'));
+    await tester.tap(find.text('플레이데이트 만들기'));
     await tester.pumpAndSettle();
   }
 
@@ -58,7 +58,7 @@ void main() {
       find.byKey(const Key('playdate_capacity_field')),
       '3',
     );
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
 
     final created = container
@@ -68,8 +68,8 @@ void main() {
 
     expect(created.creatorId, currentUser.id);
     expect(created.participantIds, isEmpty);
-    expect(created.participantsLabel, '0 / 3 joined');
-    expect(find.text('Created by you'), findsWidgets);
+    expect(created.participantsLabel, '0 / 3명');
+    expect(find.text('내가 만든 모임'), findsWidgets);
   });
 
   testWidgets('Owner detail shows Edit/Cancel, not Join/Leave', (tester) async {
@@ -85,11 +85,11 @@ void main() {
     await tester.tap(find.text('저녁 먹고 동네 산책 같이 하실 분'));
     await tester.pumpAndSettle();
 
-    expect(find.text('My Playdate'), findsOneWidget);
-    expect(find.text('Edit Playdate'), findsOneWidget);
-    expect(find.text('Cancel Playdate'), findsOneWidget);
-    expect(find.text('Join Playdate'), findsNothing);
-    expect(find.text('Leave Playdate'), findsNothing);
+    expect(find.text('내가 만든 모임'), findsOneWidget);
+    expect(find.text('수정하기'), findsOneWidget);
+    expect(find.text('모임 취소'), findsOneWidget);
+    expect(find.text('참여하기'), findsNothing);
+    expect(find.text('나가기'), findsNothing);
   });
 
   testWidgets('Non-owner detail keeps Join/Leave', (tester) async {
@@ -98,9 +98,9 @@ void main() {
     await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Join Playdate'), findsOneWidget);
-    expect(find.text('Edit Playdate'), findsNothing);
-    expect(find.text('Cancel Playdate'), findsNothing);
+    expect(find.text('참여하기'), findsOneWidget);
+    expect(find.text('수정하기'), findsNothing);
+    expect(find.text('모임 취소'), findsNothing);
   });
 
   testWidgets('Owner cancel removes playdate from feed', (tester) async {
@@ -116,12 +116,12 @@ void main() {
     await tester.tap(find.text('저녁 먹고 동네 산책 같이 하실 분'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Cancel Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '모임 취소'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Cancel this Playdate?'), findsOneWidget);
+    expect(find.text('이 모임을 취소할까요?'), findsOneWidget);
     await tester.tap(
-      find.widgetWithText(FilledButton, 'Cancel Playdate').last,
+      find.widgetWithText(FilledButton, '모임 취소').last,
     );
     await tester.pumpAndSettle();
 
@@ -167,9 +167,9 @@ void main() {
     await tester.tap(find.text('저녁 먹고 동네 산책 같이 하실 분'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.widgetWithText(OutlinedButton, 'Edit Playdate'));
+    await tester.tap(find.widgetWithText(OutlinedButton, '수정하기'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Edit Playdate coming soon'), findsOneWidget);
+    expect(find.text('모임 수정은 곧 제공될 예정이에요'), findsOneWidget);
   });
 }
