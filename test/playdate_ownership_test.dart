@@ -76,13 +76,13 @@ void main() {
     await pumpApp(tester);
 
     await tester.scrollUntilVisible(
-      find.text('Neighborhood Walk & Play'),
+      find.text('저녁 먹고 동네 산책 같이 하실 분'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Neighborhood Walk & Play'));
+    await tester.tap(find.text('저녁 먹고 동네 산책 같이 하실 분'));
     await tester.pumpAndSettle();
 
     expect(find.text('My Playdate'), findsOneWidget);
@@ -95,7 +95,7 @@ void main() {
   testWidgets('Non-owner detail keeps Join/Leave', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.text('Saturday Park Playdate'));
+    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
     await tester.pumpAndSettle();
 
     expect(find.text('Join Playdate'), findsOneWidget);
@@ -107,13 +107,13 @@ void main() {
     final container = await pumpApp(tester);
 
     await tester.scrollUntilVisible(
-      find.text('Neighborhood Walk & Play'),
+      find.text('저녁 먹고 동네 산책 같이 하실 분'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Neighborhood Walk & Play'));
+    await tester.tap(find.text('저녁 먹고 동네 산책 같이 하실 분'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(FilledButton, 'Cancel Playdate'));
@@ -132,7 +132,7 @@ void main() {
           .any((item) => item.id == 'pd5'),
       isFalse,
     );
-    expect(find.text('Neighborhood Walk & Play'), findsNothing);
+    expect(find.text('저녁 먹고 동네 산책 같이 하실 분'), findsNothing);
   });
 
   test('Non-owner cannot cancel via provider', () async {
@@ -158,13 +158,13 @@ void main() {
     await pumpApp(tester);
 
     await tester.scrollUntilVisible(
-      find.text('Neighborhood Walk & Play'),
+      find.text('저녁 먹고 동네 산책 같이 하실 분'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Neighborhood Walk & Play'));
+    await tester.tap(find.text('저녁 먹고 동네 산책 같이 하실 분'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(OutlinedButton, 'Edit Playdate'));

@@ -44,7 +44,8 @@ void main() {
     expect(find.text('Join Playdate'), findsOneWidget);
   });
 
-  testWidgets('Playdate detail handles missing optional fields', (tester) async {
+  testWidgets('Playdate detail handles missing optional fields',
+      (tester) async {
     const playdate = Playdate(
       id: 'pd_optional',
       creatorId: 'mom_minji',
@@ -88,7 +89,8 @@ void main() {
     );
 
     expect(find.text('Best playground recommendations?'), findsOneWidget);
-    expect(find.text('Looking for toddler-friendly parks nearby.'), findsOneWidget);
+    expect(find.text('Looking for toddler-friendly parks nearby.'),
+        findsOneWidget);
     expect(find.text('Yuna Choi'), findsOneWidget);
     expect(find.text('Shared with the MOMO community'), findsOneWidget);
   });
@@ -106,15 +108,15 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Saturday Park Playdate'));
+    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
     await tester.pumpAndSettle();
 
     expect(find.text('Join Playdate'), findsOneWidget);
-    expect(find.text('Olympic Park, Songpa'), findsOneWidget);
+    expect(find.text('Lafayette Park, Koreatown'), findsOneWidget);
 
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    expect(find.text('Saturday Park Playdate'), findsOneWidget);
+    expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
   });
 }

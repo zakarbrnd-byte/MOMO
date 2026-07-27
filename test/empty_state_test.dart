@@ -41,8 +41,8 @@ void main() {
   testWidgets('Home shows mock feed content', (tester) async {
     await pumpApp(tester);
 
-    expect(find.text('Saturday Park Playdate'), findsOneWidget);
-    expect(find.text('Anyone free near Seolleung this week?'), findsOneWidget);
+    expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
+    expect(find.text('킨더 도시락 보통 뭐 싸주시나요?'), findsOneWidget);
     expect(find.text('아직 등록된 Play Date가 없습니다.'), findsNothing);
     expect(find.text('아직 게시글이 없습니다.'), findsNothing);
   });
@@ -58,7 +58,8 @@ void main() {
     expect(find.byType(EmptyState), findsOneWidget);
     expect(find.text('아직 등록된 Play Date가 없습니다.'), findsOneWidget);
     expect(find.text('첫 번째 모임을 만들어보세요.'), findsOneWidget);
-    expect(find.widgetWithText(FilledButton, 'Create Playdate'), findsOneWidget);
+    expect(
+        find.widgetWithText(FilledButton, 'Create Playdate'), findsOneWidget);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
@@ -87,7 +88,8 @@ void main() {
     expect(find.byType(TextFormField), findsWidgets);
   });
 
-  testWidgets('Both empty shows playdate and post empty states', (tester) async {
+  testWidgets('Both empty shows playdate and post empty states',
+      (tester) async {
     await pumpApp(
       tester,
       overrides: [

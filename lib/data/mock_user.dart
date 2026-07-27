@@ -9,9 +9,9 @@ const currentUserId = 'user_001';
 
 const currentUser = User(
   id: currentUserId,
-  displayName: 'Demo User',
-  location: 'Songpa-gu, Seoul',
+  displayName: '장하은',
+  location: 'Koreatown, Los Angeles',
   children: [
-    Child(id: 'child_001', displayName: 'Daughter', ageLabel: '4'),
+    Child(id: 'child_001', displayName: '첫째', ageLabel: '4'),
   ],
 );

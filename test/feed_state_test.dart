@@ -14,8 +14,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Saturday Park Playdate'), findsOneWidget);
-    expect(find.text('Anyone free near Seolleung this week?'), findsOneWidget);
+    expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
+    expect(find.text('킨더 도시락 보통 뭐 싸주시나요?'), findsOneWidget);
   });
 
   testWidgets('Adding a playdate updates the Home feed', (tester) async {

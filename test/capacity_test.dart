@@ -109,7 +109,8 @@ void main() {
     await tester.enterText(capacity, '0');
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
-    expect(find.text('Please enter a valid participant limit.'), findsOneWidget);
+    expect(
+        find.text('Please enter a valid participant limit.'), findsOneWidget);
 
     await tester.enterText(capacity, '');
     // digitsOnly blocks letters; set invalid via controller for non-digit case
@@ -122,14 +123,16 @@ void main() {
     field.controller!.text = 'abc';
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
-    expect(find.text('Please enter a valid participant limit.'), findsOneWidget);
+    expect(
+        find.text('Please enter a valid participant limit.'), findsOneWidget);
   });
 
-  testWidgets('Unlimited mock playdate label has no capacity slash', (tester) async {
+  testWidgets('Unlimited mock playdate label has no capacity slash',
+      (tester) async {
     await pumpApp(tester);
 
     await tester.scrollUntilVisible(
-      find.text('Indoor Library Story Hour'),
+      find.text('도서관 스토리타임 같이 가실 분?'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
@@ -137,7 +140,7 @@ void main() {
 
     expect(find.text('3 joined'), findsOneWidget);
 
-    await tester.tap(find.text('Indoor Library Story Hour'));
+    await tester.tap(find.text('도서관 스토리타임 같이 가실 분?'));
     await tester.pumpAndSettle();
     expect(find.text('3 joined'), findsWidgets);
     expect(find.text('Join Playdate'), findsOneWidget);
@@ -147,13 +150,13 @@ void main() {
     final container = await pumpApp(tester);
 
     await tester.scrollUntilVisible(
-      find.text('Toddler Soft Play Meetup'),
+      find.text('비 오는 날 실내 놀이터 번개해요'),
       300,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Toddler Soft Play Meetup'));
+    await tester.tap(find.text('비 오는 날 실내 놀이터 번개해요'));
     await tester.pumpAndSettle();
     expect(find.text('4 / 5 joined'), findsWidgets);
 

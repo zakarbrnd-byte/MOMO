@@ -31,14 +31,14 @@ void main() {
   testWidgets('Journey: Home → Playdate detail → Back → Home', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.text('Saturday Park Playdate'));
+    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
     await tester.pumpAndSettle();
     expect(find.text('Join Playdate'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
 
     await tester.pageBack();
     await tester.pumpAndSettle();
-    expect(find.text('Saturday Park Playdate'), findsOneWidget);
+    expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
     expect(find.text('MOMO'), findsOneWidget);
   });
 
@@ -101,10 +101,11 @@ void main() {
     expect(find.text('MOMO'), findsOneWidget);
   });
 
-  testWidgets('Tab switch keeps bottom bar; re-tap Home closes detail', (tester) async {
+  testWidgets('Tab switch keeps bottom bar; re-tap Home closes detail',
+      (tester) async {
     final container = await pumpApp(tester);
 
-    await tester.tap(find.text('Saturday Park Playdate'));
+    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
     await tester.pumpAndSettle();
     expect(find.text('Join Playdate'), findsOneWidget);
 
@@ -123,7 +124,7 @@ void main() {
     // Re-tap Home to pop to feed root.
     await tester.tap(find.byIcon(Icons.home_rounded));
     await tester.pumpAndSettle();
-    expect(find.text('Saturday Park Playdate'), findsOneWidget);
+    expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
     expect(find.text('Join Playdate'), findsNothing);
   });
 
