@@ -33,10 +33,13 @@ Bottom tabs: **Home** · **Create** · **Profile**
 ## Rules
 
 - Use mock / local data first.
-- No backend until Phase 3.
+- No backend until Phase 4.
 - Do not over-engineer.
 - Every feature must help moms connect offline.
 - Stay inside MVP scope (see `MVP_SPEC.md`).
+- **Git Flow:** branch from `develop`, PR into `develop`, never force-push `main`/`develop`.
+- **CI:** keep `flutter analyze`, `flutter test`, and web build green.
+- **Parallel agents:** follow `docs/AI_AGENTS.md` folder ownership.
 
 ## Out of scope (do not add)
 
@@ -46,12 +49,16 @@ Business listings, marketplace, chat, payments, comments, photos, search, notifi
 
 | Doc | Use for |
 |-----|---------|
-| `README.md` | Overview, run, status |
+| `README.md` | Overview, run, status, deploy URLs |
+| `CONTRIBUTING.md` | PR / commit / branch rules |
 | `MVP_SPEC.md` | Scope in / out |
 | `DEVELOPMENT_PLAN.md` | Phases |
 | `ARCHITECTURE.md` | Code structure + data flow |
+| `docs/ARCHITECTURE_FREEZE.md` | Frozen baseline — do not break |
+| `docs/AI_AGENTS.md` | Multi-agent parallel work |
+| `docs/cicd/README.md` | CI/CD pipelines |
 | `PROJECT_CONTEXT.md` | Short current snapshot |
 
 ## Current gap for next work
 
-Create Save/Post does not update the Home feed. Riverpod is wired at app root but feature providers are not implemented yet. Prefer Phase 2 local-state work over new product surfaces.
+Phase 3.4 architecture freeze is complete. Next is Phase 3.5 UI/UX validation (layout/visual only). Do not expand architecture or add backend without an approved issue.

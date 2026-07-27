@@ -8,31 +8,73 @@ flutter_*.png
 LinkedInMeetsFlutter.png
 .flutter-plugins
 .flutter-plugins-dependencies
+**/doc/api/
 
-# IDE
+# Coverage / test outputs
+coverage/
+.test_coverage/
+*.lcov
+
+# FVM / local Flutter version managers
+.fvm/
+.fvmrc.lock
+
+# IDE / editors
 .idea/
-.vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
 *.iml
 *.ipr
 *.iws
-
-# Misc
-*.log
 *.swp
+*~
+
+# OS junk
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Secrets
+# Logs & temp
+*.log
+*.tmp
+*.temp
+.cache/
+
+# Secrets & local env (never commit)
 .env
 .env.*
+!.env.example
+*.jks
+*.keystore
+**/key.properties
+**/google-services.json
+**/GoogleService-Info.plist
+credentials.json
+service-account*.json
 
 # Platform build artifacts
 **/android/local.properties
 **/android/.gradle/
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/**/GeneratedPluginRegistrant.java
 **/ios/Pods/
 **/ios/.symlinks/
 **/ios/Flutter/Flutter.podspec
 **/ios/Flutter/ephemeral/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
 **/macos/Flutter/ephemeral/
 **/windows/flutter/ephemeral/
 **/linux/flutter/ephemeral/
+
+# Nested accidental clones / worktrees
+/momo/
+.worktrees/
+
+# Misc generated
+app.*.symbols
+app.*.map.json
+migrate_working_dir/

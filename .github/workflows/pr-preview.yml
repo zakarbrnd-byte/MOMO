@@ -1,0 +1,134 @@
+# =============================================================================
+# PR Preview — build artifact + sticky PR comment (no site overwrite)
+# Why: Every PR gets a downloadable web build without clobbering production or
+#      the stable /preview/ integration site. Optional path to future ephemeral
+#      hosting (Cloudflare/Netlify) without changing the PR contract.
+# =============================================================================
+
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: read
+
+concurrency:
+  group: pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    name: Build PR web preview
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: ./.github/actions/setup-flutter
+
+      # Quality gates (analyze/test) run in `ci.yml` on the same PR.
+      # This workflow focuses on producing a downloadable web preview artifact.
+      - name: Build web (PR preview)
+        run: |
+          # Neutral root href for artifact preview; not published to Pages.
+          flutter build web --release --base-href /
+
+      - name: Prepare artifact
+        run: |
+          touch build/web/.nojekyll
+          cp build/web/index.html build/web/404.html
+          {
+            echo "pr=${{ github.event.pull_request.number }}"
+            echo "sha=${{ github.sha }}"
+            echo "head_ref=${{ github.head_ref }}"
+            echo "built_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          } > build/web/pr-preview-meta.txt
+
+      - name: Upload PR web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-${{ github.event.pull_request.number }}-web
+          path: build/web
+          retention-days: 14
+          include-hidden-files: true
+
+      - name: Comment preview instructions on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- momo-pr-preview -->';
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const artifactName = `pr-${context.issue.number}-web`;
+            const body = `${marker}
+            ## PR Web Preview
+
+            | Item | Value |
+            |------|-------|
+            | SHA | \`${{ github.sha }}\` |
+            | Artifact | \`${artifactName}\` |
+            | Workflow | [Open run](${runUrl}) |
+
+            ### How to view
+            1. Open the workflow run → **Artifacts** → download \`${artifactName}\`
+            2. Unzip and serve locally, e.g. \`python -m http.server 8080\` in the unzipped folder
+            3. Open http://localhost:8080
+
+            After merge to \`develop\`, the build also appears on the **stable preview**:
+            https://zakarbrnd-byte.github.io/MOMO/preview/
+
+            > Ephemeral hosted PR URLs (Cloudflare/Netlify) are a planned upgrade — see \`docs/cicd/FUTURE_IMPROVEMENTS.md\`.
+            `;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Failure notification
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- momo-pr-preview-failure -->';
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const body = `${marker}
+            ## PR Preview failed
+
+            Analyze/test/build failed for \`${{ github.sha }}\`.
+            [View logs](${runUrl})
+            `;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });

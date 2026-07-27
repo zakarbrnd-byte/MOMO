@@ -1,0 +1,10 @@
+# Example editor settings — copy to settings.json locally if desired.
+# Kept as *.example so agents do not fight over personal editor prefs.
+{
+  "editor.formatOnSave": true,
+  "dart.lineLength": 80,
+  "files.exclude": {
+    "**/.dart_tool": true,
+    "**/build": true
+  }
+}
