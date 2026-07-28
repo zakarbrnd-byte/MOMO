@@ -22,6 +22,9 @@ const playdateSaturdayPark = Playdate(
   hostName: '김소라',
   participantIds: ['mom_yuna', 'mom_eunji'],
   maxParticipants: 5,
+  viewCount: 186,
+  commentCount: 12,
+  likeCount: 28,
 );
 
 const playdateLibrary = Playdate(
@@ -37,6 +40,9 @@ const playdateLibrary = Playdate(
   hostName: '박민지',
   participantIds: ['mom_eunji', 'mom_hyejin', 'mom_sora'],
   maxParticipants: null, // unlimited
+  viewCount: 142,
+  commentCount: 8,
+  likeCount: 19,
 );
 
 const playdateCafe = Playdate(
@@ -58,6 +64,9 @@ const playdateCafe = Playdate(
     'mom_jiwoo',
   ],
   maxParticipants: 5,
+  viewCount: 231,
+  commentCount: 15,
+  likeCount: 34,
 );
 
 /// Near-capacity limited playdate for fill/leave tests (4/5).
@@ -74,6 +83,9 @@ const playdateNearFull = Playdate(
   hostName: '최유나',
   participantIds: ['mom_minji', 'mom_eunji', 'mom_hyejin', 'mom_sora'],
   maxParticipants: 5,
+  viewCount: 97,
+  commentCount: 6,
+  likeCount: 14,
 );
 
 /// Owned by the mock current user for creator-control demos/tests.
@@ -89,6 +101,9 @@ const playdateOwnedByDemo = Playdate(
   hostName: '장하은',
   participantIds: ['mom_yuna'],
   maxParticipants: 4,
+  viewCount: 54,
+  commentCount: 3,
+  likeCount: 9,
 );
 
 const playdateGriffithPicnic = Playdate(
@@ -104,6 +119,9 @@ const playdateGriffithPicnic = Playdate(
   hostName: '한지우',
   participantIds: [],
   maxParticipants: 6,
+  viewCount: 38,
+  commentCount: 0,
+  likeCount: 5,
 );
 
 const playdateIrvinePark = Playdate(
@@ -119,6 +137,9 @@ const playdateIrvinePark = Playdate(
   hostName: '한은지',
   participantIds: ['mom_minji'],
   maxParticipants: 8,
+  viewCount: 167,
+  commentCount: 11,
+  likeCount: 22,
 );
 
 const playdateTorranceBeach = Playdate(
@@ -134,6 +155,9 @@ const playdateTorranceBeach = Playdate(
   hostName: '김소라',
   participantIds: ['mom_hyejin'],
   maxParticipants: 5,
+  viewCount: 203,
+  commentCount: 17,
+  likeCount: 31,
 );
 
 const postSeolleung = Post(

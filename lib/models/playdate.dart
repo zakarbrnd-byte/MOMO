@@ -6,6 +6,9 @@ import 'entity_status.dart';
 /// Counts and full-state are derived — never persisted separately.
 ///
 /// [hostName] is a denormalized display field for MVP UI.
+///
+/// [viewCount], [commentCount], and [likeCount] are display-ready seed fields
+/// for Phase 3.5 cards. Interactive likes/comments/views are deferred.
 class Playdate {
   const Playdate({
     required this.id,
@@ -19,6 +22,9 @@ class Playdate {
     required this.hostName,
     this.participantIds = const [],
     this.maxParticipants,
+    this.viewCount = 0,
+    this.commentCount = 0,
+    this.likeCount = 0,
     this.status = PlaydateStatus.active,
     this.createdAt,
     this.updatedAt,
@@ -45,6 +51,15 @@ class Playdate {
   /// Optional capacity. `null` means unlimited.
   final int? maxParticipants;
 
+  /// Display-only engagement seed (not user-editable; not live-tracked yet).
+  final int viewCount;
+
+  /// Display-only engagement seed (comments UI not implemented).
+  final int commentCount;
+
+  /// Display-only engagement seed (likes UI not implemented).
+  final int likeCount;
+
   final PlaydateStatus status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -63,8 +78,7 @@ class Playdate {
 
   bool get hasCapacityLimit => maxParticipants != null;
 
-  bool get isFull =>
-      hasCapacityLimit && participantCount >= maxParticipants!;
+  bool get isFull => hasCapacityLimit && participantCount >= maxParticipants!;
 
   bool isOwner(String userId) => creatorId == userId;
 
@@ -101,6 +115,9 @@ class Playdate {
     String? hostName,
     List<String>? participantIds,
     Object? maxParticipants = _unset,
+    int? viewCount,
+    int? commentCount,
+    int? likeCount,
     PlaydateStatus? status,
     Object? createdAt = _unset,
     Object? updatedAt = _unset,
@@ -119,6 +136,9 @@ class Playdate {
       maxParticipants: identical(maxParticipants, _unset)
           ? this.maxParticipants
           : maxParticipants as int?,
+      viewCount: viewCount ?? this.viewCount,
+      commentCount: commentCount ?? this.commentCount,
+      likeCount: likeCount ?? this.likeCount,
       status: status ?? this.status,
       createdAt: identical(createdAt, _unset)
           ? this.createdAt

@@ -32,6 +32,7 @@ class MockPlaydateDataSource implements PlaydateDataSource {
     int? maxParticipants,
   }) {
     final now = DateTime.now();
+    // Engagement metrics default to 0; not exposed on Create Playdate.
     final playdate = Playdate(
       id: 'pd_${now.millisecondsSinceEpoch}',
       creatorId: creatorId,
