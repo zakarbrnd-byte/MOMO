@@ -159,7 +159,8 @@ void main() {
       likeCount: 31,
     );
 
-    testWidgets('renders hierarchy: category, title, preview, author, metrics',
+    testWidgets(
+        'renders hierarchy: category+author top, title, preview, metrics',
         (tester) async {
       await tester.pumpWidget(
         wrap(PostCard(post: sample, onTap: () {})),
@@ -173,15 +174,27 @@ void main() {
       expect(find.text('187'), findsOneWidget);
       expect(find.text('14'), findsOneWidget);
       expect(find.text('31'), findsOneWidget);
-      expect(find.byType(AuthorSummary), findsOneWidget);
+      expect(find.byType(AuthorSummary), findsNothing);
       expect(find.byType(EngagementRow), findsOneWidget);
 
-      // Title should appear before author in the tree order.
-      final titleIndex = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
-      final authorIndex = tester.getTopLeft(find.text('박민지')).dy;
-      final engagementIndex = tester.getTopLeft(find.byType(EngagementRow)).dy;
-      expect(titleIndex, lessThan(authorIndex));
-      expect(authorIndex, lessThan(engagementIndex));
+      final categoryY = tester.getTopLeft(find.text('지역정보')).dy;
+      final authorY = tester.getTopLeft(find.text('박민지')).dy;
+      final titleY = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
+      final engagementY = tester.getTopLeft(find.byType(EngagementRow)).dy;
+
+      // Author sits on the same top row as the category chip.
+      expect((authorY - categoryY).abs(), lessThan(8));
+      expect(categoryY, lessThan(titleY));
+      expect(titleY, lessThan(engagementY));
+
+      final preview = tester.widget<Text>(
+        find.descendant(
+          of: find.byType(PostCard),
+          matching: find.textContaining('본문 미리보기'),
+        ),
+      );
+      expect(preview.maxLines, 1);
+      expect(preview.overflow, TextOverflow.ellipsis);
     });
 
     testWidgets('full card tap works; nested rows do not block',

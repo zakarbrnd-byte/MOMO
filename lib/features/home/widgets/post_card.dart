@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/widgets/author_summary.dart';
 import '../../../core/widgets/engagement_row.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/post.dart';
@@ -10,7 +9,7 @@ import 'category_chip.dart';
 
 /// Community feed card for a parenting post.
 ///
-/// Hierarchy: category → title → preview → author → engagement.
+/// Hierarchy: category + author → title → one-line preview → engagement.
 /// Chrome comes from [MomoCard]; metrics and category are display-only.
 class PostCard extends StatelessWidget {
   const PostCard({
@@ -49,7 +48,21 @@ class PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CategoryChip(category: post.category),
+            Row(
+              children: [
+                Flexible(child: CategoryChip(category: post.category)),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    _author,
+                    style: AppTextStyles.caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: AppSpacing.cardContentGap),
             Text(
               _title,
@@ -62,15 +75,10 @@ class PostCard extends StatelessWidget {
               Text(
                 preview,
                 style: AppTextStyles.bodySmall,
-                maxLines: 3,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ],
-            const SizedBox(height: AppSpacing.cardTitleGap),
-            AuthorSummary(
-              displayName: post.authorName,
-              avatarRadius: 14,
-            ),
             const SizedBox(height: AppSpacing.cardFooterGap),
             EngagementRow(
               viewCount: post.viewCount,
