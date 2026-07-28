@@ -53,11 +53,16 @@ void main() {
       );
 
       expect(find.text('놀이터 플레이데이트'), findsOneWidget);
-      expect(find.text('김소라 · 3시간 전'), findsOneWidget);
+      expect(find.text('김소라'), findsOneWidget);
+      expect(find.text(' · 3시간 전'), findsOneWidget);
 
       final titleY = tester.getTopLeft(find.text('놀이터 플레이데이트')).dy;
-      final hostY = tester.getTopLeft(find.text('김소라 · 3시간 전')).dy;
+      final hostY = tester.getTopLeft(find.text('김소라')).dy;
       expect(titleY, lessThan(hostY));
+
+      final hostRight = tester.getBottomRight(find.text(' · 3시간 전')).dx;
+      final titleRight = tester.getBottomRight(find.text('놀이터 플레이데이트')).dx;
+      expect(hostRight, greaterThan(titleRight * 0.7));
 
       final title = tester.widget<Text>(find.text('놀이터 플레이데이트'));
       expect(title.style?.fontSize, AppTextStyles.cardTitle.fontSize);
@@ -122,6 +127,7 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.textContaining('아주아주'), findsOneWidget);
+      expect(find.text(' · 5시간 전'), findsOneWidget);
     });
   });
 

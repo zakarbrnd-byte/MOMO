@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/time/relative_time_ko.dart';
-import '../../../core/widgets/card_posted_meta.dart';
+import '../../../core/widgets/card_author_metadata.dart';
 import '../../../core/widgets/engagement_row.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/post.dart';
@@ -66,7 +66,7 @@ class PostCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: AppSpacing.cardContentGap),
-            CardPostedMeta(
+            CardAuthorMetadata(
               authorName: post.authorName,
               createdAt: post.createdAt,
               now: now,
