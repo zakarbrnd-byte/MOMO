@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/time/relative_time_ko.dart';
+import '../../../core/widgets/card_posted_meta.dart';
 import '../../../core/widgets/engagement_row.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/post.dart';
@@ -10,8 +11,9 @@ import 'category_chip.dart';
 
 /// Community feed card for a parenting post.
 ///
-/// Hierarchy: category + author/time → title → one-line preview → engagement.
-/// Chrome comes from [MomoCard]; metrics and category are display-only.
+/// Hierarchy: category → title → author/time (end-aligned) → preview →
+/// engagement. Chrome comes from [MomoCard]; metrics and category are
+/// display-only.
 class PostCard extends StatelessWidget {
   const PostCard({
     super.key,
@@ -55,27 +57,19 @@ class PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Flexible(child: CategoryChip(category: post.category)),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    _authorMeta,
-                    style: AppTextStyles.caption,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-              ],
-            ),
+            CategoryChip(category: post.category),
             const SizedBox(height: AppSpacing.cardContentGap),
             Text(
               _title,
-              style: AppTextStyles.subtitle,
+              style: AppTextStyles.cardTitle,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: AppSpacing.cardContentGap),
+            CardPostedMeta(
+              authorName: post.authorName,
+              createdAt: post.createdAt,
+              now: now,
             ),
             if (preview.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.cardContentGap),

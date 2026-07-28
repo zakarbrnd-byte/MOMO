@@ -45,6 +45,14 @@ abstract final class AppTextStyles {
     height: 1.35,
   );
 
+  /// Shared Home feed card title (Playdate + Post).
+  static const TextStyle cardTitle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textPrimary,
+    height: 1.35,
+  );
+
   /// Primary reading text.
   static const TextStyle body = TextStyle(
     fontSize: 16,

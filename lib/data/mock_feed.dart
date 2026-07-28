@@ -9,7 +9,16 @@ import 'mock_user.dart';
 /// Content reflects a Southern California Korean mom community (LA / OC).
 /// Structural fields (ids, creatorId, capacity, participant counts) are kept
 /// stable for existing join / leave / ownership / capacity tests.
-const playdateSaturdayPark = Playdate(
+
+/// Fixed seed clock for mock feed [createdAt] values (playdates + posts).
+///
+/// UI still formats against [DateTime.now]; widget tests inject a fixed clock.
+final DateTime mockFeedSeedNow = DateTime.utc(2026, 7, 28, 21, 0, 0);
+
+/// Alias kept for existing post-engagement tests.
+final DateTime mockPostSeedNow = mockFeedSeedNow;
+
+final playdateSaturdayPark = Playdate(
   id: 'pd1',
   creatorId: 'mom_sora',
   title: '이번 토요일 공원에서 같이 놀아요 😊',
@@ -25,9 +34,10 @@ const playdateSaturdayPark = Playdate(
   viewCount: 186,
   commentCount: 12,
   likeCount: 28,
+  createdAt: mockFeedSeedNow.subtract(const Duration(hours: 1)),
 );
 
-const playdateLibrary = Playdate(
+final playdateLibrary = Playdate(
   id: 'pd2',
   creatorId: 'mom_minji',
   title: '도서관 스토리타임 같이 가실 분?',
@@ -43,9 +53,10 @@ const playdateLibrary = Playdate(
   viewCount: 142,
   commentCount: 8,
   likeCount: 19,
+  createdAt: mockFeedSeedNow.subtract(const Duration(hours: 4)),
 );
 
-const playdateCafe = Playdate(
+final playdateCafe = Playdate(
   id: 'pd3',
   creatorId: 'mom_hyejin',
   title: '키즈카페에서 엄마들도 같이 수다해요',
@@ -67,10 +78,11 @@ const playdateCafe = Playdate(
   viewCount: 231,
   commentCount: 15,
   likeCount: 34,
+  createdAt: mockFeedSeedNow.subtract(const Duration(days: 1)),
 );
 
 /// Near-capacity limited playdate for fill/leave tests (4/5).
-const playdateNearFull = Playdate(
+final playdateNearFull = Playdate(
   id: 'pd4',
   creatorId: 'mom_yuna',
   title: '비 오는 날 실내 놀이터 번개해요',
@@ -86,10 +98,11 @@ const playdateNearFull = Playdate(
   viewCount: 97,
   commentCount: 6,
   likeCount: 14,
+  createdAt: mockFeedSeedNow.subtract(const Duration(hours: 8)),
 );
 
 /// Owned by the mock current user for creator-control demos/tests.
-const playdateOwnedByDemo = Playdate(
+final playdateOwnedByDemo = Playdate(
   id: 'pd5',
   creatorId: currentUserId,
   title: '저녁 먹고 동네 산책 같이 하실 분',
@@ -104,9 +117,10 @@ const playdateOwnedByDemo = Playdate(
   viewCount: 54,
   commentCount: 3,
   likeCount: 9,
+  createdAt: mockFeedSeedNow.subtract(const Duration(minutes: 35)),
 );
 
-const playdateGriffithPicnic = Playdate(
+final playdateGriffithPicnic = Playdate(
   id: 'pd6',
   creatorId: 'mom_jiwoo',
   title: 'Griffith Park에서 피크닉해요',
@@ -122,9 +136,10 @@ const playdateGriffithPicnic = Playdate(
   viewCount: 38,
   commentCount: 0,
   likeCount: 5,
+  createdAt: mockFeedSeedNow.subtract(const Duration(days: 2)),
 );
 
-const playdateIrvinePark = Playdate(
+final playdateIrvinePark = Playdate(
   id: 'pd7',
   creatorId: 'mom_eunji',
   title: 'Irvine Regional Park 같이 가실래요?',
@@ -140,9 +155,10 @@ const playdateIrvinePark = Playdate(
   viewCount: 167,
   commentCount: 11,
   likeCount: 22,
+  createdAt: mockFeedSeedNow.subtract(const Duration(days: 3)),
 );
 
-const playdateTorranceBeach = Playdate(
+final playdateTorranceBeach = Playdate(
   id: 'pd8',
   creatorId: 'mom_sora',
   title: '오후에 Torrance 해변 모래놀이해요',
@@ -158,12 +174,8 @@ const playdateTorranceBeach = Playdate(
   viewCount: 203,
   commentCount: 17,
   likeCount: 31,
+  createdAt: DateTime.utc(2026, 7, 18, 12, 0),
 );
-
-/// Fixed seed clock for mock [Post.createdAt] values.
-///
-/// UI still formats against [DateTime.now]; widget tests inject a fixed clock.
-final DateTime mockPostSeedNow = DateTime.utc(2026, 7, 28, 21, 0, 0);
 
 final postSeolleung = Post(
   id: 'po1',
@@ -176,7 +188,7 @@ final postSeolleung = Post(
   viewCount: 386,
   commentCount: 24,
   likeCount: 47,
-  createdAt: mockPostSeedNow.subtract(const Duration(minutes: 20)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(minutes: 20)),
 );
 
 final postIndoorSpots = Post(
@@ -190,7 +202,7 @@ final postIndoorSpots = Post(
   viewCount: 428,
   commentCount: 33,
   likeCount: 52,
-  createdAt: mockPostSeedNow.subtract(const Duration(hours: 2)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(hours: 2)),
 );
 
 final postKinderLunchBox = Post(
@@ -204,7 +216,7 @@ final postKinderLunchBox = Post(
   viewCount: 271,
   commentCount: 17,
   likeCount: 34,
-  createdAt: mockPostSeedNow.subtract(const Duration(hours: 5)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(hours: 5)),
 );
 
 final postKinderBackpack = Post(
@@ -218,7 +230,7 @@ final postKinderBackpack = Post(
   viewCount: 194,
   commentCount: 12,
   likeCount: 26,
-  createdAt: mockPostSeedNow.subtract(const Duration(days: 1)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(days: 1)),
 );
 
 final postPickyEating = Post(
@@ -232,7 +244,7 @@ final postPickyEating = Post(
   viewCount: 512,
   commentCount: 41,
   likeCount: 68,
-  createdAt: mockPostSeedNow.subtract(const Duration(days: 2)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(days: 2)),
 );
 
 final postCostcoSnacks = Post(
@@ -246,7 +258,7 @@ final postCostcoSnacks = Post(
   viewCount: 573,
   commentCount: 36,
   likeCount: 82,
-  createdAt: mockPostSeedNow.subtract(const Duration(days: 4)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(days: 4)),
 );
 
 final postPediatrician = Post(
@@ -274,7 +286,7 @@ final postSwimClass = Post(
   viewCount: 208,
   commentCount: 15,
   likeCount: 29,
-  createdAt: mockPostSeedNow.subtract(const Duration(minutes: 45)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(minutes: 45)),
 );
 
 final postRainyDay = Post(
@@ -288,7 +300,7 @@ final postRainyDay = Post(
   viewCount: 187,
   commentCount: 14,
   likeCount: 31,
-  createdAt: mockPostSeedNow.subtract(const Duration(hours: 3)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(hours: 3)),
 );
 
 final postShadyPlayground = Post(
@@ -302,7 +314,7 @@ final postShadyPlayground = Post(
   viewCount: 356,
   commentCount: 22,
   likeCount: 43,
-  createdAt: mockPostSeedNow.subtract(const Duration(days: 3)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(days: 3)),
 );
 
 final postIrvineParenting = Post(
@@ -316,7 +328,7 @@ final postIrvineParenting = Post(
   viewCount: 441,
   commentCount: 28,
   likeCount: 39,
-  createdAt: mockPostSeedNow.subtract(const Duration(days: 6)),
+  createdAt: mockFeedSeedNow.subtract(const Duration(days: 6)),
 );
 
 final postDiaperGraduation = Post(
@@ -333,7 +345,7 @@ final postDiaperGraduation = Post(
   createdAt: DateTime.utc(2026, 7, 10, 9, 30),
 );
 
-const mockPlaydates = [
+final mockPlaydates = [
   playdateSaturdayPark,
   playdateLibrary,
   playdateCafe,
