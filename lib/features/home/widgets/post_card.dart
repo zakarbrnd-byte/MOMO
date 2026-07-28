@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/widgets/author_summary.dart';
+import '../../../core/widgets/engagement_row.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/post.dart';
+import 'category_chip.dart';
 
 /// Feed card for a post — content only; chrome comes from [MomoCard].
+///
+/// Minimal Phase 3.5.2 integration: [CategoryChip], [AuthorSummary], and
+/// [EngagementRow]. Full visual redesign is deferred.
 class PostCard extends StatelessWidget {
   const PostCard({
     super.key,
@@ -25,28 +31,9 @@ class PostCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: AppSpacing.chipPadding,
-                decoration: BoxDecoration(
-                  color: AppColors.textSecondary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppSpacing.sm),
-                ),
-                child: Text(
-                  'Post',
-                  style: textTheme.labelMedium?.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ),
-              const Spacer(),
-              Text(
-                post.authorName,
-                style: textTheme.bodyMedium,
-              ),
-            ],
-          ),
+          CategoryChip(category: post.category),
+          const SizedBox(height: AppSpacing.cardContentGap),
+          AuthorSummary(displayName: post.authorName),
           const SizedBox(height: AppSpacing.cardTitleGap),
           Text(post.title, style: textTheme.titleLarge),
           const SizedBox(height: AppSpacing.cardContentGap),
@@ -57,6 +44,12 @@ class PostCard extends StatelessWidget {
             ),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: AppSpacing.cardFooterGap),
+          EngagementRow(
+            viewCount: post.viewCount,
+            commentCount: post.commentCount,
+            likeCount: post.likeCount,
           ),
         ],
       ),

@@ -11,7 +11,7 @@ import 'mock_profile_data_source.dart';
 /// Owns mock collections — repositories must not hold seed lists.
 class MockPostDataSource implements PostDataSource {
   MockPostDataSource({List<Post>? seed})
-      : _items = List<Post>.from(seed ?? mockPosts);
+    : _items = List<Post>.from(seed ?? mockPosts);
 
   final List<Post> _items;
 
@@ -27,6 +27,7 @@ class MockPostDataSource implements PostDataSource {
     String? authorName,
   }) {
     final now = DateTime.now();
+    // Category selection UI is deferred; defaults: parenting + zero engagement.
     final post = Post(
       id: 'po_${now.millisecondsSinceEpoch}',
       title: title.trim(),

@@ -1,11 +1,18 @@
 import 'entity_status.dart';
+import 'post_category.dart';
+
+export 'post_category.dart';
 
 /// Domain model for a parenting post.
 ///
 /// [authorName] is a denormalized display field for MVP UI.
 /// [creatorId] is the stable owner reference for backend sync.
 ///
-/// Reserved for later (not modeled yet): images, likes, comments.
+/// [category], [viewCount], [commentCount], and [likeCount] are display-ready
+/// seed fields for Phase 3.5 cards. Interactive likes/comments/views and
+/// category selection UI are deferred.
+///
+/// Reserved for later (not modeled yet): images.
 class Post {
   const Post({
     required this.id,
@@ -13,6 +20,10 @@ class Post {
     required this.content,
     required this.authorName,
     this.creatorId,
+    this.category = PostCategory.parenting,
+    this.viewCount = 0,
+    this.commentCount = 0,
+    this.likeCount = 0,
     this.status = PostStatus.active,
     this.createdAt,
     this.updatedAt,
@@ -28,6 +39,18 @@ class Post {
   /// Owning user id when known.
   final String? creatorId;
 
+  /// Topic chip for community cards (default [PostCategory.parenting]).
+  final PostCategory category;
+
+  /// Display-only engagement seed (not user-editable; not live-tracked yet).
+  final int viewCount;
+
+  /// Display-only engagement seed (comments UI not implemented).
+  final int commentCount;
+
+  /// Display-only engagement seed (likes UI not implemented).
+  final int likeCount;
+
   final PostStatus status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -40,6 +63,10 @@ class Post {
     String? content,
     String? authorName,
     Object? creatorId = _unset,
+    PostCategory? category,
+    int? viewCount,
+    int? commentCount,
+    int? likeCount,
     PostStatus? status,
     Object? createdAt = _unset,
     Object? updatedAt = _unset,
@@ -52,6 +79,10 @@ class Post {
       creatorId: identical(creatorId, _unset)
           ? this.creatorId
           : creatorId as String?,
+      category: category ?? this.category,
+      viewCount: viewCount ?? this.viewCount,
+      commentCount: commentCount ?? this.commentCount,
+      likeCount: likeCount ?? this.likeCount,
       status: status ?? this.status,
       createdAt: identical(createdAt, _unset)
           ? this.createdAt
