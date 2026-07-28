@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/author_summary.dart';
 import '../../../core/widgets/engagement_row.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/post.dart';
 import 'category_chip.dart';
 
-/// Feed card for a post — content only; chrome comes from [MomoCard].
+/// Community feed card for a parenting post.
 ///
-/// Minimal Phase 3.5.2 integration: [CategoryChip], [AuthorSummary], and
-/// [EngagementRow]. Full visual redesign is deferred.
+/// Hierarchy: category → title → preview → author → engagement.
+/// Chrome comes from [MomoCard]; metrics and category are display-only.
 class PostCard extends StatelessWidget {
   const PostCard({
     super.key,
@@ -22,36 +22,63 @@ class PostCard extends StatelessWidget {
   final Post post;
   final VoidCallback onTap;
 
+  String get _title {
+    final value = post.title.trim();
+    return value.isEmpty ? 'Untitled post' : value;
+  }
+
+  String get _author {
+    final value = post.authorName.trim();
+    return value.isEmpty ? 'A MOMO mom' : value;
+  }
+
+  String get _semanticLabel {
+    return '${post.category.labelKo} 게시글, $_title, 작성자 $_author';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final preview = post.content.trim();
 
-    return MomoCard(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CategoryChip(category: post.category),
-          const SizedBox(height: AppSpacing.cardContentGap),
-          AuthorSummary(displayName: post.authorName),
-          const SizedBox(height: AppSpacing.cardTitleGap),
-          Text(post.title, style: textTheme.titleLarge),
-          const SizedBox(height: AppSpacing.cardContentGap),
-          Text(
-            post.content,
-            style: textTheme.bodyLarge?.copyWith(
-              color: AppColors.textSecondary,
+    return Semantics(
+      button: true,
+      label: _semanticLabel,
+      excludeSemantics: true,
+      child: MomoCard(
+        onTap: onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CategoryChip(category: post.category),
+            const SizedBox(height: AppSpacing.cardContentGap),
+            Text(
+              _title,
+              style: AppTextStyles.subtitle,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: AppSpacing.cardFooterGap),
-          EngagementRow(
-            viewCount: post.viewCount,
-            commentCount: post.commentCount,
-            likeCount: post.likeCount,
-          ),
-        ],
+            if (preview.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.cardContentGap),
+              Text(
+                preview,
+                style: AppTextStyles.bodySmall,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+            const SizedBox(height: AppSpacing.cardTitleGap),
+            AuthorSummary(
+              displayName: post.authorName,
+              avatarRadius: 14,
+            ),
+            const SizedBox(height: AppSpacing.cardFooterGap),
+            EngagementRow(
+              viewCount: post.viewCount,
+              commentCount: post.commentCount,
+              likeCount: post.likeCount,
+            ),
+          ],
+        ),
       ),
     );
   }
