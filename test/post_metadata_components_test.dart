@@ -148,6 +148,7 @@ void main() {
   });
 
   group('PostCard redesign', () {
+    final clock = DateTime.utc(2026, 7, 28, 21, 0, 0);
     const sample = Post(
       id: 'po_ui',
       title: '테스트 게시글 제목',
@@ -157,6 +158,17 @@ void main() {
       viewCount: 187,
       commentCount: 14,
       likeCount: 31,
+    );
+    final sampleWithTime = Post(
+      id: 'po_ui_time',
+      title: '타임스탬프 게시글',
+      content: '본문',
+      authorName: '최유나',
+      category: PostCategory.school,
+      viewCount: 10,
+      commentCount: 2,
+      likeCount: 3,
+      createdAt: clock.subtract(const Duration(hours: 2)),
     );
 
     testWidgets(
@@ -195,6 +207,61 @@ void main() {
       );
       expect(preview.maxLines, 1);
       expect(preview.overflow, TextOverflow.ellipsis);
+    });
+
+    testWidgets('shows author · relative time when createdAt is set',
+        (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          PostCard(
+            post: sampleWithTime,
+            onTap: () {},
+            now: clock,
+          ),
+        ),
+      );
+
+      expect(find.text('최유나 · 2시간 전'), findsOneWidget);
+      expect(find.text('최유나 ·'), findsNothing);
+      expect(find.text('학교·킨더'), findsOneWidget);
+    });
+
+    testWidgets('shows author only when createdAt is null', (tester) async {
+      await tester.pumpWidget(
+        wrap(PostCard(post: sample, onTap: () {}, now: clock)),
+      );
+
+      expect(find.text('박민지'), findsOneWidget);
+      expect(find.textContaining('·'), findsNothing);
+    });
+
+    testWidgets('long author + time does not overflow narrow width',
+        (tester) async {
+      final longPost = Post(
+        id: 'po_long_author',
+        title: '제목',
+        content: '본문',
+        authorName: '아주아주긴한국어이름엄마님테스트',
+        createdAt: clock.subtract(const Duration(hours: 5)),
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          SizedBox(
+            width: 320,
+            child: PostCard(
+              post: longPost,
+              onTap: () {},
+              now: clock,
+            ),
+          ),
+          size: const Size(320, 600),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.textContaining('아주아주'), findsOneWidget);
+      expect(find.byType(CategoryChip), findsOneWidget);
     });
 
     testWidgets('full card tap works; nested rows do not block',

@@ -38,12 +38,17 @@ void main() {
       expect(post.viewCount, greaterThanOrEqualTo(0));
       expect(post.commentCount, greaterThanOrEqualTo(0));
       expect(post.likeCount, greaterThanOrEqualTo(0));
+      expect(post.createdAt, isNotNull);
     }
 
     expect(categories.length, greaterThanOrEqualTo(2));
     expect(viewCounts.length, greaterThan(1));
     expect(commentCounts.length, greaterThan(1));
     expect(likeCounts.length, greaterThan(1));
+    expect(
+      mockPosts.map((post) => post.createdAt).toSet().length,
+      greaterThan(1),
+    );
   });
 
   test('mock post category assignments match content themes', () {

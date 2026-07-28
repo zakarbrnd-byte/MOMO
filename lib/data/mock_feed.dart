@@ -160,7 +160,12 @@ const playdateTorranceBeach = Playdate(
   likeCount: 31,
 );
 
-const postSeolleung = Post(
+/// Fixed seed clock for mock [Post.createdAt] values.
+///
+/// UI still formats against [DateTime.now]; widget tests inject a fixed clock.
+final DateTime mockPostSeedNow = DateTime.utc(2026, 7, 28, 21, 0, 0);
+
+final postSeolleung = Post(
   id: 'po1',
   title: '킨더 도시락 보통 뭐 싸주시나요?',
   content:
@@ -171,9 +176,10 @@ const postSeolleung = Post(
   viewCount: 386,
   commentCount: 24,
   likeCount: 47,
+  createdAt: mockPostSeedNow.subtract(const Duration(minutes: 20)),
 );
 
-const postIndoorSpots = Post(
+final postIndoorSpots = Post(
   id: 'po2',
   title: '아이가 등원할 때마다 울어요',
   content:
@@ -184,9 +190,10 @@ const postIndoorSpots = Post(
   viewCount: 428,
   commentCount: 33,
   likeCount: 52,
+  createdAt: mockPostSeedNow.subtract(const Duration(hours: 2)),
 );
 
-const postKinderLunchBox = Post(
+final postKinderLunchBox = Post(
   id: 'po3',
   title: '킨더 lunch box 어떤 거 쓰세요?',
   content:
@@ -197,9 +204,10 @@ const postKinderLunchBox = Post(
   viewCount: 271,
   commentCount: 17,
   likeCount: 34,
+  createdAt: mockPostSeedNow.subtract(const Duration(hours: 5)),
 );
 
-const postKinderBackpack = Post(
+final postKinderBackpack = Post(
   id: 'po4',
   title: '킨더 백팩 사이즈 어떤 걸로 사셨어요?',
   content:
@@ -210,9 +218,10 @@ const postKinderBackpack = Post(
   viewCount: 194,
   commentCount: 12,
   likeCount: 26,
+  createdAt: mockPostSeedNow.subtract(const Duration(days: 1)),
 );
 
-const postPickyEating = Post(
+final postPickyEating = Post(
   id: 'po5',
   title: '편식 심한 아이 반찬 추천해주세요',
   content:
@@ -223,9 +232,10 @@ const postPickyEating = Post(
   viewCount: 512,
   commentCount: 41,
   likeCount: 68,
+  createdAt: mockPostSeedNow.subtract(const Duration(days: 2)),
 );
 
-const postCostcoSnacks = Post(
+final postCostcoSnacks = Post(
   id: 'po6',
   title: 'Costco에서 아이 간식 뭐 사세요?',
   content:
@@ -236,9 +246,10 @@ const postCostcoSnacks = Post(
   viewCount: 573,
   commentCount: 36,
   likeCount: 82,
+  createdAt: mockPostSeedNow.subtract(const Duration(days: 4)),
 );
 
-const postPediatrician = Post(
+final postPediatrician = Post(
   id: 'po7',
   title: '한국어 가능한 소아과 추천 부탁드려요',
   content:
@@ -249,9 +260,10 @@ const postPediatrician = Post(
   viewCount: 317,
   commentCount: 21,
   likeCount: 18,
+  createdAt: DateTime.utc(2026, 7, 19, 15, 0),
 );
 
-const postSwimClass = Post(
+final postSwimClass = Post(
   id: 'po8',
   title: '4살 수영 클래스 어디가 괜찮나요?',
   content:
@@ -262,9 +274,10 @@ const postSwimClass = Post(
   viewCount: 208,
   commentCount: 15,
   likeCount: 29,
+  createdAt: mockPostSeedNow.subtract(const Duration(minutes: 45)),
 );
 
-const postRainyDay = Post(
+final postRainyDay = Post(
   id: 'po9',
   title: '비 오는 날 갈 만한 곳 어디 있을까요?',
   content:
@@ -275,9 +288,10 @@ const postRainyDay = Post(
   viewCount: 187,
   commentCount: 14,
   likeCount: 31,
+  createdAt: mockPostSeedNow.subtract(const Duration(hours: 3)),
 );
 
-const postShadyPlayground = Post(
+final postShadyPlayground = Post(
   id: 'po10',
   title: '한인타운 근처 그늘 많은 놀이터 있나요?',
   content:
@@ -288,9 +302,10 @@ const postShadyPlayground = Post(
   viewCount: 356,
   commentCount: 22,
   likeCount: 43,
+  createdAt: mockPostSeedNow.subtract(const Duration(days: 3)),
 );
 
-const postIrvineParenting = Post(
+final postIrvineParenting = Post(
   id: 'po11',
   title: 'Irvine 쪽 아이 키우기 어떤가요?',
   content:
@@ -301,9 +316,10 @@ const postIrvineParenting = Post(
   viewCount: 441,
   commentCount: 28,
   likeCount: 39,
+  createdAt: mockPostSeedNow.subtract(const Duration(days: 6)),
 );
 
-const postDiaperGraduation = Post(
+final postDiaperGraduation = Post(
   id: 'po12',
   title: '드디어 기저귀 졸업했어요!! 🎉',
   content:
@@ -314,6 +330,7 @@ const postDiaperGraduation = Post(
   viewCount: 263,
   commentCount: 11,
   likeCount: 61,
+  createdAt: DateTime.utc(2026, 7, 10, 9, 30),
 );
 
 const mockPlaydates = [
@@ -327,7 +344,7 @@ const mockPlaydates = [
   playdateTorranceBeach,
 ];
 
-const mockPosts = [
+final mockPosts = [
   postSeolleung,
   postIndoorSpots,
   postKinderLunchBox,
