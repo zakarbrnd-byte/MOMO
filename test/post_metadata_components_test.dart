@@ -228,9 +228,13 @@ void main() {
         ),
       );
 
-      expect(find.text('최유나 · 2시간 전'), findsOneWidget);
-      expect(find.text('최유나 ·'), findsNothing);
+      expect(find.text('최유나'), findsOneWidget);
+      expect(find.text(' · 2시간 전'), findsOneWidget);
       expect(find.text('학교·킨더'), findsOneWidget);
+
+      final titleY = tester.getTopLeft(find.text('타임스탬프 게시글')).dy;
+      final authorY = tester.getTopLeft(find.text('최유나')).dy;
+      expect(titleY, lessThan(authorY));
     });
 
     testWidgets('shows author only when createdAt is null', (tester) async {
@@ -269,6 +273,7 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.textContaining('아주아주'), findsOneWidget);
       expect(find.byType(CategoryChip), findsOneWidget);
+      expect(find.text(' · 5시간 전'), findsOneWidget);
     });
 
     testWidgets('full card tap works; nested rows do not block',

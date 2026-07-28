@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/widgets/card_posted_meta.dart';
+import '../../../core/widgets/card_author_metadata.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/playdate.dart';
 import '../../../providers/current_user_provider.dart';
@@ -56,7 +56,7 @@ class PlaydateCard extends ConsumerWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: AppSpacing.cardContentGap),
-          CardPostedMeta(
+          CardAuthorMetadata(
             authorName: playdate.hostName,
             createdAt: playdate.createdAt,
             now: now,
