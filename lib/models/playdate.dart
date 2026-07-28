@@ -5,7 +5,10 @@ import 'entity_status.dart';
 /// Ownership ([creatorId]) is separate from participation ([participantIds]).
 /// Counts and full-state are derived — never persisted separately.
 ///
-/// [hostName] is a denormalized display field for MVP UI.
+/// [hostName] / [hostChildLabel] are denormalized display fields for MVP UI.
+///
+/// Phase 3.5 engagement fields ([viewCount], [commentCount], [likeCount]) are
+/// display-only mock metrics — not interactive until a later phase.
 class Playdate {
   const Playdate({
     required this.id,
@@ -17,8 +20,12 @@ class Playdate {
     required this.childAge,
     required this.description,
     required this.hostName,
+    this.hostChildLabel,
     this.participantIds = const [],
     this.maxParticipants,
+    this.viewCount = 0,
+    this.commentCount = 0,
+    this.likeCount = 0,
     this.status = PlaydateStatus.active,
     this.createdAt,
     this.updatedAt,
@@ -39,11 +46,19 @@ class Playdate {
   /// Display name of the host (denormalized for MVP cards/detail).
   final String hostName;
 
+  /// Optional host child context, e.g. `아이 4세`.
+  final String? hostChildLabel;
+
   /// Participant user IDs (source of truth for join/leave in MVP).
   final List<String> participantIds;
 
   /// Optional capacity. `null` means unlimited.
   final int? maxParticipants;
+
+  /// Display-only engagement (mock / future analytics).
+  final int viewCount;
+  final int commentCount;
+  final int likeCount;
 
   final PlaydateStatus status;
   final DateTime? createdAt;
@@ -63,8 +78,7 @@ class Playdate {
 
   bool get hasCapacityLimit => maxParticipants != null;
 
-  bool get isFull =>
-      hasCapacityLimit && participantCount >= maxParticipants!;
+  bool get isFull => hasCapacityLimit && participantCount >= maxParticipants!;
 
   bool isOwner(String userId) => creatorId == userId;
 
@@ -73,12 +87,12 @@ class Playdate {
   /// Backward-compatible alias for [hasUserJoined].
   bool isJoinedBy(String userId) => hasUserJoined(userId);
 
-  /// Shared label for cards and detail screens.
+  /// Shared label for cards and detail screens (Korean-first).
   String get participantsLabel {
     if (hasCapacityLimit) {
-      return '$participantCount / $maxParticipants joined';
+      return '$participantCount / $maxParticipants명';
     }
-    return '$participantCount joined';
+    return '$participantCount명';
   }
 
   /// UI-facing participation / ownership action for [userId].
@@ -99,8 +113,12 @@ class Playdate {
     String? childAge,
     String? description,
     String? hostName,
+    Object? hostChildLabel = _unset,
     List<String>? participantIds,
     Object? maxParticipants = _unset,
+    int? viewCount,
+    int? commentCount,
+    int? likeCount,
     PlaydateStatus? status,
     Object? createdAt = _unset,
     Object? updatedAt = _unset,
@@ -115,10 +133,16 @@ class Playdate {
       childAge: childAge ?? this.childAge,
       description: description ?? this.description,
       hostName: hostName ?? this.hostName,
+      hostChildLabel: identical(hostChildLabel, _unset)
+          ? this.hostChildLabel
+          : hostChildLabel as String?,
       participantIds: participantIds ?? this.participantIds,
       maxParticipants: identical(maxParticipants, _unset)
           ? this.maxParticipants
           : maxParticipants as int?,
+      viewCount: viewCount ?? this.viewCount,
+      commentCount: commentCount ?? this.commentCount,
+      likeCount: likeCount ?? this.likeCount,
       status: status ?? this.status,
       createdAt: identical(createdAt, _unset)
           ? this.createdAt
@@ -141,10 +165,20 @@ enum PlaydateJoinState {
 extension PlaydateJoinStateX on PlaydateJoinState {
   String get actionLabel {
     return switch (this) {
-      PlaydateJoinState.owner => 'My Playdate',
-      PlaydateJoinState.join => 'Join Playdate',
-      PlaydateJoinState.leave => 'Leave Playdate',
-      PlaydateJoinState.full => 'Playdate Full',
+      PlaydateJoinState.owner => '내가 만든 모임',
+      PlaydateJoinState.join => '참여하기',
+      PlaydateJoinState.leave => '나가기',
+      PlaydateJoinState.full => '마감',
+    };
+  }
+
+  /// Compact status chip label on feed cards.
+  String get statusBadgeLabel {
+    return switch (this) {
+      PlaydateJoinState.owner => '내가 만든 모임',
+      PlaydateJoinState.join => '참여하기',
+      PlaydateJoinState.leave => '참여 중',
+      PlaydateJoinState.full => '마감',
     };
   }
 

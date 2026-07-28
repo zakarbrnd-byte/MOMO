@@ -4,15 +4,15 @@ Community app for Korean mothers in the US.
 
 **MVP goal:** Help moms discover and create local playdates, and share parenting-related posts.
 
-Version: **MVP 0.1** · Status: **Phase 3.4 complete (architecture freeze)** → next **Phase 3.5 UI/UX validation**
+Version: **MVP 0.1** · Status: **Phase 3.5 UI redesign** (playdate-first Korean mom community) on frozen Phase 3.4.8 architecture
 
 ## Current features
 
 | Area | Status |
 |------|--------|
 | Flutter app shell + Material 3 + design system | Done |
-| Bottom nav: Home · Create · Profile | Done |
-| Home feed (Playdate + Post) via Riverpod | Done |
+| Bottom nav: 홈 · 만들기 · 프로필 | Done |
+| Home (playdate-first sections + filters + engagement) | Done (Phase 3.5) |
 | Detail screens + Join / Leave / Cancel | Done |
 | Create Playdate / Post → feed (local) | Done |
 | Profile via providers (mock data source) | Done |
@@ -59,10 +59,12 @@ flutter run
 | [docs/ARCHITECTURE_FREEZE.md](docs/ARCHITECTURE_FREEZE.md) | **Frozen baseline (3.4.8)** |
 | [BACKEND_MIGRATION_CHECKLIST.md](BACKEND_MIGRATION_CHECKLIST.md) | Pre-Supabase checklist |
 | [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) | Short snapshot |
+| [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) | Phase 3.5 status |
+| [docs/06_Design_System.md](docs/06_Design_System.md) | UI direction |
 | [CLAUDE.md](CLAUDE.md) | Agent rules |
 
 ## Development status
 
 - **Completed:** Phases 1–3.4 — foundation, local state, design system, repositories, DTOs, DI, migration readiness, **architecture freeze**
-- **Next:** Phase 3.5 — UI/UX validation (layout/visual/UX only; respect freeze rules)
+- **In progress:** Phase 3.5 — full UI redesign (playdate-first Korean mom community; engagement display-only)
 - **Future:** Phase 4 — auth, Supabase, real persistence

@@ -26,7 +26,9 @@ UI → Riverpod Providers → Repository interfaces → Repository impls
 | Stage | State |
 |-------|--------|
 | Phase 3.4 backend architecture prep | Complete / **frozen** |
-| Phase 3.5 UI/UX validation | **Next** |
+| Phase 3.5 UI redesign (playdate-first community) | **In progress** |
 | Phase 4 Supabase / auth | Future |
 
-During Phase 3.5, prefer UI/UX changes only. Treat domain, repository, and data-source contracts as frozen unless reviewed.
+During Phase 3.5, prefer UI/UX changes. Treat domain, repository, and data-source contracts as frozen unless reviewed.
+
+**Reviewed 3.5 exception:** denormalized engagement metrics (`viewCount`, `commentCount`, `likeCount`) plus post `category` / author display fields on domain models + DTOs — display-only; no interactive social layer.

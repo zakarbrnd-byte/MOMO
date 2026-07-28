@@ -77,8 +77,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
     );
   }
 
-  bool get _isBusy =>
-      ref.read(createPlaydateMutationProvider).isLoading;
+  bool get _isBusy => ref.read(createPlaydateMutationProvider).isLoading;
 
   Future<void> _pickDate() async {
     if (_isBusy) return;
@@ -92,7 +91,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
       initialDate: _selectedDate ?? today,
       firstDate: today,
       lastDate: DateTime(now.year + 2),
-      helpText: 'Select Date',
+      helpText: '날짜 선택',
     );
 
     if (picked == null || !mounted) return;
@@ -110,7 +109,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
     final picked = await showTimePicker(
       context: context,
       initialTime: _selectedTime ?? TimeOfDay.now(),
-      helpText: 'Select Time',
+      helpText: '시간 선택',
     );
 
     if (picked == null || !mounted) return;
@@ -133,7 +132,8 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
       if (!_formKey.currentState!.validate()) return;
     }
 
-    final succeeded = await ref.read(createPlaydateMutationProvider.notifier).run(
+    final succeeded =
+        await ref.read(createPlaydateMutationProvider.notifier).run(
       () {
         ref.read(playdateProvider.notifier).createPlaydate(
               title: _titleController.text,
@@ -154,7 +154,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
     AppNavigation.completeCreateAndGoHome(
       context,
       ref,
-      successMessage: 'Playdate created successfully!',
+      successMessage: '플레이데이트를 만들었어요!',
     );
   }
 
@@ -165,7 +165,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
     final fieldsEnabled = !isBusy;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Playdate')),
+      appBar: AppBar(title: const Text('플레이데이트 만들기')),
       body: switch (mutation) {
         AsyncOpLoading() => const MomoLoading(
             title: 'Loading...',
@@ -184,8 +184,8 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
                 MomoTextField(
                   controller: _titleController,
                   focusNode: _titleFocus,
-                  label: 'Title',
-                  hint: 'e.g. Saturday Park Playdate',
+                  label: '제목',
+                  hint: '예: 이번 토요일 공원에서 같이 놀아요',
                   enabled: fieldsEnabled,
                   textInputAction: TextInputAction.next,
                   maxLength: FormValidators.shortTitleMax,
@@ -205,8 +205,8 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
                 MomoTextField(
                   key: const Key('playdate_date_field'),
                   controller: _dateController,
-                  label: 'Date',
-                  hint: 'Select Date',
+                  label: '날짜',
+                  hint: '날짜 선택',
                   enabled: fieldsEnabled,
                   readOnly: true,
                   onTap: _pickDate,
@@ -227,8 +227,8 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
                 MomoTextField(
                   key: const Key('playdate_time_field'),
                   controller: _timeController,
-                  label: 'Time (Optional)',
-                  hint: 'Select Time',
+                  label: '시간 (선택)',
+                  hint: '시간 선택',
                   helperText: 'Example: 10:30 AM',
                   enabled: fieldsEnabled,
                   readOnly: true,
@@ -242,8 +242,8 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
                 MomoTextField(
                   controller: _locationController,
                   focusNode: _locationFocus,
-                  label: 'Location',
-                  hint: 'e.g. Irvine Park',
+                  label: '장소',
+                  hint: '예: Koreatown Lafayette Park',
                   enabled: fieldsEnabled,
                   textInputAction: TextInputAction.next,
                   maxLength: FormValidators.shortTitleMax,
@@ -263,8 +263,8 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
                 MomoTextField(
                   controller: _childAgeController,
                   focusNode: _childAgeFocus,
-                  label: 'Child Age (Optional)',
-                  hint: 'Example: 2-4 years old',
+                  label: '아이 연령 (선택)',
+                  hint: '예: 2–4세',
                   enabled: fieldsEnabled,
                   textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) => _capacityFocus.requestFocus(),
@@ -273,9 +273,9 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
                   key: const Key('playdate_capacity_field'),
                   controller: _capacityController,
                   focusNode: _capacityFocus,
-                  label: 'Maximum Participants (Optional)',
-                  hint: 'Example: 5',
-                  helperText: 'Leave empty for unlimited spots',
+                  label: '인원 (선택)',
+                  hint: '예: 5',
+                  helperText: '비우면 인원 제한 없음',
                   enabled: fieldsEnabled,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
@@ -286,8 +286,8 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
                 MomoTextField(
                   controller: _descriptionController,
                   focusNode: _descriptionFocus,
-                  label: 'Description (Optional)',
-                  hint: 'Share a few details for other moms',
+                  label: '내용 (선택)',
+                  hint: '엄마들에게 전할 내용을 적어 주세요',
                   maxLines: 4,
                   minLines: 3,
                   maxLength: FormValidators.mediumTextMax,
@@ -302,7 +302,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
                 ),
                 const MomoFormSubmitGap(),
                 MomoButton(
-                  label: 'Create Playdate',
+                  label: '만들기',
                   isLoading: isBusy,
                   enabled: fieldsEnabled,
                   onPressed: _save,

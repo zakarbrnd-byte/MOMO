@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,6 +16,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('킨더 도시락 보통 뭐 싸주시나요?'),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('킨더 도시락 보통 뭐 싸주시나요?'), findsOneWidget);
   });
 

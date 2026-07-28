@@ -49,12 +49,14 @@ class PostNotifier extends AsyncNotifier<List<Post>> {
     required String title,
     required String content,
     String? authorName,
+    String? category,
   }) {
     final result = _readSync(
       _repo.create(
         title: title,
         content: content,
         authorName: authorName,
+        category: category,
       ),
     );
     if (!_ok(result)) {

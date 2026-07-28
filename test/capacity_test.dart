@@ -31,7 +31,7 @@ void main() {
   Future<void> openCreatePlaydate(WidgetTester tester) async {
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Playdate'));
+    await tester.tap(find.text('플레이데이트 만들기'));
     await tester.pumpAndSettle();
   }
 
@@ -54,7 +54,7 @@ void main() {
     await openCreatePlaydate(tester);
     await fillRequiredPlaydateFields(tester, title: 'Unlimited Park Day');
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
 
     final created = container
@@ -63,14 +63,14 @@ void main() {
         .firstWhere((item) => item.title == 'Unlimited Park Day');
     expect(created.maxParticipants, isNull);
     expect(created.creatorId, currentUser.id);
-    expect(created.participantsLabel, '0 joined');
+    expect(created.participantsLabel, '0명');
 
     await tester.tap(find.text('Unlimited Park Day'));
     await tester.pumpAndSettle();
-    expect(find.text('0 joined'), findsWidgets);
-    expect(find.text('My Playdate'), findsOneWidget);
-    expect(find.text('Cancel Playdate'), findsOneWidget);
-    expect(find.text('Leave Playdate'), findsNothing);
+    expect(find.text('0명'), findsWidgets);
+    expect(find.text('내가 만든 모임'), findsOneWidget);
+    expect(find.text('모임 취소'), findsOneWidget);
+    expect(find.text('나가기'), findsNothing);
   });
 
   testWidgets('Create limited playdate stores capacity', (tester) async {
@@ -83,7 +83,7 @@ void main() {
       '5',
     );
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
 
     final created = container
@@ -92,12 +92,12 @@ void main() {
         .firstWhere((item) => item.title == 'Limited Park Day');
     expect(created.maxParticipants, 5);
     // Creator is owner, not counted as a participant.
-    expect(created.participantsLabel, '0 / 5 joined');
+    expect(created.participantsLabel, '0 / 5명');
 
     await tester.tap(find.text('Limited Park Day'));
     await tester.pumpAndSettle();
-    expect(find.text('0 / 5 joined'), findsWidgets);
-    expect(find.text('Edit Playdate'), findsOneWidget);
+    expect(find.text('0 / 5명'), findsWidgets);
+    expect(find.text('수정하기'), findsOneWidget);
   });
 
   testWidgets('Invalid capacity shows validation error', (tester) async {
@@ -107,7 +107,7 @@ void main() {
 
     final capacity = find.byKey(const Key('playdate_capacity_field'));
     await tester.enterText(capacity, '0');
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
     expect(
         find.text('Please enter a valid participant limit.'), findsOneWidget);
@@ -121,7 +121,7 @@ void main() {
       ),
     );
     field.controller!.text = 'abc';
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
     expect(
         find.text('Please enter a valid participant limit.'), findsOneWidget);
@@ -138,12 +138,12 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('3 joined'), findsOneWidget);
+    expect(find.text('3명'), findsOneWidget);
 
     await tester.tap(find.text('도서관 스토리타임 같이 가실 분?'));
     await tester.pumpAndSettle();
-    expect(find.text('3 joined'), findsWidgets);
-    expect(find.text('Join Playdate'), findsOneWidget);
+    expect(find.text('3명'), findsWidgets);
+    expect(find.text('참여하기'), findsOneWidget);
   });
 
   testWidgets('Join until full then leave still works', (tester) async {
@@ -158,13 +158,13 @@ void main() {
 
     await tester.tap(find.text('비 오는 날 실내 놀이터 번개해요'));
     await tester.pumpAndSettle();
-    expect(find.text('4 / 5 joined'), findsWidgets);
+    expect(find.text('4 / 5명'), findsWidgets);
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Join Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '참여하기'));
     await tester.pumpAndSettle();
 
-    expect(find.text('5 / 5 joined'), findsWidgets);
-    expect(find.text('Leave Playdate'), findsOneWidget);
+    expect(find.text('5 / 5명'), findsWidgets);
+    expect(find.text('나가기'), findsOneWidget);
 
     final full = container
         .read(playdateProvider)
@@ -177,10 +177,10 @@ void main() {
         .clearSnackBars();
     await tester.pumpAndSettle();
 
-    await tester.tap(find.widgetWithText(OutlinedButton, 'Leave Playdate'));
+    await tester.tap(find.widgetWithText(OutlinedButton, '나가기'));
     await tester.pumpAndSettle();
 
-    expect(find.text('4 / 5 joined'), findsWidgets);
-    expect(find.text('Join Playdate'), findsOneWidget);
+    expect(find.text('4 / 5명'), findsWidgets);
+    expect(find.text('참여하기'), findsOneWidget);
   });
 }

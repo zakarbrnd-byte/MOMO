@@ -30,7 +30,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
             children: [
               Text(
                 joinState.isOwnerState
-                    ? 'My Playdate'
+                    ? '내가 만든 모임'
                     : playdate.participantsLabel,
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
@@ -46,7 +46,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
               if (joinState.isFullState) ...[
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Playdate Full',
+                  '마감',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.primaryDark,
                       ),
@@ -62,7 +62,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Edit Playdate coming soon'),
+                              content: Text('모임 수정은 곧 제공될 예정이에요'),
                             ),
                           );
                         },
@@ -74,7 +74,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(14),
                           ),
                         ),
-                        child: const Text('Edit Playdate'),
+                        child: const Text('수정하기'),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       FilledButton(
@@ -87,7 +87,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(14),
                           ),
                         ),
-                        child: const Text('Cancel Playdate'),
+                        child: const Text('모임 취소'),
                       ),
                     ],
                   ),
@@ -99,7 +99,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                       if (left && context.mounted) {
                         MomoSuccessBanner.show(
                           context,
-                          'You left this playdate.',
+                          '모임에서 나갔어요.',
                         );
                       }
                     },
@@ -121,7 +121,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                       if (joined && context.mounted) {
                         MomoSuccessBanner.show(
                           context,
-                          'Joined successfully!',
+                          '참여했어요!',
                         );
                       }
                     },
@@ -150,16 +150,16 @@ class PlaydateJoinActionBar extends ConsumerWidget {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Cancel this Playdate?'),
-          content: const Text('This action cannot be undone.'),
+          title: const Text('이 모임을 취소할까요?'),
+          content: const Text('취소하면 되돌릴 수 없어요.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Keep'),
+              child: const Text('유지'),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Cancel Playdate'),
+              child: const Text('모임 취소'),
             ),
           ],
         );
@@ -168,12 +168,11 @@ class PlaydateJoinActionBar extends ConsumerWidget {
 
     if (confirmed != true || !context.mounted) return;
 
-    final cancelled = ref
-        .read(playdateProvider.notifier)
-        .cancelPlaydate(playdate.id, userId);
+    final cancelled =
+        ref.read(playdateProvider.notifier).cancelPlaydate(playdate.id, userId);
 
     if (cancelled && context.mounted) {
-      MomoSuccessBanner.show(context, 'Playdate cancelled.');
+      MomoSuccessBanner.show(context, '모임을 취소했어요.');
       Navigator.of(context).pop();
     }
   }

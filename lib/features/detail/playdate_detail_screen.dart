@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_text_styles.dart';
+import '../../core/widgets/engagement_row.dart';
 import '../../core/widgets/momo_card.dart';
 import '../../models/playdate.dart';
 import '../../providers/playdate_provider.dart';
@@ -17,27 +19,28 @@ class PlaydateDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playdates = ref.watch(playdateProvider).valueOrNull;
-    final latest = playdates
-            ?.where((item) => item.id == playdate.id)
-            .firstOrNull ??
-        playdate;
+    final latest =
+        playdates?.where((item) => item.id == playdate.id).firstOrNull ??
+            playdate;
 
-    final textTheme = Theme.of(context).textTheme;
-    final title =
-        latest.title.trim().isEmpty ? 'Untitled playdate' : latest.title.trim();
-    final location = latest.location.trim().isEmpty
-        ? 'Location not specified'
-        : latest.location.trim();
-    final date =
-        latest.date.trim().isEmpty ? 'Date not specified' : latest.date.trim();
+    final title = latest.title.trim().isEmpty ? '제목 없음' : latest.title.trim();
+    final location =
+        latest.location.trim().isEmpty ? '장소 미정' : latest.location.trim();
+    final date = latest.date.trim().isEmpty ? '날짜 미정' : latest.date.trim();
     final host =
-        latest.hostName.trim().isEmpty ? 'A MOMO mom' : latest.hostName.trim();
+        latest.hostName.trim().isEmpty ? 'MOMO 엄마' : latest.hostName.trim();
     final hasTime = latest.time.trim().isNotEmpty;
     final hasChildAge = latest.childAge.trim().isNotEmpty;
     final hasDescription = latest.description.trim().isNotEmpty;
+    final hostLine = [
+      host,
+      if (latest.hostChildLabel != null &&
+          latest.hostChildLabel!.trim().isNotEmpty)
+        latest.hostChildLabel!.trim(),
+    ].join(' · ');
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Playdate')),
+      appBar: AppBar(title: const Text('플레이데이트')),
       body: Column(
         children: [
           Expanded(
@@ -46,11 +49,29 @@ class PlaydateDetailScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: textTheme.headlineMedium),
+                  Container(
+                    padding: AppSpacing.chipPadding,
+                    decoration: BoxDecoration(
+                      color: AppColors.primarySoft,
+                      borderRadius: BorderRadius.circular(AppSpacing.sm),
+                    ),
+                    child: Text(
+                      '플레이데이트',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.primaryDark,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(title, style: AppTextStyles.headlineMedium),
                   const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Hosted by $host',
-                    style: textTheme.bodyMedium,
+                  Text(hostLine, style: AppTextStyles.bodySmall),
+                  const SizedBox(height: AppSpacing.md),
+                  EngagementRow(
+                    viewCount: latest.viewCount,
+                    commentCount: latest.commentCount,
+                    likeCount: latest.likeCount,
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   MomoCard(
@@ -59,61 +80,65 @@ class PlaydateDetailScreen extends ConsumerWidget {
                       children: [
                         _DetailRow(
                           icon: Icons.place_outlined,
-                          label: 'Location',
+                          label: '장소',
                           value: location,
                         ),
                         _DetailRow(
                           icon: Icons.calendar_today_outlined,
-                          label: 'Date',
+                          label: '날짜',
                           value: date,
                         ),
                         if (hasTime)
                           _DetailRow(
                             icon: Icons.access_time,
-                            label: 'Time',
+                            label: '시간',
                             value: latest.time.trim(),
                           )
                         else
                           const _DetailRow(
                             icon: Icons.access_time,
-                            label: 'Time',
-                            value: 'Time not specified',
+                            label: '시간',
+                            value: '시간 미정',
                             muted: true,
                           ),
                         if (hasChildAge)
                           _DetailRow(
                             icon: Icons.child_care_outlined,
-                            label: 'Child Age',
+                            label: '아이 연령',
                             value: latest.childAge.trim(),
                           )
                         else
                           const _DetailRow(
                             icon: Icons.child_care_outlined,
-                            label: 'Child Age',
-                            value: 'Not specified',
+                            label: '아이 연령',
+                            value: '미정',
                             muted: true,
                           ),
                         _DetailRow(
                           icon: Icons.groups_outlined,
-                          label: 'Participants',
+                          label: '참여',
                           value: latest.participantsLabel,
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  Text('Description', style: textTheme.titleMedium),
+                  const Text('모임 소개', style: AppTextStyles.subtitle),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    hasDescription
-                        ? latest.description.trim()
-                        : 'No description provided.',
-                    style: textTheme.bodyLarge?.copyWith(
+                    hasDescription ? latest.description.trim() : '소개글이 없습니다.',
+                    style: AppTextStyles.body.copyWith(
                       color: hasDescription
                           ? AppColors.textPrimary
                           : AppColors.textSecondary,
                       height: 1.5,
+                      fontSize: 15,
                     ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  const Text(
+                    '댓글·좋아요는 표시만 되며, 아직 상호작용은 지원하지 않아요.',
+                    style: AppTextStyles.caption,
                   ),
                 ],
               ),
@@ -141,8 +166,6 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Row(
@@ -158,11 +181,12 @@ class _DetailRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: textTheme.bodyMedium),
+                Text(label, style: AppTextStyles.caption),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   value,
-                  style: textTheme.bodyLarge?.copyWith(
+                  style: AppTextStyles.body.copyWith(
+                    fontSize: 15,
                     color:
                         muted ? AppColors.textSecondary : AppColors.textPrimary,
                   ),

@@ -14,6 +14,7 @@ abstract class PostRepository {
     required String title,
     required String content,
     String? authorName,
+    String? category,
   });
 
   /// Replace or insert by id (future: PATCH /posts/:id).

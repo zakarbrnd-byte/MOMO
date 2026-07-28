@@ -11,6 +11,7 @@ abstract class PostDataSource {
     required String title,
     required String content,
     String? authorName,
+    String? category,
   });
 
   /// Insert or replace by id (raw upsert).

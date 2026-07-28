@@ -39,9 +39,9 @@ void main() {
     expect(find.text('10:30 AM'), findsOneWidget);
     expect(find.text('2-4 years old'), findsOneWidget);
     expect(find.text('Bring snacks and sunscreen.'), findsOneWidget);
-    expect(find.text('Hosted by Jiwoo Mom'), findsOneWidget);
-    expect(find.text('2 / 5 joined'), findsWidgets);
-    expect(find.text('Join Playdate'), findsOneWidget);
+    expect(find.text('Jiwoo Mom'), findsWidgets);
+    expect(find.text('2 / 5명'), findsWidgets);
+    expect(find.text('참여하기'), findsOneWidget);
   });
 
   testWidgets('Playdate detail handles missing optional fields',
@@ -68,9 +68,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Library Meetup'), findsOneWidget);
-    expect(find.text('Time not specified'), findsOneWidget);
-    expect(find.text('Not specified'), findsOneWidget);
-    expect(find.text('No description provided.'), findsOneWidget);
+    expect(find.text('시간 미정'), findsOneWidget);
+    expect(find.text('미정'), findsOneWidget);
+    expect(find.text('소개글이 없습니다.'), findsOneWidget);
     expect(find.text('null'), findsNothing);
   });
 
@@ -91,8 +91,7 @@ void main() {
     expect(find.text('Best playground recommendations?'), findsOneWidget);
     expect(find.text('Looking for toddler-friendly parks nearby.'),
         findsOneWidget);
-    expect(find.text('Yuna Choi'), findsOneWidget);
-    expect(find.text('Shared with the MOMO community'), findsOneWidget);
+    expect(find.text('Yuna Choi'), findsWidgets);
   });
 
   testWidgets('Home card opens playdate detail and returns', (tester) async {
@@ -111,7 +110,7 @@ void main() {
     await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Join Playdate'), findsOneWidget);
+    expect(find.text('참여하기'), findsOneWidget);
     expect(find.text('Lafayette Park, Koreatown'), findsOneWidget);
 
     await tester.pageBack();

@@ -41,7 +41,7 @@ void main() {
   Future<void> openCreatePlaydate(WidgetTester tester) async {
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Playdate'));
+    await tester.tap(find.text('플레이데이트 만들기'));
     await tester.pumpAndSettle();
   }
 
@@ -70,7 +70,7 @@ void main() {
     await tester.enterText(fields.at(0), 'Park Play Date');
     await tester.enterText(fields.at(3), 'Irvine Park');
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
 
     expect(find.text('Please select a date.'), findsOneWidget);
@@ -88,11 +88,11 @@ void main() {
     await selectDateFromPicker(tester);
     await tester.enterText(fields.at(3), 'Irvine Park');
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
 
     expect(container.read(mainTabProvider), MainTabs.home);
-    expect(find.text('Playdate created successfully!'), findsOneWidget);
+    expect(find.text('플레이데이트를 만들었어요!'), findsOneWidget);
     expect(find.text('Park Play Date'), findsOneWidget);
     expect(find.text('Irvine Park'), findsOneWidget);
     expect(find.text('Please select a date.'), findsNothing);
@@ -120,21 +120,22 @@ void main() {
     expect(timeText, isNotNull);
     expect(timeText, isNotEmpty);
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
 
     expect(find.text('Morning Meetup'), findsOneWidget);
-    expect(find.text(timeText!), findsWidgets);
+    expect(find.textContaining(timeText!), findsWidgets);
   });
 
-  testWidgets('Create Playdate blocks empty form with validation', (tester) async {
+  testWidgets('Create Playdate blocks empty form with validation',
+      (tester) async {
     final container = newContainer();
     await pumpApp(tester, container);
 
     final initialCount = container.read(playdateProvider).requireValue.length;
     await openCreatePlaydate(tester);
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
 
     expect(find.text('Please enter a title.'), findsOneWidget);
@@ -151,10 +152,10 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Post'));
+    await tester.tap(find.text('글 작성하기'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
+    await tester.tap(find.widgetWithText(FilledButton, '올리기'));
     await tester.pumpAndSettle();
 
     expect(find.text('Please enter a title.'), findsOneWidget);
@@ -168,7 +169,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Post'));
+    await tester.tap(find.text('글 작성하기'));
     await tester.pumpAndSettle();
 
     final fields = find.byType(TextFormField);
@@ -178,11 +179,16 @@ void main() {
       'Looking for toddler-friendly parks nearby.',
     );
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
+    await tester.tap(find.widgetWithText(FilledButton, '올리기'));
     await tester.pumpAndSettle();
 
     expect(container.read(mainTabProvider), MainTabs.home);
-    expect(find.text('Post created successfully!'), findsOneWidget);
+    expect(find.text('글을 올렸어요!'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Best playground recommendations?'),
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Best playground recommendations?'), findsOneWidget);
   });
 
@@ -203,7 +209,7 @@ void main() {
     await selectDateFromPicker(tester);
     await tester.enterText(fields.at(3), 'Irvine Park');
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pump();
     expect(find.byType(LoadingView), findsOneWidget);
     expect(find.text('Loading...'), findsOneWidget);
@@ -212,7 +218,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Loading Flow Playdate'), findsOneWidget);
-    expect(find.text('Playdate created successfully!'), findsOneWidget);
+    expect(find.text('플레이데이트를 만들었어요!'), findsOneWidget);
   });
 
   testWidgets('Create error then retry succeeds', (tester) async {
@@ -229,7 +235,7 @@ void main() {
 
     final before = container.read(playdateProvider).requireValue.length;
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pumpAndSettle();
 
     expect(find.byType(ErrorView), findsOneWidget);
@@ -262,9 +268,9 @@ void main() {
 
     final before = container.read(playdateProvider).requireValue.length;
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, '만들기'));
     await tester.pump();
-    await tester.tap(find.text('Create Playdate'));
+    await tester.tap(find.text('플레이데이트 만들기'));
     await tester.pump();
 
     final mid = container.read(createPlaydateMutationProvider);

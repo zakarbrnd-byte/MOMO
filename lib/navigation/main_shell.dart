@@ -34,17 +34,17 @@ class _MainShellState extends ConsumerState<MainShell> {
     NavigationDestination(
       icon: Icon(Icons.home_outlined),
       selectedIcon: Icon(Icons.home_rounded),
-      label: 'Home',
+      label: '홈',
     ),
     NavigationDestination(
       icon: Icon(Icons.add_circle_outline),
       selectedIcon: Icon(Icons.add_circle),
-      label: 'Create',
+      label: '만들기',
     ),
     NavigationDestination(
       icon: Icon(Icons.person_outline),
       selectedIcon: Icon(Icons.person_rounded),
-      label: 'Profile',
+      label: '프로필',
     ),
   ];
 

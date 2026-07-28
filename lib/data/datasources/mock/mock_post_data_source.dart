@@ -25,6 +25,7 @@ class MockPostDataSource implements PostDataSource {
     required String title,
     required String content,
     String? authorName,
+    String? category,
   }) {
     final now = DateTime.now();
     final post = Post(
@@ -35,6 +36,11 @@ class MockPostDataSource implements PostDataSource {
           ? authorName!.trim()
           : seedProfile.displayName,
       creatorId: currentUserId,
+      category: category ?? PostCategories.daily,
+      authorLocation: null,
+      viewCount: 0,
+      commentCount: 0,
+      likeCount: 0,
       createdAt: now,
       updatedAt: now,
     );
