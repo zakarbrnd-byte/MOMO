@@ -5,10 +5,9 @@ import '../time/relative_time_ko.dart';
 
 /// Shared feed-card author metadata: `Author · relative time`.
 ///
-/// Used by Playdate and Post cards. Formats via [RelativeTimeKo], sits in
-/// normal vertical flow under the title, and end-aligns within card padding.
-/// Long author names ellipsize; the relative-time suffix stays visible when
-/// present.
+/// Used inside [CardHeader] (top-right of every feed card). Formats via
+/// [RelativeTimeKo]. Long author names ellipsize; the relative-time suffix
+/// stays visible when present.
 class CardAuthorMetadata extends StatelessWidget {
   const CardAuthorMetadata({
     super.key,

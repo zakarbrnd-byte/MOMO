@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/widgets/card_author_metadata.dart';
+import '../../../core/widgets/card_header.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/playdate.dart';
 import '../../../providers/current_user_provider.dart';
@@ -35,31 +35,18 @@ class PlaydateCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: AppSpacing.chipPadding,
-            decoration: BoxDecoration(
-              color: AppColors.primarySoft,
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
-            ),
-            child: Text(
-              'Playdate',
-              style: textTheme.labelLarge?.copyWith(
-                color: AppColors.primary,
-              ),
-            ),
+          CardHeader(
+            categoryBadge: _PlaydateBadge(),
+            authorName: playdate.hostName,
+            createdAt: playdate.createdAt,
+            now: now,
           ),
-          const SizedBox(height: AppSpacing.cardTitleGap),
+          const SizedBox(height: AppSpacing.cardContentGap),
           Text(
             playdate.title,
             style: AppTextStyles.cardTitle,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: AppSpacing.cardContentGap),
-          CardAuthorMetadata(
-            authorName: playdate.hostName,
-            createdAt: playdate.createdAt,
-            now: now,
           ),
           if (isOwned) ...[
             const SizedBox(height: AppSpacing.cardContentGap),
@@ -91,6 +78,27 @@ class PlaydateCard extends ConsumerWidget {
             label: playdate.participantsLabel,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PlaydateBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: AppSpacing.chipPadding,
+      decoration: BoxDecoration(
+        color: AppColors.primarySoft,
+        borderRadius: BorderRadius.circular(AppSpacing.sm),
+      ),
+      child: Text(
+        'Playdate',
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: AppColors.primary,
+            ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
