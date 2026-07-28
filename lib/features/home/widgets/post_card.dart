@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/widgets/author_summary.dart';
+import '../../../core/time/relative_time_ko.dart';
 import '../../../core/widgets/engagement_row.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/post.dart';
@@ -10,30 +10,36 @@ import 'category_chip.dart';
 
 /// Community feed card for a parenting post.
 ///
-/// Hierarchy: category → title → preview → author → engagement.
+/// Hierarchy: category + author/time → title → one-line preview → engagement.
 /// Chrome comes from [MomoCard]; metrics and category are display-only.
 class PostCard extends StatelessWidget {
   const PostCard({
     super.key,
     required this.post,
     required this.onTap,
+    @visibleForTesting this.now,
   });
 
   final Post post;
   final VoidCallback onTap;
+
+  /// Optional clock override for widget tests.
+  @visibleForTesting
+  final DateTime? now;
 
   String get _title {
     final value = post.title.trim();
     return value.isEmpty ? 'Untitled post' : value;
   }
 
-  String get _author {
-    final value = post.authorName.trim();
-    return value.isEmpty ? 'A MOMO mom' : value;
-  }
+  String get _authorMeta => RelativeTimeKo.authorWithTime(
+        post.authorName,
+        post.createdAt,
+        now: now,
+      );
 
   String get _semanticLabel {
-    return '${post.category.labelKo} 게시글, $_title, 작성자 $_author';
+    return '${post.category.labelKo} 게시글, $_title, 작성자 $_authorMeta';
   }
 
   @override
@@ -49,7 +55,21 @@ class PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CategoryChip(category: post.category),
+            Row(
+              children: [
+                Flexible(child: CategoryChip(category: post.category)),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    _authorMeta,
+                    style: AppTextStyles.caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: AppSpacing.cardContentGap),
             Text(
               _title,
@@ -62,15 +82,10 @@ class PostCard extends StatelessWidget {
               Text(
                 preview,
                 style: AppTextStyles.bodySmall,
-                maxLines: 3,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ],
-            const SizedBox(height: AppSpacing.cardTitleGap),
-            AuthorSummary(
-              displayName: post.authorName,
-              avatarRadius: 14,
-            ),
             const SizedBox(height: AppSpacing.cardFooterGap),
             EngagementRow(
               viewCount: post.viewCount,

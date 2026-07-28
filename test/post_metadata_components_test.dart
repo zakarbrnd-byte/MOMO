@@ -148,6 +148,7 @@ void main() {
   });
 
   group('PostCard redesign', () {
+    final clock = DateTime.utc(2026, 7, 28, 21, 0, 0);
     const sample = Post(
       id: 'po_ui',
       title: '테스트 게시글 제목',
@@ -158,8 +159,20 @@ void main() {
       commentCount: 14,
       likeCount: 31,
     );
+    final sampleWithTime = Post(
+      id: 'po_ui_time',
+      title: '타임스탬프 게시글',
+      content: '본문',
+      authorName: '최유나',
+      category: PostCategory.school,
+      viewCount: 10,
+      commentCount: 2,
+      likeCount: 3,
+      createdAt: clock.subtract(const Duration(hours: 2)),
+    );
 
-    testWidgets('renders hierarchy: category, title, preview, author, metrics',
+    testWidgets(
+        'renders hierarchy: category+author top, title, preview, metrics',
         (tester) async {
       await tester.pumpWidget(
         wrap(PostCard(post: sample, onTap: () {})),
@@ -173,15 +186,82 @@ void main() {
       expect(find.text('187'), findsOneWidget);
       expect(find.text('14'), findsOneWidget);
       expect(find.text('31'), findsOneWidget);
-      expect(find.byType(AuthorSummary), findsOneWidget);
+      expect(find.byType(AuthorSummary), findsNothing);
       expect(find.byType(EngagementRow), findsOneWidget);
 
-      // Title should appear before author in the tree order.
-      final titleIndex = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
-      final authorIndex = tester.getTopLeft(find.text('박민지')).dy;
-      final engagementIndex = tester.getTopLeft(find.byType(EngagementRow)).dy;
-      expect(titleIndex, lessThan(authorIndex));
-      expect(authorIndex, lessThan(engagementIndex));
+      final categoryY = tester.getTopLeft(find.text('지역정보')).dy;
+      final authorY = tester.getTopLeft(find.text('박민지')).dy;
+      final titleY = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
+      final engagementY = tester.getTopLeft(find.byType(EngagementRow)).dy;
+
+      // Author sits on the same top row as the category chip.
+      expect((authorY - categoryY).abs(), lessThan(8));
+      expect(categoryY, lessThan(titleY));
+      expect(titleY, lessThan(engagementY));
+
+      final preview = tester.widget<Text>(
+        find.descendant(
+          of: find.byType(PostCard),
+          matching: find.textContaining('본문 미리보기'),
+        ),
+      );
+      expect(preview.maxLines, 1);
+      expect(preview.overflow, TextOverflow.ellipsis);
+    });
+
+    testWidgets('shows author · relative time when createdAt is set',
+        (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          PostCard(
+            post: sampleWithTime,
+            onTap: () {},
+            now: clock,
+          ),
+        ),
+      );
+
+      expect(find.text('최유나 · 2시간 전'), findsOneWidget);
+      expect(find.text('최유나 ·'), findsNothing);
+      expect(find.text('학교·킨더'), findsOneWidget);
+    });
+
+    testWidgets('shows author only when createdAt is null', (tester) async {
+      await tester.pumpWidget(
+        wrap(PostCard(post: sample, onTap: () {}, now: clock)),
+      );
+
+      expect(find.text('박민지'), findsOneWidget);
+      expect(find.textContaining('·'), findsNothing);
+    });
+
+    testWidgets('long author + time does not overflow narrow width',
+        (tester) async {
+      final longPost = Post(
+        id: 'po_long_author',
+        title: '제목',
+        content: '본문',
+        authorName: '아주아주긴한국어이름엄마님테스트',
+        createdAt: clock.subtract(const Duration(hours: 5)),
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          SizedBox(
+            width: 320,
+            child: PostCard(
+              post: longPost,
+              onTap: () {},
+              now: clock,
+            ),
+          ),
+          size: const Size(320, 600),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.textContaining('아주아주'), findsOneWidget);
+      expect(find.byType(CategoryChip), findsOneWidget);
     });
 
     testWidgets('full card tap works; nested rows do not block',
