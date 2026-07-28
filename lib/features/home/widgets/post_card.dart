@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/time/relative_time_ko.dart';
-import '../../../core/widgets/card_author_metadata.dart';
+import '../../../core/widgets/card_header.dart';
 import '../../../core/widgets/engagement_row.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/post.dart';
@@ -11,9 +11,8 @@ import 'category_chip.dart';
 
 /// Community feed card for a parenting post.
 ///
-/// Hierarchy: category → title → author/time (end-aligned) → preview →
-/// engagement. Chrome comes from [MomoCard]; metrics and category are
-/// display-only.
+/// Hierarchy: header (category + author/time) → title → preview → engagement.
+/// Chrome comes from [MomoCard]; metrics and category are display-only.
 class PostCard extends StatelessWidget {
   const PostCard({
     super.key,
@@ -57,19 +56,18 @@ class PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CategoryChip(category: post.category),
+            CardHeader(
+              categoryBadge: CategoryChip(category: post.category),
+              authorName: post.authorName,
+              createdAt: post.createdAt,
+              now: now,
+            ),
             const SizedBox(height: AppSpacing.cardContentGap),
             Text(
               _title,
               style: AppTextStyles.cardTitle,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: AppSpacing.cardContentGap),
-            CardAuthorMetadata(
-              authorName: post.authorName,
-              createdAt: post.createdAt,
-              now: now,
             ),
             if (preview.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.cardContentGap),

@@ -6,6 +6,8 @@ import 'package:momo/app.dart';
 import 'package:momo/core/theme/app_text_styles.dart';
 import 'package:momo/core/theme/app_theme.dart';
 import 'package:momo/core/widgets/author_summary.dart';
+import 'package:momo/core/widgets/card_author_metadata.dart';
+import 'package:momo/core/widgets/card_header.dart';
 import 'package:momo/core/widgets/engagement_row.dart';
 import 'package:momo/data/mock_feed.dart';
 import 'package:momo/features/home/widgets/category_chip.dart';
@@ -173,13 +175,15 @@ void main() {
     );
 
     testWidgets(
-        'renders hierarchy: category, title, end-aligned author, preview, metrics',
+        'renders hierarchy: header (badge+author), title, preview, metrics',
         (tester) async {
       await tester.pumpWidget(
         wrap(PostCard(post: sample, onTap: () {})),
       );
 
       expect(find.byType(CategoryChip), findsOneWidget);
+      expect(find.byType(CardHeader), findsOneWidget);
+      expect(find.byType(CardAuthorMetadata), findsOneWidget);
       expect(find.text('지역정보'), findsOneWidget);
       expect(find.text('테스트 게시글 제목'), findsOneWidget);
       expect(find.textContaining('본문 미리보기'), findsOneWidget);
@@ -191,17 +195,18 @@ void main() {
       expect(find.byType(EngagementRow), findsOneWidget);
 
       final categoryY = tester.getTopLeft(find.text('지역정보')).dy;
-      final titleY = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
       final authorY = tester.getTopLeft(find.text('박민지')).dy;
+      final titleY = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
       final engagementY = tester.getTopLeft(find.byType(EngagementRow)).dy;
 
+      // Badge and author share the header row; title is below.
+      expect((authorY - categoryY).abs(), lessThan(8));
       expect(categoryY, lessThan(titleY));
-      expect(titleY, lessThan(authorY));
-      expect(authorY, lessThan(engagementY));
+      expect(titleY, lessThan(engagementY));
 
       final authorRight = tester.getBottomRight(find.text('박민지')).dx;
-      final titleRight = tester.getBottomRight(find.text('테스트 게시글 제목')).dx;
-      expect(authorRight, greaterThan(titleRight * 0.7));
+      final categoryLeft = tester.getTopLeft(find.text('지역정보')).dx;
+      expect(authorRight, greaterThan(categoryLeft));
 
       final title = tester.widget<Text>(find.text('테스트 게시글 제목'));
       expect(title.style?.fontSize, AppTextStyles.cardTitle.fontSize);
@@ -232,9 +237,13 @@ void main() {
       expect(find.text(' · 2시간 전'), findsOneWidget);
       expect(find.text('학교·킨더'), findsOneWidget);
 
-      final titleY = tester.getTopLeft(find.text('타임스탬프 게시글')).dy;
+      final badgeY = tester.getTopLeft(find.text('학교·킨더')).dy;
       final authorY = tester.getTopLeft(find.text('최유나')).dy;
-      expect(titleY, lessThan(authorY));
+      final titleY = tester.getTopLeft(find.text('타임스탬프 게시글')).dy;
+      expect((authorY - badgeY).abs(), lessThan(8));
+      expect(badgeY, lessThan(titleY));
+      // No duplicate metadata under the title.
+      expect(find.byType(CardAuthorMetadata), findsOneWidget);
     });
 
     testWidgets('shows author only when createdAt is null', (tester) async {

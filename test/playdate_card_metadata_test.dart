@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:momo/core/theme/app_text_styles.dart';
 import 'package:momo/core/theme/app_theme.dart';
+import 'package:momo/core/widgets/card_author_metadata.dart';
+import 'package:momo/core/widgets/card_header.dart';
 import 'package:momo/features/home/widgets/playdate_card.dart';
 import 'package:momo/features/home/widgets/post_card.dart';
 import 'package:momo/models/playdate.dart';
@@ -40,7 +42,7 @@ void main() {
       createdAt: clock.subtract(const Duration(hours: 3)),
     );
 
-    testWidgets('shows host · relative time end-aligned under title',
+    testWidgets('shows host · relative time on header row with badge',
         (tester) async {
       await tester.pumpWidget(
         wrap(
@@ -52,17 +54,22 @@ void main() {
         ),
       );
 
+      expect(find.text('Playdate'), findsOneWidget);
       expect(find.text('놀이터 플레이데이트'), findsOneWidget);
       expect(find.text('김소라'), findsOneWidget);
       expect(find.text(' · 3시간 전'), findsOneWidget);
+      expect(find.byType(CardHeader), findsOneWidget);
+      expect(find.byType(CardAuthorMetadata), findsOneWidget);
 
-      final titleY = tester.getTopLeft(find.text('놀이터 플레이데이트')).dy;
+      final badgeY = tester.getTopLeft(find.text('Playdate')).dy;
       final hostY = tester.getTopLeft(find.text('김소라')).dy;
-      expect(titleY, lessThan(hostY));
+      final titleY = tester.getTopLeft(find.text('놀이터 플레이데이트')).dy;
+      expect((hostY - badgeY).abs(), lessThan(8));
+      expect(badgeY, lessThan(titleY));
 
       final hostRight = tester.getBottomRight(find.text(' · 3시간 전')).dx;
-      final titleRight = tester.getBottomRight(find.text('놀이터 플레이데이트')).dx;
-      expect(hostRight, greaterThan(titleRight * 0.7));
+      final badgeLeft = tester.getTopLeft(find.text('Playdate')).dx;
+      expect(hostRight, greaterThan(badgeLeft));
 
       final title = tester.widget<Text>(find.text('놀이터 플레이데이트'));
       expect(title.style?.fontSize, AppTextStyles.cardTitle.fontSize);
