@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/card_posted_meta.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/playdate.dart';
 import '../../../providers/current_user_provider.dart';
@@ -13,10 +15,15 @@ class PlaydateCard extends ConsumerWidget {
     super.key,
     required this.playdate,
     required this.onTap,
+    @visibleForTesting this.now,
   });
 
   final Playdate playdate;
   final VoidCallback onTap;
+
+  /// Optional clock override for widget tests.
+  @visibleForTesting
+  final DateTime? now;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,30 +35,32 @@ class PlaydateCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: AppSpacing.chipPadding,
-                decoration: BoxDecoration(
-                  color: AppColors.primarySoft,
-                  borderRadius: BorderRadius.circular(AppSpacing.sm),
-                ),
-                child: Text(
-                  'Playdate',
-                  style: textTheme.labelLarge?.copyWith(
-                    color: AppColors.primary,
-                  ),
-                ),
+          Container(
+            padding: AppSpacing.chipPadding,
+            decoration: BoxDecoration(
+              color: AppColors.primarySoft,
+              borderRadius: BorderRadius.circular(AppSpacing.sm),
+            ),
+            child: Text(
+              'Playdate',
+              style: textTheme.labelLarge?.copyWith(
+                color: AppColors.primary,
               ),
-              const Spacer(),
-              Text(
-                playdate.hostName,
-                style: textTheme.bodyMedium,
-              ),
-            ],
+            ),
           ),
           const SizedBox(height: AppSpacing.cardTitleGap),
-          Text(playdate.title, style: textTheme.titleLarge),
+          Text(
+            playdate.title,
+            style: AppTextStyles.cardTitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: AppSpacing.cardContentGap),
+          CardPostedMeta(
+            authorName: playdate.hostName,
+            createdAt: playdate.createdAt,
+            now: now,
+          ),
           if (isOwned) ...[
             const SizedBox(height: AppSpacing.cardContentGap),
             Text(

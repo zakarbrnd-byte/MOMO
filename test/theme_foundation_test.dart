@@ -14,8 +14,10 @@ void main() {
     expect(theme.colorScheme.primary, AppColors.primary);
     expect(theme.colorScheme.secondary, AppColors.secondary);
     expect(theme.colorScheme.error, AppColors.error);
-    expect(theme.textTheme.headlineLarge?.fontSize, AppTextStyles.headline.fontSize);
-    expect(theme.textTheme.headlineLarge?.fontWeight, AppTextStyles.headline.fontWeight);
+    expect(theme.textTheme.headlineLarge?.fontSize,
+        AppTextStyles.headline.fontSize);
+    expect(theme.textTheme.headlineLarge?.fontWeight,
+        AppTextStyles.headline.fontWeight);
     expect(theme.textTheme.bodyLarge?.fontSize, AppTextStyles.body.fontSize);
     expect(theme.inputDecorationTheme.fillColor, AppColors.surface);
     expect(theme.cardTheme.color, AppColors.card);
@@ -26,6 +28,8 @@ void main() {
     expect(AppTextStyles.headline.fontSize, 28);
     expect(AppTextStyles.title.fontSize, 20);
     expect(AppTextStyles.subtitle.fontSize, 16);
+    expect(AppTextStyles.cardTitle.fontSize, 16);
+    expect(AppTextStyles.cardTitle.fontWeight, FontWeight.w600);
     expect(AppTextStyles.body.fontSize, 16);
     expect(AppTextStyles.bodyMedium.fontWeight, FontWeight.w500);
     expect(AppTextStyles.bodySmall.fontSize, 14);

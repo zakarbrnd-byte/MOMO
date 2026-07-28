@@ -37,6 +37,16 @@ void main() {
     expect(likeCounts.length, greaterThan(1));
   });
 
+  test('mock playdates seed varied createdAt for relative time', () {
+    for (final playdate in mockPlaydates) {
+      expect(playdate.createdAt, isNotNull);
+    }
+    expect(
+      mockPlaydates.map((item) => item.createdAt).toSet().length,
+      greaterThan(1),
+    );
+  });
+
   test('capacity and ownership scenarios remain intact', () {
     expect(playdateLibrary.maxParticipants, isNull);
     expect(playdateCafe.participantIds.length, 5);

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:momo/app.dart';
+import 'package:momo/core/theme/app_text_styles.dart';
 import 'package:momo/core/theme/app_theme.dart';
 import 'package:momo/core/widgets/author_summary.dart';
 import 'package:momo/core/widgets/engagement_row.dart';
@@ -172,7 +173,7 @@ void main() {
     );
 
     testWidgets(
-        'renders hierarchy: category+author top, title, preview, metrics',
+        'renders hierarchy: category, title, end-aligned author, preview, metrics',
         (tester) async {
       await tester.pumpWidget(
         wrap(PostCard(post: sample, onTap: () {})),
@@ -190,14 +191,20 @@ void main() {
       expect(find.byType(EngagementRow), findsOneWidget);
 
       final categoryY = tester.getTopLeft(find.text('지역정보')).dy;
-      final authorY = tester.getTopLeft(find.text('박민지')).dy;
       final titleY = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
+      final authorY = tester.getTopLeft(find.text('박민지')).dy;
       final engagementY = tester.getTopLeft(find.byType(EngagementRow)).dy;
 
-      // Author sits on the same top row as the category chip.
-      expect((authorY - categoryY).abs(), lessThan(8));
       expect(categoryY, lessThan(titleY));
-      expect(titleY, lessThan(engagementY));
+      expect(titleY, lessThan(authorY));
+      expect(authorY, lessThan(engagementY));
+
+      final authorRight = tester.getBottomRight(find.text('박민지')).dx;
+      final titleRight = tester.getBottomRight(find.text('테스트 게시글 제목')).dx;
+      expect(authorRight, greaterThan(titleRight * 0.7));
+
+      final title = tester.widget<Text>(find.text('테스트 게시글 제목'));
+      expect(title.style?.fontSize, AppTextStyles.cardTitle.fontSize);
 
       final preview = tester.widget<Text>(
         find.descendant(
