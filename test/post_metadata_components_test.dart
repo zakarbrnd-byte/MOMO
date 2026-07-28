@@ -17,7 +17,9 @@ void main() {
       theme: AppTheme.light,
       home: MediaQuery(
         data: MediaQueryData(size: size),
-        child: Scaffold(body: child),
+        child: Scaffold(
+          body: SingleChildScrollView(child: child),
+        ),
       ),
     );
   }
@@ -92,7 +94,6 @@ void main() {
 
       await tester.tap(find.byType(EngagementRow));
       await tester.pump();
-      // Display-only: no exceptions / navigation from the row itself.
       expect(tester.takeException(), isNull);
     });
   });
@@ -146,43 +147,160 @@ void main() {
     });
   });
 
-  group('PostCard minimal integration', () {
-    testWidgets('shows category, engagement, and preserves tap',
+  group('PostCard redesign', () {
+    const sample = Post(
+      id: 'po_ui',
+      title: '테스트 게시글 제목',
+      content: '본문 미리보기입니다. 두 번째 줄도 포함됩니다.',
+      authorName: '박민지',
+      category: PostCategory.local,
+      viewCount: 187,
+      commentCount: 14,
+      likeCount: 31,
+    );
+
+    testWidgets('renders hierarchy: category, title, preview, author, metrics',
         (tester) async {
-      var tapped = false;
-      const post = Post(
-        id: 'po_ui',
-        title: '테스트 게시글 제목',
-        content: '본문 미리보기입니다.',
-        authorName: '박민지',
-        category: PostCategory.local,
-        viewCount: 187,
-        commentCount: 14,
-        likeCount: 31,
+      await tester.pumpWidget(
+        wrap(PostCard(post: sample, onTap: () {})),
       );
 
+      expect(find.byType(CategoryChip), findsOneWidget);
+      expect(find.text('지역정보'), findsOneWidget);
+      expect(find.text('테스트 게시글 제목'), findsOneWidget);
+      expect(find.textContaining('본문 미리보기'), findsOneWidget);
+      expect(find.text('박민지'), findsOneWidget);
+      expect(find.text('187'), findsOneWidget);
+      expect(find.text('14'), findsOneWidget);
+      expect(find.text('31'), findsOneWidget);
+      expect(find.byType(AuthorSummary), findsOneWidget);
+      expect(find.byType(EngagementRow), findsOneWidget);
+
+      // Title should appear before author in the tree order.
+      final titleIndex = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
+      final authorIndex = tester.getTopLeft(find.text('박민지')).dy;
+      final engagementIndex = tester.getTopLeft(find.byType(EngagementRow)).dy;
+      expect(titleIndex, lessThan(authorIndex));
+      expect(authorIndex, lessThan(engagementIndex));
+    });
+
+    testWidgets('full card tap works; nested rows do not block',
+        (tester) async {
+      var taps = 0;
       await tester.pumpWidget(
         wrap(
           PostCard(
-            post: post,
-            onTap: () => tapped = true,
+            post: sample,
+            onTap: () => taps += 1,
           ),
         ),
       );
 
-      expect(find.text('지역정보'), findsOneWidget);
-      expect(find.text('박민지'), findsOneWidget);
-      expect(find.text('테스트 게시글 제목'), findsOneWidget);
-      expect(find.text('187'), findsOneWidget);
-      expect(find.text('14'), findsOneWidget);
-      expect(find.text('31'), findsOneWidget);
-      expect(find.byType(CategoryChip), findsOneWidget);
-      expect(find.byType(EngagementRow), findsOneWidget);
-      expect(find.byType(AuthorSummary), findsOneWidget);
-
-      await tester.tap(find.byType(PostCard));
+      await tester.tap(find.text('지역정보'));
       await tester.pump();
-      expect(tapped, isTrue);
+      expect(taps, 1);
+
+      await tester.tap(find.text('187'));
+      await tester.pump();
+      expect(taps, 2);
+
+      await tester.tap(find.text('박민지'));
+      await tester.pump();
+      expect(taps, 3);
+    });
+
+    testWidgets('exposes compact card semantics', (tester) async {
+      await tester.pumpWidget(
+        wrap(PostCard(post: sample, onTap: () {})),
+      );
+
+      expect(
+        find.bySemanticsLabel('지역정보 게시글, 테스트 게시글 제목, 작성자 박민지'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('handles zero and large engagement without overflow',
+        (tester) async {
+      const zeroPost = Post(
+        id: 'po_zero',
+        title: '제로 참여 게시글',
+        content: '내용',
+        authorName: '한은지',
+        viewCount: 0,
+        commentCount: 0,
+        likeCount: 0,
+      );
+      const largePost = Post(
+        id: 'po_large',
+        title: 'Costco에서 아이 간식 뭐 사세요?',
+        content: 'Costco 가면 간식 코너에서 한참 헤매요. 당 덜 들어간 걸로 사려고 하는데 추천 부탁드려요!',
+        authorName: '아주아주긴한국어이름엄마님테스트',
+        category: PostCategory.food,
+        viewCount: 12580,
+        commentCount: 342,
+        likeCount: 1899,
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          const SizedBox(
+            width: 320,
+            child: Column(
+              children: [
+                PostCard(post: zeroPost, onTap: _noop),
+                SizedBox(height: 16),
+                PostCard(post: largePost, onTap: _noop),
+              ],
+            ),
+          ),
+          size: const Size(320, 900),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('0'), findsNWidgets(3));
+      expect(find.text('12580'), findsOneWidget);
+      expect(find.textContaining('Costco'), findsWidgets);
+      expect(find.textContaining('아주아주'), findsOneWidget);
+    });
+
+    testWidgets('long Korean title and content fit narrow width',
+        (tester) async {
+      const longPost = Post(
+        id: 'po_long',
+        title: '한인타운 근처에서 아이랑 같이 갈 만한 그늘 많고 안전한 놀이터 추천 부탁드려요',
+        content:
+            '한여름이라 놀이터 바닥이 너무 뜨거워요. Koreatown이나 Lafayette Park 근처에서 그늘 많은 놀이터 아시는 분 계신가요?',
+        authorName: '한은지',
+        category: PostCategory.local,
+        viewCount: 356,
+        commentCount: 22,
+        likeCount: 43,
+      );
+
+      await tester.pumpWidget(
+        wrap(
+          const SizedBox(
+            width: 320,
+            child: PostCard(post: longPost, onTap: _noop),
+          ),
+          size: const Size(320, 700),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('지역정보'), findsOneWidget);
+      expect(find.byType(PostCard), findsOneWidget);
+
+      final title = tester.widget<Text>(
+        find.descendant(
+          of: find.byType(PostCard),
+          matching: find.textContaining('한인타운'),
+        ),
+      );
+      expect(title.maxLines, 2);
+      expect(title.overflow, TextOverflow.ellipsis);
     });
 
     testWidgets('Home post card still opens Post detail', (tester) async {
@@ -209,3 +327,5 @@ void main() {
     });
   });
 }
+
+void _noop() {}
