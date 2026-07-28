@@ -6,6 +6,8 @@ import 'json_converters.dart';
 ///
 /// Maps JSON ⇄ domain. UI / providers use [Playdate] only.
 /// Extra JSON keys (images, adminStatus, deletedAt, …) are ignored.
+/// Engagement counts use camelCase keys to match existing DTOs and [PostDto]
+/// (`viewCount`, `commentCount`, `likeCount`).
 class PlaydateDto {
   const PlaydateDto({
     required this.id,
@@ -19,6 +21,9 @@ class PlaydateDto {
     required this.hostName,
     this.participantIds = const [],
     this.maxParticipants,
+    this.viewCount = 0,
+    this.commentCount = 0,
+    this.likeCount = 0,
     this.status = PlaydateStatus.active,
     this.createdAt,
     this.updatedAt,
@@ -35,6 +40,9 @@ class PlaydateDto {
   final String hostName;
   final List<String> participantIds;
   final int? maxParticipants;
+  final int viewCount;
+  final int commentCount;
+  final int likeCount;
   final PlaydateStatus status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -52,6 +60,9 @@ class PlaydateDto {
       hostName: JsonConverters.stringFromJson(json['hostName']),
       participantIds: JsonConverters.stringListFromJson(json['participantIds']),
       maxParticipants: JsonConverters.intFromJson(json['maxParticipants']),
+      viewCount: JsonConverters.intFromJson(json['viewCount']) ?? 0,
+      commentCount: JsonConverters.intFromJson(json['commentCount']) ?? 0,
+      likeCount: JsonConverters.intFromJson(json['likeCount']) ?? 0,
       status: JsonConverters.enumFromJson(
         json['status'],
         PlaydateStatus.values,
@@ -75,6 +86,9 @@ class PlaydateDto {
       'hostName': hostName,
       'participantIds': participantIds,
       'maxParticipants': maxParticipants,
+      'viewCount': viewCount,
+      'commentCount': commentCount,
+      'likeCount': likeCount,
       'status': JsonConverters.enumToJson(status),
       if (createdAt != null)
         'createdAt': JsonConverters.dateTimeToJson(createdAt),
@@ -96,6 +110,9 @@ class PlaydateDto {
       hostName: hostName,
       participantIds: List<String>.from(participantIds),
       maxParticipants: maxParticipants,
+      viewCount: viewCount,
+      commentCount: commentCount,
+      likeCount: likeCount,
       status: status,
       createdAt: createdAt,
       updatedAt: updatedAt,
@@ -115,6 +132,9 @@ class PlaydateDto {
       hostName: playdate.hostName,
       participantIds: List<String>.from(playdate.participantIds),
       maxParticipants: playdate.maxParticipants,
+      viewCount: playdate.viewCount,
+      commentCount: playdate.commentCount,
+      likeCount: playdate.likeCount,
       status: playdate.status,
       createdAt: playdate.createdAt,
       updatedAt: playdate.updatedAt,

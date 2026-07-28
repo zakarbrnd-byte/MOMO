@@ -24,10 +24,50 @@ void main() {
     expect(playdate.status, PlaydateStatus.active);
     expect(playdate.isCancelled, isFalse);
     expect(playdate.participantIds, isEmpty);
+    expect(playdate.viewCount, 0);
+    expect(playdate.commentCount, 0);
+    expect(playdate.likeCount, 0);
     expect(
       playdate.copyWith(status: PlaydateStatus.cancelled).isCancelled,
       isTrue,
     );
+  });
+
+  test('Playdate accepts explicit engagement values and copyWith', () {
+    const playdate = Playdate(
+      id: 'p2',
+      creatorId: 'u1',
+      title: 'Park',
+      date: 'Sat',
+      time: '',
+      location: 'A',
+      childAge: '',
+      description: '',
+      hostName: 'Host',
+      viewCount: 120,
+      commentCount: 8,
+      likeCount: 15,
+    );
+
+    expect(playdate.viewCount, 120);
+    expect(playdate.commentCount, 8);
+    expect(playdate.likeCount, 15);
+
+    final preserved = playdate.copyWith(title: 'Updated');
+    expect(preserved.title, 'Updated');
+    expect(preserved.viewCount, 120);
+    expect(preserved.commentCount, 8);
+    expect(preserved.likeCount, 15);
+
+    final updated = playdate.copyWith(
+      viewCount: 200,
+      commentCount: 10,
+      likeCount: 25,
+    );
+    expect(updated.viewCount, 200);
+    expect(updated.commentCount, 10);
+    expect(updated.likeCount, 25);
+    expect(updated.title, playdate.title);
   });
 
   test('Post and User expose backend-ready fields with defaults', () {

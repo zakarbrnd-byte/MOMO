@@ -26,10 +26,65 @@ void main() {
       expect(restored.title, original.title);
       expect(restored.participantIds, original.participantIds);
       expect(restored.maxParticipants, original.maxParticipants);
+      expect(restored.viewCount, original.viewCount);
+      expect(restored.commentCount, original.commentCount);
+      expect(restored.likeCount, original.likeCount);
       expect(restored.status, PlaydateStatus.active);
       expect(restored.createdAt, original.createdAt);
       expect(restored.updatedAt, original.updatedAt);
       expect(json['createdAt'], '2026-07-01T10:00:00.000Z');
+      expect(json['viewCount'], original.viewCount);
+      expect(json['commentCount'], original.commentCount);
+      expect(json['likeCount'], original.likeCount);
+    });
+
+    test('fromJson maps engagement fields', () {
+      final playdate = PlaydateDto.fromJson({
+        'id': 'pd_full',
+        'creatorId': 'mom_a',
+        'title': 'Park',
+        'date': 'Sat',
+        'time': '10:00',
+        'location': 'Irvine',
+        'childAge': '2-4',
+        'description': 'Fun',
+        'hostName': 'Ann',
+        'viewCount': 88,
+        'commentCount': 4,
+        'likeCount': 11,
+      }).toDomain();
+
+      expect(playdate.viewCount, 88);
+      expect(playdate.commentCount, 4);
+      expect(playdate.likeCount, 11);
+    });
+
+    test('missing engagement fields default to zero', () {
+      final playdate = PlaydateDto.fromJson({
+        'id': 'pd_legacy',
+        'creatorId': 'mom_a',
+        'title': 'Legacy',
+        'date': 'Sat',
+        'time': '',
+        'location': 'A',
+        'childAge': '',
+        'description': '',
+        'hostName': 'Ann',
+      }).toDomain();
+
+      expect(playdate.viewCount, 0);
+      expect(playdate.commentCount, 0);
+      expect(playdate.likeCount, 0);
+    });
+
+    test('toDomain and fromDomain preserve engagement', () {
+      final dto = PlaydateDto.fromDomain(playdateCafe);
+      final domain = dto.toDomain();
+
+      expect(domain.viewCount, playdateCafe.viewCount);
+      expect(domain.commentCount, playdateCafe.commentCount);
+      expect(domain.likeCount, playdateCafe.likeCount);
+      expect(PlaydateDto.fromDomain(domain).viewCount, dto.viewCount);
     });
 
     test('ignores unknown future JSON keys', () {
@@ -43,6 +98,7 @@ void main() {
       final playdate = PlaydateDto.fromJson(json).toDomain();
       expect(playdate.id, playdateLibrary.id);
       expect(playdate.title, playdateLibrary.title);
+      expect(playdate.viewCount, playdateLibrary.viewCount);
     });
   });
 
