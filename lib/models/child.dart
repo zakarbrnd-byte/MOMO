@@ -22,9 +22,8 @@ class Child {
       displayName: identical(displayName, _unset)
           ? this.displayName
           : displayName as String?,
-      ageLabel: identical(ageLabel, _unset)
-          ? this.ageLabel
-          : ageLabel as String?,
+      ageLabel:
+          identical(ageLabel, _unset) ? this.ageLabel : ageLabel as String?,
     );
   }
 }

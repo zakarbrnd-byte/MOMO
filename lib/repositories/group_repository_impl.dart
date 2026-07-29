@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../core/result/result.dart';
 import '../data/datasources/group_data_source.dart';
 import '../dto/group_dto.dart';
@@ -152,12 +154,16 @@ class GroupRepositoryImpl implements GroupRepository {
     });
   }
 
-  Future<Result<bool>> _runMutation(Future<void> Function() action) async {
+  /// Prefer [.then] over `async` so [SynchronousFuture] from the mock
+  /// data source stays synchronous for [GroupNotifier._readSync].
+  Future<Result<bool>> _runMutation(Future<void> Function() action) {
     try {
-      await action();
-      return const Success(true);
+      return action().then<Result<bool>>(
+        (_) => const Success(true),
+        onError: (Object e, StackTrace _) => Failure(e.toString()),
+      );
     } catch (e) {
-      return Failure(e.toString());
+      return SynchronousFuture(Failure(e.toString()));
     }
   }
 }

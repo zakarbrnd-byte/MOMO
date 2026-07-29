@@ -86,7 +86,7 @@ class MutationNotifier extends AutoDisposeNotifier<AsyncOpState<void>> {
   }
 }
 
-/// Create-playdate mutation lifecycle (separate from list [AsyncValue]).
+/// Create-playdate mutation lifecycle (legacy — retired from Create hub).
 final createPlaydateMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
   MutationNotifier.new,
@@ -94,6 +94,18 @@ final createPlaydateMutationProvider =
 
 /// Create-post mutation lifecycle.
 final createPostMutationProvider =
+    NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
+  MutationNotifier.new,
+);
+
+/// Create-group mutation lifecycle.
+final createGroupMutationProvider =
+    NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
+  MutationNotifier.new,
+);
+
+/// Create-event mutation lifecycle.
+final createEventMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
   MutationNotifier.new,
 );

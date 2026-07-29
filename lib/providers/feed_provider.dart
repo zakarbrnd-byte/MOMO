@@ -1,26 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/feed_item.dart';
-import '../models/playdate.dart';
+import '../models/group.dart';
 import '../models/post.dart';
-import 'playdate_provider.dart';
+import 'group_provider.dart';
 import 'post_provider.dart';
 
+/// Home feed: featured/recommended Groups first, then global community posts.
+///
+/// Ordering is mock/static for Phase 3.7 — Phase 3.8 will add real filters /
+/// recommendation rules.
 List<FeedItem> composeFeedItems({
-  required List<Playdate> playdates,
+  required List<Group> groups,
   required List<Post> posts,
 }) {
   final items = <FeedItem>[];
-  final length =
-      playdates.length > posts.length ? playdates.length : posts.length;
 
-  for (var i = 0; i < length; i++) {
-    if (i < playdates.length) {
-      items.add(PlaydateFeedItem(playdates[i]));
-    }
-    if (i < posts.length) {
-      items.add(PostFeedItem(posts[i]));
-    }
+  final featured = groups.where((g) => g.isFeatured).toList();
+  final rest = groups.where((g) => !g.isFeatured).toList();
+  for (final group in [...featured, ...rest]) {
+    items.add(GroupFeedItem(group));
+  }
+
+  final globalPosts = posts.where((p) => p.isGlobal).toList();
+  for (final post in globalPosts) {
+    items.add(PostFeedItem(post));
   }
 
   return items;
@@ -28,17 +32,17 @@ List<FeedItem> composeFeedItems({
 
 /// Derived home feed as [AsyncValue]: loading / data / error.
 final feedProvider = Provider<AsyncValue<List<FeedItem>>>((ref) {
-  final playdatesAsync = ref.watch(playdateProvider);
+  final groupsAsync = ref.watch(groupProvider);
   final postsAsync = ref.watch(postProvider);
 
-  if (playdatesAsync.isLoading || postsAsync.isLoading) {
+  if (groupsAsync.isLoading || postsAsync.isLoading) {
     return const AsyncLoading();
   }
 
-  if (playdatesAsync.hasError) {
+  if (groupsAsync.hasError) {
     return AsyncError(
-      playdatesAsync.error!,
-      playdatesAsync.stackTrace ?? StackTrace.current,
+      groupsAsync.error!,
+      groupsAsync.stackTrace ?? StackTrace.current,
     );
   }
 
@@ -51,7 +55,7 @@ final feedProvider = Provider<AsyncValue<List<FeedItem>>>((ref) {
 
   return AsyncData(
     composeFeedItems(
-      playdates: playdatesAsync.requireValue,
+      groups: groupsAsync.requireValue,
       posts: postsAsync.requireValue,
     ),
   );

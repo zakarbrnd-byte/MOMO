@@ -35,8 +35,7 @@ class ParticipantDto {
     return {
       'userId': userId,
       'playdateId': playdateId,
-      if (joinedAt != null)
-        'joinedAt': JsonConverters.dateTimeToJson(joinedAt),
+      if (joinedAt != null) 'joinedAt': JsonConverters.dateTimeToJson(joinedAt),
       'status': JsonConverters.enumToJson(status),
     };
   }

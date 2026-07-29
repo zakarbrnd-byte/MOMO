@@ -26,9 +26,7 @@ class MomoEmptyState extends StatelessWidget {
   final Widget? illustration;
 
   bool get _hasAction =>
-      buttonText != null &&
-      buttonText!.trim().isNotEmpty &&
-      onPressed != null;
+      buttonText != null && buttonText!.trim().isNotEmpty && onPressed != null;
 
   @override
   Widget build(BuildContext context) {

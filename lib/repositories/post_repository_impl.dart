@@ -45,17 +45,13 @@ class PostRepositoryImpl implements PostRepository {
 
   @override
   Future<Result<bool>> update(Post post) {
-    return _dataSource
-        .updatePost(post)
-        .then((_) => const Success(true));
+    return _dataSource.updatePost(post).then((_) => const Success(true));
   }
 
   @override
   Future<Result<bool>> delete(String postId) {
     return _dataSource.deletePost(postId).then((ok) {
-      return ok
-          ? const Success(true)
-          : const Failure('Could not delete post.');
+      return ok ? const Success(true) : const Failure('Could not delete post.');
     });
   }
 }

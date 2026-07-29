@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:momo/app.dart';
+import 'package:momo/data/mock_groups.dart';
 import 'package:momo/features/detail/playdate_detail_screen.dart';
 import 'package:momo/features/detail/post_detail_screen.dart';
 import 'package:momo/models/playdate.dart';
@@ -95,7 +96,7 @@ void main() {
     expect(find.text('Shared with the MOMO community'), findsOneWidget);
   });
 
-  testWidgets('Home card opens playdate detail and returns', (tester) async {
+  testWidgets('Home card opens group detail and returns', (tester) async {
     tester.view.physicalSize = const Size(400, 900);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -108,15 +109,15 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
+    await tester.tap(find.textContaining('LA 3살'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Join Playdate'), findsOneWidget);
-    expect(find.text('Lafayette Park, Koreatown'), findsOneWidget);
+    expect(find.text('Leave Group'), findsOneWidget);
+    expect(find.textContaining(groupLa3.location), findsWidgets);
 
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
+    expect(find.textContaining('LA 3살'), findsOneWidget);
   });
 }

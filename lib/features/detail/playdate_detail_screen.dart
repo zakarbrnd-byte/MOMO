@@ -17,10 +17,9 @@ class PlaydateDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playdates = ref.watch(playdateProvider).valueOrNull;
-    final latest = playdates
-            ?.where((item) => item.id == playdate.id)
-            .firstOrNull ??
-        playdate;
+    final latest =
+        playdates?.where((item) => item.id == playdate.id).firstOrNull ??
+            playdate;
 
     final textTheme = Theme.of(context).textTheme;
     final title =

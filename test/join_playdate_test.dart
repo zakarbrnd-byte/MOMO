@@ -2,36 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:momo/app.dart';
 import 'package:momo/data/mock_user.dart';
+import 'package:momo/features/detail/playdate_detail_screen.dart';
+import 'package:momo/models/playdate.dart';
 import 'package:momo/providers/playdate_provider.dart';
 
+import 'support/test_overrides.dart';
+
+/// Playdate join/leave unit coverage via detail screen (not Home feed).
 void main() {
-  Future<ProviderContainer> pumpApp(WidgetTester tester) async {
+  Future<({ProviderContainer container, Playdate playdate})> pumpDetail(
+    WidgetTester tester,
+    String playdateId, {
+    List<Override> overrides = const [],
+  }) async {
     tester.view.physicalSize = const Size(400, 900);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    final container = ProviderContainer();
+    final container = ProviderContainer(
+      overrides: [...testBackendOverrides, ...overrides],
+    );
     addTearDown(container.dispose);
+    await container.read(playdateProvider.future);
+
+    final playdate = container
+        .read(playdateProvider)
+        .requireValue
+        .firstWhere((item) => item.id == playdateId);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MomoApp(),
+        child: MaterialApp(
+          home: PlaydateDetailScreen(playdate: playdate),
+        ),
       ),
     );
     await tester.pumpAndSettle();
-    return container;
+    return (container: container, playdate: playdate);
   }
 
   testWidgets('Join button visible when current user has not joined',
       (tester) async {
-    await pumpApp(tester);
-
-    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
-    await tester.pumpAndSettle();
+    await pumpDetail(tester, 'pd1');
 
     expect(find.text('Join Playdate'), findsOneWidget);
     expect(find.text('Leave Playdate'), findsNothing);
@@ -39,10 +54,8 @@ void main() {
   });
 
   testWidgets('Join then Leave updates participant count', (tester) async {
-    final container = await pumpApp(tester);
-
-    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
-    await tester.pumpAndSettle();
+    final result = await pumpDetail(tester, 'pd1');
+    final container = result.container;
 
     await tester.tap(find.widgetWithText(FilledButton, 'Join Playdate'));
     await tester.pumpAndSettle();
@@ -78,10 +91,9 @@ void main() {
   });
 
   testWidgets('Join twice does not double-count', (tester) async {
-    final container = await pumpApp(tester);
+    final result = await pumpDetail(tester, 'pd1');
+    final container = result.container;
 
-    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
-    await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Join Playdate'));
     await tester.pumpAndSettle();
 
@@ -101,17 +113,7 @@ void main() {
 
   testWidgets('Full playdate disables join for non-participant',
       (tester) async {
-    await pumpApp(tester);
-
-    await tester.scrollUntilVisible(
-      find.text('키즈카페에서 엄마들도 같이 수다해요'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('키즈카페에서 엄마들도 같이 수다해요'));
-    await tester.pumpAndSettle();
+    await pumpDetail(tester, 'pd3');
 
     expect(find.text('5 / 5 joined'), findsWidgets);
     expect(find.text('Playdate Full'), findsWidgets);
@@ -125,17 +127,8 @@ void main() {
 
   testWidgets('Leave remains available when user fills the last spot',
       (tester) async {
-    final container = await pumpApp(tester);
-
-    await tester.scrollUntilVisible(
-      find.text('비 오는 날 실내 놀이터 번개해요'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('비 오는 날 실내 놀이터 번개해요'));
-    await tester.pumpAndSettle();
+    final result = await pumpDetail(tester, 'pd4');
+    final container = result.container;
 
     expect(find.text('4 / 5 joined'), findsWidgets);
 
@@ -169,19 +162,14 @@ void main() {
     expect(playdate.isJoinedBy(currentUser.id), isFalse);
   });
 
-  testWidgets('Home card shows updated count after join', (tester) async {
-    await pumpApp(tester);
+  testWidgets('Detail shows updated count after join', (tester) async {
+    await pumpDetail(tester, 'pd1');
 
-    expect(find.text('2 / 5 joined'), findsOneWidget);
+    expect(find.text('2 / 5 joined'), findsWidgets);
 
-    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
-    await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Join Playdate'));
     await tester.pumpAndSettle();
 
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-
-    expect(find.text('3 / 5 joined'), findsOneWidget);
+    expect(find.text('3 / 5 joined'), findsWidgets);
   });
 }

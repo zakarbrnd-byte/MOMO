@@ -13,8 +13,7 @@ final DateTime mockGroupSeedNow = DateTime.utc(2026, 7, 28, 21, 0, 0);
 final groupLa3 = Group(
   id: 'grp_la3',
   name: 'LA 3살 아이 엄마 모임',
-  description:
-      '한인타운·LA 근처 세 살 전후 아이 엄마들 모임이에요. '
+  description: '한인타운·LA 근처 세 살 전후 아이 엄마들 모임이에요. '
       '놀이터·도서관·키즈카페 같이 가고, 육아 고민도 편하게 나눠요.',
   category: '육아',
   location: 'Koreatown, Los Angeles',
@@ -32,8 +31,7 @@ final groupLa3 = Group(
 final groupOcWork = Group(
   id: 'grp_ocwork',
   name: 'OC 워킹맘 모임',
-  description:
-      'Irvine·Orange County 워킹맘 모임입니다. '
+  description: 'Irvine·Orange County 워킹맘 모임입니다. '
       '주말 일정, 방과 후, 육아·일 밸런스 정보를 나눠요.',
   category: '워킹맘',
   location: 'Irvine, Orange County',
@@ -51,8 +49,7 @@ final groupOcWork = Group(
 final groupSwim = Group(
   id: 'grp_swim',
   name: '수영 배우는 아이 엄마들',
-  description:
-      '아이 수영 클래스 정보 공유하고, 연습 후 간식·수다도 해요. '
+  description: '아이 수영 클래스 정보 공유하고, 연습 후 간식·수다도 해요. '
       '물 무서운 아이도 환영입니다!',
   category: '취미·운동',
   location: 'Torrance / South Bay',
@@ -70,8 +67,7 @@ final groupSwim = Group(
 final groupPreschool = Group(
   id: 'grp_preschool',
   name: '한인 프리스쿨 정보방',
-  description:
-      'LA·OC 한인 프리스쿨·킨더·TK 정보 나눔방. '
+  description: 'LA·OC 한인 프리스쿨·킨더·TK 정보 나눔방. '
       '입학 준비, 도시락, 적응기 팁을 공유해요.',
   category: '학교·킨더',
   location: 'Los Angeles / Orange County',
@@ -89,8 +85,7 @@ final groupPreschool = Group(
 final groupPark = Group(
   id: 'grp_park',
   name: '주말 공원 나들이 모임',
-  description:
-      '주말에 공원·피크닉·산책 같이 가요. '
+  description: '주말에 공원·피크닉·산책 같이 가요. '
       '날씨 좋을 때 번개로 모이고, 돗자리·간식만 챙겨오세요.',
   category: '야외·나들이',
   location: 'LA / OC parks',
@@ -282,8 +277,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_la3_1',
     title: '이번 주 Lafayette Park 가실 분?',
-    content:
-        '토요일 오전 10시에 Lafayette Park 놀이터에서 만나면 어떨까요? '
+    content: '토요일 오전 10시에 Lafayette Park 놀이터에서 만나면 어떨까요? '
         '간식이랑 물만 챙겨오시면 돼요. 3살 전후 아이들끼리 놀기 좋아요!',
     authorName: '김소라',
     creatorId: 'mom_sora',
@@ -298,8 +292,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_la3_2',
     title: '낮잠 안 자는 아이 어떻게 하세요?',
-    content:
-        '요즘 낮잠을 갑자기 안 자네요 ㅠㅠ 저녁에 너무 피곤해해서 걱정이에요. '
+    content: '요즘 낮잠을 갑자기 안 자네요 ㅠㅠ 저녁에 너무 피곤해해서 걱정이에요. '
         '같은 나이대 엄마들 어떻게 하시나요?',
     authorName: '장하은',
     creatorId: currentUserId,
@@ -314,8 +307,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_la3_3',
     title: '한인타운 키즈카페 추천 부탁드려요',
-    content:
-        '비 오는 날 갈 만한 키즈카페 Koreatown 근처에 있을까요? '
+    content: '비 오는 날 갈 만한 키즈카페 Koreatown 근처에 있을까요? '
         '자리가 너무 붐비지 않는 곳이면 좋겠어요.',
     authorName: '최유나',
     creatorId: 'mom_yuna',
@@ -330,8 +322,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_la3_4',
     title: '영어·한국어 병행 어떻게 하세요?',
-    content:
-        '집에서 한국어, 밖에서는 영어라 아이가 가끔 헷갈려해요. '
+    content: '집에서 한국어, 밖에서는 영어라 아이가 가끔 헷갈려해요. '
         '엄마들 언어 루틴 있으면 공유해주세요!',
     authorName: '박민지',
     creatorId: 'mom_minji',
@@ -348,8 +339,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_oc_1',
     title: '주말 데이케어 대타 있으신가요?',
-    content:
-        '토요일 오전에 반나절만 일이 생겼어요. Irvine 쪽 믿을 만한 babysitter '
+    content: '토요일 오전에 반나절만 일이 생겼어요. Irvine 쪽 믿을 만한 babysitter '
         '아시는 분 계신가요?',
     authorName: '한은지',
     creatorId: 'mom_eunji',
@@ -364,8 +354,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_oc_2',
     title: 'Irvine 방과후 프로그램 추천',
-    content:
-        '내년에 TK 들어가는데 방과후 enrichment 알아보고 있어요. '
+    content: '내년에 TK 들어가는데 방과후 enrichment 알아보고 있어요. '
         '스포츠·미술 중에 괜찮았던 곳 있으면 알려주세요!',
     authorName: '이혜진',
     creatorId: 'mom_hyejin',
@@ -380,8 +369,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_oc_3',
     title: '워킹맘 저녁 루틴 공유해요',
-    content:
-        '퇴근 후 밥·목욕·이불까지 전쟁이네요. '
+    content: '퇴근 후 밥·목욕·이불까지 전쟁이네요. '
         '저녁 루틴 단순하게 하신 분들 tip 부탁드려요!',
     authorName: '박민지',
     creatorId: 'mom_minji',
@@ -398,8 +386,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_swim_1',
     title: 'YMCA 수영 레벨 어떻게 나뉘나요?',
-    content:
-        '4살인데 물이 좀 무서워해요. YMCA parent-child랑 private 중에 '
+    content: '4살인데 물이 좀 무서워해요. YMCA parent-child랑 private 중에 '
         '어떤 게 나을까요?',
     authorName: '최유나',
     creatorId: 'mom_yuna',
@@ -414,8 +401,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_swim_2',
     title: 'Torrance 사설 수영장 후기',
-    content:
-        'Torrance 쪽 사설 수영장 다니는데 선생님이 차분하게 알려주셔서 '
+    content: 'Torrance 쪽 사설 수영장 다니는데 선생님이 차분하게 알려주셔서 '
         '우리 애가 잘 적응했어요. 궁금하신 분 DM 주세요!',
     authorName: '한지우',
     creatorId: 'mom_jiwoo',
@@ -430,8 +416,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_swim_3',
     title: '수영 후 간식 뭐 챙겨가세요?',
-    content:
-        '수업 끝나면 배가 고프다고 보채서요. '
+    content: '수업 끝나면 배가 고프다고 보채서요. '
         '젖지 않게 챙기기 좋은 간식 있으면 추천해주세요!',
     authorName: '한은지',
     creatorId: 'mom_eunji',
@@ -446,8 +431,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_swim_4',
     title: '물안경·수영모 브랜드 추천',
-    content:
-        '아이가 물안경을 싫어해서 계속 벗어요. '
+    content: '아이가 물안경을 싫어해서 계속 벗어요. '
         '얼굴에 안 아픈 제품 쓰신 분 계신가요?',
     authorName: '이혜진',
     creatorId: 'mom_hyejin',
@@ -464,8 +448,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_pre_1',
     title: '킨더 도시락 보통 뭐 싸주시나요?',
-    content:
-        '요번에 애기가 킨더 들어가는데 도시락을 싸가야 하네요. '
+    content: '요번에 애기가 킨더 들어가는데 도시락을 싸가야 하네요. '
         '입이 짧은 편이라 메뉴 추천 부탁드려요!',
     authorName: '박민지',
     creatorId: 'mom_minji',
@@ -482,8 +465,7 @@ final mockGroupPosts = [
   Post(
     id: 'gpo_park_1',
     title: '이번 주말 Griffith Park 피크닉?',
-    content:
-        '일요일 오전 Griffith Park에서 돗자리 피크닉 어때요? '
+    content: '일요일 오전 Griffith Park에서 돗자리 피크닉 어때요? '
         '기차 타기 전에 놀이터도 들를 수 있어요.',
     authorName: '이혜진',
     creatorId: 'mom_hyejin',
@@ -503,8 +485,7 @@ final mockGlobalPosts = [
   Post(
     id: 'gpo_global_1',
     title: '한국어 가능한 소아과 추천 부탁드려요',
-    content:
-        '한인타운이나 Torrance 쪽으로 한국어 되는 소아과 찾고 있어요. '
+    content: '한인타운이나 Torrance 쪽으로 한국어 되는 소아과 찾고 있어요. '
         '애가 병원만 가면 울어서 설명 잘 해주시는 선생님이면 좋겠어요.',
     authorName: '장하은',
     creatorId: currentUserId,
@@ -519,8 +500,7 @@ final mockGlobalPosts = [
   Post(
     id: 'gpo_global_2',
     title: 'Costco에서 아이 간식 뭐 사세요?',
-    content:
-        'Costco 가면 간식 코너에서 한참 헤매요. '
+    content: 'Costco 가면 간식 코너에서 한참 헤매요. '
         '당 덜 들어간 걸로 사려고 하는데, 엄마들 단골 간식 뭐 있으세요?',
     authorName: '한지우',
     creatorId: 'mom_jiwoo',
@@ -535,8 +515,7 @@ final mockGlobalPosts = [
   Post(
     id: 'gpo_global_3',
     title: '비 오는 날 갈 만한 곳 어디 있을까요?',
-    content:
-        '이번 주 비 온다고 해서 실내 장소 찾고 있어요. '
+    content: '이번 주 비 온다고 해서 실내 장소 찾고 있어요. '
         '키즈카페, 박물관, 도서관 중에 Glendale / Pasadena 쪽 추천 있으신가요?',
     authorName: '박민지',
     creatorId: 'mom_minji',
@@ -551,8 +530,7 @@ final mockGlobalPosts = [
   Post(
     id: 'gpo_global_4',
     title: '편식 심한 아이 반찬 추천해주세요',
-    content:
-        '우리 애가 밥을 너무 안 먹어서 고민이에요. '
+    content: '우리 애가 밥을 너무 안 먹어서 고민이에요. '
         '고기만 찾고 채소는 거의 안 먹네요. 집에서 잘 먹던 반찬 있으면 공유 부탁드려요!',
     authorName: '이혜진',
     creatorId: 'mom_hyejin',
@@ -567,8 +545,7 @@ final mockGlobalPosts = [
   Post(
     id: 'gpo_global_5',
     title: 'Irvine 쪽 아이 키우기 어떤가요?',
-    content:
-        '혹시 Irvine / Orange County 쪽에서 아이 키우시는 분들 계세요? '
+    content: '혹시 Irvine / Orange County 쪽에서 아이 키우시는 분들 계세요? '
         '공원이나 도서관, 킨더 분위기 궁금해서요. LA에서 이사 고민 중이에요!',
     authorName: '한은지',
     creatorId: 'mom_eunji',
@@ -583,8 +560,7 @@ final mockGlobalPosts = [
   Post(
     id: 'gpo_global_6',
     title: '드디어 기저귀 졸업했어요!!',
-    content:
-        '몇 달 고생하더니 드디어 기저귀 뗐어요!! '
+    content: '몇 달 고생하더니 드디어 기저귀 뗐어요!! '
         '밤에만 조금 실수하는데 그래도 너무 기특하네요. 같은 시기 지나신분들 공감이죠?',
     authorName: '김소라',
     creatorId: 'mom_sora',
@@ -612,8 +588,7 @@ final eventLa3Park = EventAnnouncement(
   creatorId: 'mom_sora',
   creatorName: '김소라',
   title: '토요일 Lafayette Park 놀이터',
-  description:
-      '오전 10시 Lafayette Park에서 만나요. '
+  description: '오전 10시 Lafayette Park에서 만나요. '
       '간단한 간식과 물만 챙겨오시면 됩니다.',
   dateTime: DateTime.utc(2026, 8, 2, 17, 0), // 10:00 AM PDT
   location: 'Lafayette Park, Koreatown',
@@ -628,8 +603,7 @@ final eventLa3Library = EventAnnouncement(
   creatorId: 'mom_minji',
   creatorName: '박민지',
   title: '수요일 도서관 스토리타임',
-  description:
-      'Pio Pico Library 스토리타임 같이 가요. '
+  description: 'Pio Pico Library 스토리타임 같이 가요. '
       '끝나고 키즈존에서 잠깐 놀다 옵니다.',
   dateTime: DateTime.utc(2026, 8, 6, 21, 30), // 2:30 PM PDT
   location: 'Pio Pico Library, Los Angeles',
@@ -644,8 +618,7 @@ final eventOcBrunch = EventAnnouncement(
   creatorId: 'mom_eunji',
   creatorName: '한은지',
   title: '주말 워킹맘 브런치 수다',
-  description:
-      '일요일 오전 Irvine에서 브런치하며 육아·일 이야기 나눠요. '
+  description: '일요일 오전 Irvine에서 브런치하며 육아·일 이야기 나눠요. '
       '아이 데리고 오셔도 괜찮아요.',
   dateTime: DateTime.utc(2026, 8, 3, 18, 0), // 11:00 AM PDT
   location: 'Café near Irvine Spectrum',
@@ -660,8 +633,7 @@ final eventSwimPractice = EventAnnouncement(
   creatorId: 'mom_yuna',
   creatorName: '최유나',
   title: 'YMCA 수영 연습 후 간식',
-  description:
-      '수업 끝나고 로비에서 간식 나눠 먹어요. '
+  description: '수업 끝나고 로비에서 간식 나눠 먹어요. '
       '처음 오시는 분도 환영합니다!',
   dateTime: DateTime.utc(2026, 8, 1, 1, 0), // Fri 6:00 PM PDT Jul 31
   location: 'Torrance YMCA lobby',
@@ -675,8 +647,7 @@ final eventParkPicnic = EventAnnouncement(
   creatorId: 'mom_hyejin',
   creatorName: '이혜진',
   title: 'Griffith Park 주말 피크닉',
-  description:
-      '돗자리·간단한 lunch box만 챙겨오세요. '
+  description: '돗자리·간단한 lunch box만 챙겨오세요. '
       '날씨 안 좋으면 단체 채팅으로 안내할게요.',
   dateTime: DateTime.utc(2026, 8, 3, 18, 0),
   location: 'Griffith Park, Los Angeles',
@@ -691,8 +662,7 @@ final eventPreschoolOpen = EventAnnouncement(
   creatorId: 'mom_minji',
   creatorName: '박민지',
   title: '한인 프리스쿨 오픈하우스 동행',
-  description:
-      '이번 주 오픈하우스 같이 가실 분 모아요. '
+  description: '이번 주 오픈하우스 같이 가실 분 모아요. '
       '끝나고 간단히 후기 나눕니다.',
   dateTime: DateTime.utc(2026, 8, 5, 17, 0),
   location: 'Koreatown preschool campus',

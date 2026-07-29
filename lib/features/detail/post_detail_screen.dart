@@ -13,7 +13,8 @@ class PostDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final title = post.title.trim().isEmpty ? 'Untitled post' : post.title.trim();
+    final title =
+        post.title.trim().isEmpty ? 'Untitled post' : post.title.trim();
     final content = post.content.trim().isEmpty
         ? 'No content provided.'
         : post.content.trim();

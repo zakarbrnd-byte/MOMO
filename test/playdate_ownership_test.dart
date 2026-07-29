@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:momo/app.dart';
 import 'package:momo/data/mock_user.dart';
+import 'package:momo/features/detail/playdate_detail_screen.dart';
 import 'package:momo/providers/playdate_provider.dart';
 
 import 'support/test_overrides.dart';
 
+/// Ownership coverage via provider + detail screen (Create hub is Group/Post).
 void main() {
-  Future<ProviderContainer> pumpApp(WidgetTester tester) async {
+  Future<ProviderContainer> pumpDetail(
+    WidgetTester tester,
+    String playdateId,
+  ) async {
     tester.view.physicalSize = const Size(400, 1000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -17,49 +21,39 @@ void main() {
 
     final container = ProviderContainer(overrides: testBackendOverrides);
     addTearDown(container.dispose);
+    await container.read(playdateProvider.future);
+
+    final playdate = container
+        .read(playdateProvider)
+        .requireValue
+        .firstWhere((item) => item.id == playdateId);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MomoApp(),
+        child: MaterialApp(
+          home: PlaydateDetailScreen(playdate: playdate),
+        ),
       ),
     );
     await tester.pumpAndSettle();
     return container;
   }
 
-  Future<void> openCreatePlaydate(WidgetTester tester) async {
-    await tester.tap(find.byIcon(Icons.add_circle_outline));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Playdate'));
-    await tester.pumpAndSettle();
-  }
+  test('Create assigns creatorId and starts with zero participants', () async {
+    final container = ProviderContainer(overrides: testBackendOverrides);
+    addTearDown(container.dispose);
+    await container.read(playdateProvider.future);
 
-  Future<void> fillRequiredPlaydateFields(
-    WidgetTester tester, {
-    required String title,
-  }) async {
-    final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), title);
-    await tester.tap(find.byKey(const Key('playdate_date_field')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('OK'));
-    await tester.pumpAndSettle();
-    await tester.enterText(fields.at(3), 'Irvine Park');
-  }
-
-  testWidgets('Create assigns creatorId and starts with zero participants',
-      (tester) async {
-    final container = await pumpApp(tester);
-    await openCreatePlaydate(tester);
-    await fillRequiredPlaydateFields(tester, title: 'Owned Park Day');
-
-    await tester.enterText(
-      find.byKey(const Key('playdate_capacity_field')),
-      '3',
-    );
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
-    await tester.pumpAndSettle();
+    container.read(playdateProvider.notifier).createPlaydate(
+          title: 'Owned Park Day',
+          date: 'Sat',
+          time: '',
+          location: 'Irvine Park',
+          childAge: '',
+          description: '',
+          maxParticipants: 3,
+        );
 
     final created = container
         .read(playdateProvider)
@@ -69,21 +63,10 @@ void main() {
     expect(created.creatorId, currentUser.id);
     expect(created.participantIds, isEmpty);
     expect(created.participantsLabel, '0 / 3 joined');
-    expect(find.text('Created by you'), findsWidgets);
   });
 
   testWidgets('Owner detail shows Edit/Cancel, not Join/Leave', (tester) async {
-    await pumpApp(tester);
-
-    await tester.scrollUntilVisible(
-      find.text('저녁 먹고 동네 산책 같이 하실 분'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('저녁 먹고 동네 산책 같이 하실 분'));
-    await tester.pumpAndSettle();
+    await pumpDetail(tester, 'pd5');
 
     expect(find.text('My Playdate'), findsOneWidget);
     expect(find.text('Edit Playdate'), findsOneWidget);
@@ -93,28 +76,16 @@ void main() {
   });
 
   testWidgets('Non-owner detail keeps Join/Leave', (tester) async {
-    await pumpApp(tester);
-
-    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
-    await tester.pumpAndSettle();
+    await pumpDetail(tester, 'pd1');
 
     expect(find.text('Join Playdate'), findsOneWidget);
     expect(find.text('Edit Playdate'), findsNothing);
     expect(find.text('Cancel Playdate'), findsNothing);
   });
 
-  testWidgets('Owner cancel removes playdate from feed', (tester) async {
-    final container = await pumpApp(tester);
-
-    await tester.scrollUntilVisible(
-      find.text('저녁 먹고 동네 산책 같이 하실 분'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('저녁 먹고 동네 산책 같이 하실 분'));
-    await tester.pumpAndSettle();
+  testWidgets('Owner cancel removes playdate from provider list',
+      (tester) async {
+    final container = await pumpDetail(tester, 'pd5');
 
     await tester.tap(find.widgetWithText(FilledButton, 'Cancel Playdate'));
     await tester.pumpAndSettle();
@@ -132,7 +103,6 @@ void main() {
           .any((item) => item.id == 'pd5'),
       isFalse,
     );
-    expect(find.text('저녁 먹고 동네 산책 같이 하실 분'), findsNothing);
   });
 
   test('Non-owner cannot cancel via provider', () async {
@@ -155,17 +125,7 @@ void main() {
   });
 
   testWidgets('Edit shows coming soon placeholder', (tester) async {
-    await pumpApp(tester);
-
-    await tester.scrollUntilVisible(
-      find.text('저녁 먹고 동네 산책 같이 하실 분'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('저녁 먹고 동네 산책 같이 하실 분'));
-    await tester.pumpAndSettle();
+    await pumpDetail(tester, 'pd5');
 
     await tester.tap(find.widgetWithText(OutlinedButton, 'Edit Playdate'));
     await tester.pumpAndSettle();

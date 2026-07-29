@@ -4,14 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:momo/app.dart';
 import 'package:momo/core/widgets/empty_state.dart';
-import 'package:momo/models/playdate.dart';
+import 'package:momo/data/mock_groups.dart';
+import 'package:momo/models/group.dart';
 import 'package:momo/models/post.dart';
-import 'package:momo/providers/playdate_provider.dart';
+import 'package:momo/providers/group_provider.dart';
 import 'package:momo/providers/post_provider.dart';
 
-class _EmptyPlaydates extends PlaydateNotifier {
+class _EmptyGroups extends GroupNotifier {
   @override
-  Future<List<Playdate>> build() async => [];
+  Future<List<Group>> build() async => [];
 }
 
 class _EmptyPosts extends PostNotifier {
@@ -41,30 +42,39 @@ void main() {
   testWidgets('Home shows mock feed content', (tester) async {
     await pumpApp(tester);
 
-    expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
-    expect(find.text('킨더 도시락 보통 뭐 싸주시나요?'), findsOneWidget);
-    expect(find.text('아직 등록된 Play Date가 없습니다.'), findsNothing);
-    expect(find.text('아직 게시글이 없습니다.'), findsNothing);
+    expect(find.textContaining('LA 3살'), findsOneWidget);
+    expect(find.text(mockGlobalPosts.first.title), findsNothing);
+
+    await tester.scrollUntilVisible(
+      find.text(mockGlobalPosts.first.title),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text(mockGlobalPosts.first.title), findsOneWidget);
+    expect(find.text('아직 그룹이 없습니다.'), findsNothing);
+    expect(find.text('아직 커뮤니티 게시글이 없습니다.'), findsNothing);
+    expect(find.text('Create Playdate'), findsNothing);
   });
 
-  testWidgets('Empty playdates shows empty state CTA', (tester) async {
+  testWidgets('Empty groups shows empty state CTA', (tester) async {
     await pumpApp(
       tester,
       overrides: [
-        playdateProvider.overrideWith(_EmptyPlaydates.new),
+        groupProvider.overrideWith(_EmptyGroups.new),
       ],
     );
 
     expect(find.byType(EmptyState), findsOneWidget);
-    expect(find.text('아직 등록된 Play Date가 없습니다.'), findsOneWidget);
-    expect(find.text('첫 번째 모임을 만들어보세요.'), findsOneWidget);
-    expect(
-        find.widgetWithText(FilledButton, 'Create Playdate'), findsOneWidget);
+    expect(find.text('아직 그룹이 없습니다.'), findsOneWidget);
+    expect(find.text('관심사·나이·지역으로 첫 커뮤니티를 만들어보세요.'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Create Group'), findsOneWidget);
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Group'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Create Playdate'), findsWidgets);
+    expect(find.text('Create Group'), findsWidgets);
     expect(find.byType(TextFormField), findsWidgets);
   });
 
@@ -77,7 +87,7 @@ void main() {
     );
 
     expect(find.byType(EmptyState), findsOneWidget);
-    expect(find.text('아직 게시글이 없습니다.'), findsOneWidget);
+    expect(find.text('아직 커뮤니티 게시글이 없습니다.'), findsOneWidget);
     expect(find.text('첫 번째 이야기를 공유해보세요.'), findsOneWidget);
     expect(find.widgetWithText(FilledButton, 'Create Post'), findsOneWidget);
 
@@ -88,18 +98,17 @@ void main() {
     expect(find.byType(TextFormField), findsWidgets);
   });
 
-  testWidgets('Both empty shows playdate and post empty states',
-      (tester) async {
+  testWidgets('Both empty shows group and post empty states', (tester) async {
     await pumpApp(
       tester,
       overrides: [
-        playdateProvider.overrideWith(_EmptyPlaydates.new),
+        groupProvider.overrideWith(_EmptyGroups.new),
         postProvider.overrideWith(_EmptyPosts.new),
       ],
     );
 
     expect(find.byType(EmptyState), findsNWidgets(2));
-    expect(find.text('아직 등록된 Play Date가 없습니다.'), findsOneWidget);
-    expect(find.text('아직 게시글이 없습니다.'), findsOneWidget);
+    expect(find.text('아직 그룹이 없습니다.'), findsOneWidget);
+    expect(find.text('아직 커뮤니티 게시글이 없습니다.'), findsOneWidget);
   });
 }

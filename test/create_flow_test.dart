@@ -8,8 +8,8 @@ import 'package:momo/core/async/simulated_backend.dart';
 import 'package:momo/core/widgets/error_view.dart';
 import 'package:momo/core/widgets/loading_view.dart';
 import 'package:momo/navigation/app_navigation.dart';
+import 'package:momo/providers/group_provider.dart';
 import 'package:momo/providers/main_tab_provider.dart';
-import 'package:momo/providers/playdate_provider.dart';
 import 'package:momo/providers/post_provider.dart';
 
 import 'support/test_overrides.dart';
@@ -38,109 +38,70 @@ void main() {
     return container;
   }
 
-  Future<void> openCreatePlaydate(WidgetTester tester) async {
+  Future<void> openCreateGroup(WidgetTester tester) async {
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Playdate'));
+    await tester.tap(find.text('Create Group'));
     await tester.pumpAndSettle();
   }
 
-  Future<void> selectDateFromPicker(WidgetTester tester) async {
-    await tester.tap(find.byKey(const Key('playdate_date_field')));
+  Future<void> openCreatePost(WidgetTester tester) async {
+    await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('OK'));
-    await tester.pumpAndSettle();
-  }
-
-  Future<void> selectTimeFromPicker(WidgetTester tester) async {
-    await tester.tap(find.byKey(const Key('playdate_time_field')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('OK'));
+    await tester.tap(find.text('Create Post'));
     await tester.pumpAndSettle();
   }
 
-  testWidgets('Create Playdate blocks submit without date', (tester) async {
+  testWidgets('Create hub offers Group and Post only', (tester) async {
     final container = newContainer();
     await pumpApp(tester, container);
 
-    final initialCount = container.read(playdateProvider).requireValue.length;
-    await openCreatePlaydate(tester);
-
-    final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), 'Park Play Date');
-    await tester.enterText(fields.at(3), 'Irvine Park');
-
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
 
-    expect(find.text('Please select a date.'), findsOneWidget);
-    expect(container.read(playdateProvider).requireValue.length, initialCount);
+    expect(find.text('Create Group'), findsOneWidget);
+    expect(find.text('Create Post'), findsOneWidget);
+    expect(find.text('Create Playdate'), findsNothing);
   });
 
-  testWidgets('Create Playdate succeeds without time', (tester) async {
+  testWidgets('Create Group blocks submit without required fields',
+      (tester) async {
     final container = newContainer();
     await pumpApp(tester, container);
 
-    await openCreatePlaydate(tester);
+    final initialCount = container.read(groupProvider).requireValue.length;
+    await openCreateGroup(tester);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Group'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('이름, 소개, 지역은 필수입니다.'), findsOneWidget);
+    expect(container.read(groupProvider).requireValue.length, initialCount);
+  });
+
+  testWidgets('Create Group succeeds and appears on Home', (tester) async {
+    final container = newContainer();
+    await pumpApp(tester, container);
+
+    await openCreateGroup(tester);
 
     final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), 'Park Play Date');
-    await selectDateFromPicker(tester);
+    await tester.enterText(fields.at(0), 'Park Moms Group');
+    await tester.enterText(fields.at(1), 'Weekly park meetups for toddlers.');
     await tester.enterText(fields.at(3), 'Irvine Park');
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Group'));
     await tester.pumpAndSettle();
 
     expect(container.read(mainTabProvider), MainTabs.home);
-    expect(find.text('Playdate created successfully!'), findsOneWidget);
-    expect(find.text('Park Play Date'), findsOneWidget);
-    expect(find.text('Irvine Park'), findsOneWidget);
-    expect(find.text('Please select a date.'), findsNothing);
-  });
-
-  testWidgets('Create Playdate succeeds with selected time', (tester) async {
-    final container = newContainer();
-    await pumpApp(tester, container);
-
-    await openCreatePlaydate(tester);
-
-    final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), 'Morning Meetup');
-    await selectDateFromPicker(tester);
-    await selectTimeFromPicker(tester);
-    await tester.enterText(fields.at(3), 'Irvine Park');
-
-    final timeField = tester.widget<TextFormField>(
-      find.descendant(
-        of: find.byKey(const Key('playdate_time_field')),
-        matching: find.byType(TextFormField),
-      ),
+    expect(find.text('Group created'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Park Moms Group'),
+      300,
+      scrollable: find.byType(Scrollable).first,
     );
-    final timeText = timeField.controller?.text;
-    expect(timeText, isNotNull);
-    expect(timeText, isNotEmpty);
-
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
-
-    expect(find.text('Morning Meetup'), findsOneWidget);
-    expect(find.text(timeText!), findsWidgets);
-  });
-
-  testWidgets('Create Playdate blocks empty form with validation', (tester) async {
-    final container = newContainer();
-    await pumpApp(tester, container);
-
-    final initialCount = container.read(playdateProvider).requireValue.length;
-    await openCreatePlaydate(tester);
-
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Please enter a title.'), findsOneWidget);
-    expect(find.text('Please select a date.'), findsOneWidget);
-    expect(find.text('Please enter a location.'), findsOneWidget);
-    expect(container.read(playdateProvider).requireValue.length, initialCount);
+    expect(find.text('Park Moms Group'), findsOneWidget);
   });
 
   testWidgets('Create Post blocks empty form with validation', (tester) async {
@@ -149,10 +110,7 @@ void main() {
 
     final initialCount = container.read(postProvider).requireValue.length;
 
-    await tester.tap(find.byIcon(Icons.add_circle_outline));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Post'));
-    await tester.pumpAndSettle();
+    await openCreatePost(tester);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
     await tester.pumpAndSettle();
@@ -166,10 +124,7 @@ void main() {
     final container = newContainer();
     await pumpApp(tester, container);
 
-    await tester.tap(find.byIcon(Icons.add_circle_outline));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Post'));
-    await tester.pumpAndSettle();
+    await openCreatePost(tester);
 
     final fields = find.byType(TextFormField);
     await tester.enterText(fields.at(0), 'Best playground recommendations?');
@@ -183,10 +138,16 @@ void main() {
 
     expect(container.read(mainTabProvider), MainTabs.home);
     expect(find.text('Post created successfully!'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Best playground recommendations?'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     expect(find.text('Best playground recommendations?'), findsOneWidget);
   });
 
-  testWidgets('Create Playdate shows loading then success', (tester) async {
+  testWidgets('Create Post shows loading then success', (tester) async {
     final container = ProviderContainer(
       overrides: [
         simulatedBackendProvider.overrideWith(
@@ -197,13 +158,12 @@ void main() {
     addTearDown(container.dispose);
     await pumpApp(tester, container);
 
-    await openCreatePlaydate(tester);
+    await openCreatePost(tester);
     final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), 'Loading Flow Playdate');
-    await selectDateFromPicker(tester);
-    await tester.enterText(fields.at(3), 'Irvine Park');
+    await tester.enterText(fields.at(0), 'Loading Flow Post');
+    await tester.enterText(fields.at(1), 'Checking loading state.');
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
     await tester.pump();
     expect(find.byType(LoadingView), findsOneWidget);
     expect(find.text('Loading...'), findsOneWidget);
@@ -211,8 +171,14 @@ void main() {
     await tester.pump(const Duration(milliseconds: 450));
     await tester.pumpAndSettle();
 
-    expect(find.text('Loading Flow Playdate'), findsOneWidget);
-    expect(find.text('Playdate created successfully!'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Loading Flow Post'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Loading Flow Post'), findsOneWidget);
+    expect(find.text('Post created successfully!'), findsOneWidget);
   });
 
   testWidgets('Create error then retry succeeds', (tester) async {
@@ -221,29 +187,34 @@ void main() {
 
     container.read(simulatedBackendProvider.notifier).armFailure();
 
-    await openCreatePlaydate(tester);
+    await openCreatePost(tester);
     final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), 'Retry Playdate');
-    await selectDateFromPicker(tester);
-    await tester.enterText(fields.at(3), 'Irvine Park');
+    await tester.enterText(fields.at(0), 'Retry Post');
+    await tester.enterText(fields.at(1), 'Retry after failure.');
 
-    final before = container.read(playdateProvider).requireValue.length;
+    final before = container.read(postProvider).requireValue.length;
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
     await tester.pumpAndSettle();
 
     expect(find.byType(ErrorView), findsOneWidget);
-    expect(find.text('Could not create playdate'), findsOneWidget);
-    expect(container.read(playdateProvider).requireValue.length, before);
+    expect(find.text('Could not create post'), findsOneWidget);
+    expect(container.read(postProvider).requireValue.length, before);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Try again'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Retry Playdate'), findsOneWidget);
-    expect(container.read(playdateProvider).requireValue.length, before + 1);
+    await tester.scrollUntilVisible(
+      find.text('Retry Post'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Retry Post'), findsOneWidget);
+    expect(container.read(postProvider).requireValue.length, before + 1);
   });
 
-  testWidgets('Double tap Create only adds one playdate', (tester) async {
+  testWidgets('Double tap Create only adds one post', (tester) async {
     final container = ProviderContainer(
       overrides: [
         simulatedBackendProvider.overrideWith(
@@ -254,31 +225,30 @@ void main() {
     addTearDown(container.dispose);
     await pumpApp(tester, container);
 
-    await openCreatePlaydate(tester);
+    await openCreatePost(tester);
     final fields = find.byType(TextFormField);
     await tester.enterText(fields.at(0), 'Single Create');
-    await selectDateFromPicker(tester);
-    await tester.enterText(fields.at(3), 'Irvine Park');
+    await tester.enterText(fields.at(1), 'Only one please.');
 
-    final before = container.read(playdateProvider).requireValue.length;
+    final before = container.read(postProvider).requireValue.length;
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
     await tester.pump();
-    await tester.tap(find.text('Create Playdate'));
+    await tester.tap(find.text('Create Post'));
     await tester.pump();
 
-    final mid = container.read(createPlaydateMutationProvider);
+    final mid = container.read(createPostMutationProvider);
     expect(mid.isLoading, isTrue);
 
     await tester.pump(const Duration(milliseconds: 350));
     await tester.pumpAndSettle();
 
     final created = container
-        .read(playdateProvider)
+        .read(postProvider)
         .requireValue
         .where((item) => item.title == 'Single Create');
     expect(created.length, 1);
-    expect(container.read(playdateProvider).requireValue.length, before + 1);
+    expect(container.read(postProvider).requireValue.length, before + 1);
   });
 }
 

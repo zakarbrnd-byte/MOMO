@@ -79,6 +79,8 @@ void main() {
     );
     expect(post.status, PostStatus.active);
     expect(post.creatorId, isNull);
+    expect(post.groupId, isNull);
+    expect(post.isGlobal, isTrue);
     expect(post.category, PostCategory.parenting);
     expect(post.viewCount, 0);
     expect(post.commentCount, 0);

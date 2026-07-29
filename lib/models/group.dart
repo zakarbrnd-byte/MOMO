@@ -115,9 +115,8 @@ class GroupMember {
       userId: userId ?? this.userId,
       userName: userName ?? this.userName,
       role: role ?? this.role,
-      joinedAt: identical(joinedAt, _unset)
-          ? this.joinedAt
-          : joinedAt as DateTime?,
+      joinedAt:
+          identical(joinedAt, _unset) ? this.joinedAt : joinedAt as DateTime?,
     );
   }
 }

@@ -50,7 +50,8 @@ class GroupDto {
       coverEmoji: JsonConverters.nullableStringFromJson(json['coverEmoji']),
       isFeatured: json['isFeatured'] == true,
       createdAt: JsonConverters.dateTimeFromJson(json['createdAt']),
-      recentActivityAt: JsonConverters.dateTimeFromJson(json['recentActivityAt']),
+      recentActivityAt:
+          JsonConverters.dateTimeFromJson(json['recentActivityAt']),
     );
   }
 
@@ -149,8 +150,7 @@ class GroupMemberDto {
       'userId': userId,
       'userName': userName,
       'role': JsonConverters.enumToJson(role),
-      if (joinedAt != null)
-        'joinedAt': JsonConverters.dateTimeToJson(joinedAt),
+      if (joinedAt != null) 'joinedAt': JsonConverters.dateTimeToJson(joinedAt),
     };
   }
 
