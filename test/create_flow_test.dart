@@ -87,6 +87,12 @@ void main() {
     );
     expect(find.text('모임 찾아보기'), findsOneWidget);
 
+    await tester.scrollUntilVisible(
+      find.text('모임 찾아보기'),
+      100,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('모임 찾아보기'));
     await tester.pumpAndSettle();
     expect(container.read(mainTabProvider), MainTabs.home);

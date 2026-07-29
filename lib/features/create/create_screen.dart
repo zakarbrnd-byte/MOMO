@@ -21,63 +21,56 @@ class CreateScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Create')),
-      body: Padding(
+      body: ListView(
         padding: AppSpacing.pageCreate,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        children: [
+          Text(
+            'What would you like to share?',
+            style: textTheme.titleMedium,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Groups are communities. Event Announcements are created inside a Group.',
+            style: textTheme.bodyMedium,
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          _ActionCard(
+            icon: Icons.groups_outlined,
+            title: 'Create Group',
+            subtitle: 'Start a community around interest, age, or location',
+            onTap: () {
+              AppNavigation.pushPage(
+                context,
+                const CreateGroupScreen(),
+              );
+            },
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          _ActionCard(
+            icon: Icons.edit_note_outlined,
+            title: 'Create Post',
+            subtitle: 'Ask a question or share with the community',
+            onTap: () {
+              AppNavigation.pushPage(
+                context,
+                const CreatePostScreen(),
+              );
+            },
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          if (hasJoinedGroup)
             Text(
-              'What would you like to share?',
-              style: textTheme.titleMedium,
+              'Event Announcements: open a Group you joined → Create Event.',
+              style: textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            )
+          else
+            _EventMembershipGate(
+              onBrowseGroups: () {
+                AppNavigation.selectTab(ref, MainTabs.home);
+              },
             ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Groups are communities. Event Announcements are created inside a Group.',
-              style: textTheme.bodyMedium,
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            Expanded(
-              child: _ActionCard(
-                icon: Icons.groups_outlined,
-                title: 'Create Group',
-                subtitle: 'Start a community around interest, age, or location',
-                onTap: () {
-                  AppNavigation.pushPage(
-                    context,
-                    const CreateGroupScreen(),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Expanded(
-              child: _ActionCard(
-                icon: Icons.edit_note_outlined,
-                title: 'Create Post',
-                subtitle: 'Ask a question or share with the community',
-                onTap: () {
-                  AppNavigation.pushPage(
-                    context,
-                    const CreatePostScreen(),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            if (hasJoinedGroup)
-              Text(
-                'Event Announcements: open a Group you joined → Create Event.',
-                style: textTheme.bodySmall,
-                textAlign: TextAlign.center,
-              )
-            else
-              _EventMembershipGate(
-                onBrowseGroups: () {
-                  AppNavigation.selectTab(ref, MainTabs.home);
-                },
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -95,13 +88,13 @@ class _EventMembershipGate extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
+          const Text(
             '이벤트 공지를 만들려면 먼저 모임에 가입해야 합니다.',
             style: AppTextStyles.bodySmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.sm),
-          Text(
+          const Text(
             'Home에서 관심 있는 모임을 찾아 가입한 뒤, 모임 상세에서 일정을 만들어보세요.',
             style: AppTextStyles.caption,
             textAlign: TextAlign.center,
@@ -138,7 +131,7 @@ class _ActionCard extends StatelessWidget {
       onTap: onTap,
       padding: AppSpacing.allXl,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 64,
