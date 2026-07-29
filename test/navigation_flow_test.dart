@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:momo/app.dart';
 import 'package:momo/data/mock_groups.dart';
 import 'package:momo/navigation/app_navigation.dart';
+import 'package:momo/providers/group_provider.dart';
 import 'package:momo/providers/main_tab_provider.dart';
 
 import 'support/test_overrides.dart';
@@ -147,13 +148,30 @@ void main() {
     expect(find.text('Profile'), findsOneWidget);
   });
 
+  testWidgets('Groups tab badge shows joined count and hides at zero',
+      (tester) async {
+    final container = await pumpApp(tester);
+
+    // Seeded: LA3 + park → badge "2"
+    expect(find.byType(Badge), findsWidgets);
+    expect(find.text('2'), findsOneWidget);
+
+    for (final id in container.read(currentUserGroupIdsProvider).toList()) {
+      container.read(groupProvider.notifier).leaveGroup(id);
+    }
+    await tester.pumpAndSettle();
+
+    expect(find.text('2'), findsNothing);
+    expect(find.byType(Badge), findsNothing);
+  });
+
   testWidgets('Journey: Groups tab shows joined groups', (tester) async {
     final container = await pumpApp(tester);
 
     await tester.tap(find.byIcon(Icons.groups_outlined));
     await tester.pumpAndSettle();
     expect(container.read(mainTabProvider), MainTabs.groups);
-    expect(find.text('내 모임'), findsOneWidget);
+    expect(find.widgetWithText(AppBar, '내 모임'), findsOneWidget);
     expect(find.textContaining('LA 3살'), findsOneWidget);
   });
 

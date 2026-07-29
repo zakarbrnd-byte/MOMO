@@ -11,15 +11,22 @@ abstract final class MomoSuccessBanner {
   ///
   /// Capture [messenger] before navigating away if [context] may unmount
   /// (e.g. after create → Home).
+  ///
+  /// Optional [actionLabel] + [onAction] add a single snackbar action.
   static void show(
     BuildContext context,
     String message, {
     ScaffoldMessengerState? messenger,
+    String? actionLabel,
+    VoidCallback? onAction,
   }) {
     final scaffoldMessenger = messenger ?? ScaffoldMessenger.of(context);
     final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: AppColors.onPrimary,
         );
+    final hasAction = actionLabel != null &&
+        actionLabel.trim().isNotEmpty &&
+        onAction != null;
 
     scaffoldMessenger
       ..clearSnackBars()
@@ -38,6 +45,13 @@ abstract final class MomoSuccessBanner {
               ),
             ],
           ),
+          action: hasAction
+              ? SnackBarAction(
+                  label: actionLabel,
+                  textColor: AppColors.primary,
+                  onPressed: onAction,
+                )
+              : null,
         ),
       );
   }

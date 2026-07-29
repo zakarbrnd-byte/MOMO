@@ -40,6 +40,8 @@ void main() {
     expect(find.text('Join Playdate'), findsNothing);
     expect(find.text('Join Group'), findsNothing);
     expect(find.text('Leave Group'), findsNothing);
+    // Seeded memberships (LA3 + park) show soft "내 모임" chips.
+    expect(find.text('내 모임'), findsNWidgets(2));
 
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
@@ -87,6 +89,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Leave Group'), findsOneWidget);
+    expect(find.text('모임에 가입했습니다.'), findsOneWidget);
+    expect(find.text('내 모임에서 보기'), findsOneWidget);
     expect(
       container
           .read(groupProvider)
@@ -104,6 +108,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Join Group'), findsOneWidget);
+    expect(find.text('모임에서 나왔습니다.'), findsOneWidget);
     expect(
       container
           .read(groupProvider)
@@ -116,6 +121,28 @@ void main() {
       container.read(groupProvider.notifier).isMember(groupOcWork.id),
       isFalse,
     );
+  });
+
+  testWidgets('Join snackbar action opens Groups tab', (tester) async {
+    final container = await pumpApp(tester);
+
+    await tester.scrollUntilVisible(
+      find.text(groupOcWork.name),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(groupOcWork.name));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Join Group'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('내 모임에서 보기'));
+    await tester.pumpAndSettle();
+
+    expect(container.read(mainTabProvider), MainTabs.groups);
+    expect(find.widgetWithText(AppBar, '내 모임'), findsOneWidget);
+    expect(find.text(groupOcWork.name), findsWidgets);
   });
 
   testWidgets('Join syncs to Groups tab; Leave removes it', (tester) async {
@@ -140,7 +167,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.groups_outlined));
     await tester.pumpAndSettle();
     expect(container.read(mainTabProvider), MainTabs.groups);
-    expect(find.text('내 모임'), findsOneWidget);
+    expect(find.widgetWithText(AppBar, '내 모임'), findsOneWidget);
     expect(find.text(groupOcWork.name), findsOneWidget);
 
     await tester.tap(find.text(groupOcWork.name));
