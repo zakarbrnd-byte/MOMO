@@ -1,14 +1,19 @@
 # User Flow
 
-## Browse
+Target flows (Group-first). Current code may still show Playdate-shaped screens until Phase 3.7+.
 
-Home Feed → tap Playdate or Post card → Detail → back
+## Browse Groups
 
-## Create
+Home / discovery → open Group → view members, posts, Event Announcements
 
-Create tab → Create Playdate **or** Create Post → fill form → Save/Post  
-*(Today: snackbar + pop. Phase 2: item appears on Home Feed.)*
+## Participate
+
+Join Group → read / create Posts → comment / like (phased) → RSVP to Event Announcements
+
+## Create Event Announcement
+
+Inside a Group → create Event Announcement (date, time, location, description, child age, optional limit) → members RSVP Joining / Not Joining
 
 ## Profile
 
-Profile tab → view mock profile info
+Profile tab → view / complete onboarding signals (location, child age, interests) — Phase 3.9+

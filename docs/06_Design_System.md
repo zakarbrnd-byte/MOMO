@@ -10,8 +10,9 @@ Implemented in `lib/core/theme/`.
 - Primary accent: coral (`AppColors.primary`)
 - Background: soft warm off-white (`AppColors.background`)
 
-## UI rules (MVP)
+## UI rules
 
-- Cards are the main interaction surface on Home and Create
+- Cards remain a primary interaction surface on Home and Group screens
 - Prefer clarity over decorative chrome
-- Mobile-first layout; currently also run on Chrome for development
+- Mobile-first layout; also run on web for development
+- Product content shifts from Playdate cards → Group / Event Announcement cards over upcoming phases

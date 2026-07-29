@@ -1,8 +1,10 @@
 # Backend Migration Checklist
 
-MOMO MVP readiness for replacing mock data sources with Supabase (or any remote API).
+MOMO readiness for replacing mock data sources with Supabase (or any remote API).
 
-**Do not connect Supabase until this checklist is signed off.**
+**Product note (Phase 3.6):** The long-term domain is **Group-first** (`User → Group → Post → Comment → Event Announcement → RSVP`). Tables below still list **current code entities** (including legacy Playdate). Update schema plans in Phase 3.7 / 4.0 to match Groups. See `PROJECT_CONTEXT.md`.
+
+**Do not connect Supabase until this checklist is signed off** (and Group domain modeling has caught up).
 
 ---
 

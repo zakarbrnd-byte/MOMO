@@ -1,38 +1,146 @@
 # PROJECT_CONTEXT
 
-Short snapshot for agents. Prefer this + `CLAUDE.md` before inventing scope.
+**Single source of truth** for product direction. Read this before inventing scope.
 
-## Version
+Agents: prefer this file + `CLAUDE.md` + `MVP_SPEC.md` over older Playdate-first wording elsewhere.
 
-MOMO MVP 0.1 — **Phase 3.4.8 architecture freeze** → **Phase 3.5 UI/UX validation next**
+---
 
-## What exists in code
+## Product
 
-- Flutter + Material 3 + design system (`core/theme`, `core/widgets`)
+**MOMO** — community app for Korean mothers in the US.
+
+**Vision:** Help Korean mothers discover and join communities based on shared interests, child age, and location — then organize activities together inside those communities.
+
+Version: MVP 0.1  
+Current phase: **3.6 Product Pivot & Documentation Refresh**
+
+---
+
+## Product pivot (why)
+
+Interview finding with real mothers:
+
+| Finding | Product implication |
+|---------|---------------------|
+| Uncomfortable meeting strangers 1-on-1 | Do not lead with standalone stranger meetups |
+| Prefer joining an existing community first | **Groups** are the primary destination |
+| Trust builds inside communities | Membership and discussion before meetups |
+| Meetups happen naturally afterwards | **Event Announcements** live *inside* Groups |
+
+**Old vision:** Help Korean mothers discover and create local playdates.  
+**New vision:** Help Korean mothers discover and join Groups; Event Announcements are organized activities inside Groups.
+
+The Playdate-first MVP remains valuable as **engineering foundation** (Flutter shell, Riverpod, repositories, mock DI). It is **not** the long-term product shape.
+
+---
+
+## Core product structure
+
+```
+MOMO
+├── Community Feed
+├── Groups
+│      ├── Members
+│      ├── Posts
+│      └── Event Announcements
+└── User Profiles
+```
+
+### Terminology
+
+| Term | Meaning |
+|------|---------|
+| **Group** | Persistent community (e.g. Irvine Moms, Swimming Moms). Not a scheduled event. |
+| **Post** | Community discussion (global feed and/or inside a Group) |
+| **Event Announcement** | Meetup created inside an existing Group (date, time, location, RSVP) |
+| **Playdate** | Historical / current code name for standalone meetup cards. Treat as legacy until Group + Event models replace it. |
+
+Example Groups: LA Moms with 3-year-olds · Swimming Moms · Irvine Moms · Korean Working Moms · Preschool Moms · Hiking Moms.
+
+---
+
+## Intended domain (before backend)
+
+```
+User
+ ↓
+Group
+ ↓
+Post
+ ↓
+Comment
+ ↓
+Event Announcement
+ ↓
+RSVP
+```
+
+Engineering layers (UI → Riverpod → Repository → Data Source) stay. Domain entities will expand in Phase 3.7+.
+
+---
+
+## What exists in code today (foundation)
+
+- Flutter + Material 3 + design system
 - Bottom nav: Home / Create / Profile
-- Riverpod feature providers + mutation lifecycle
-- **DI:** UI → providers → repository interfaces → impls → data sources → mock
-- DTOs, `Result`, request-flow docs
-- Freeze baseline: `docs/ARCHITECTURE_FREEZE.md`
-- Migration checklist: `BACKEND_MIGRATION_CHECKLIST.md`
+- Riverpod + repository + mock data-source DI
+- Legacy Playdate + Post feed/create/detail/join (local mock)
+- DTOs, `Result`, mutation lifecycle
 
-## Phase 3.5 rules (summary)
+**Do not confuse current UI labels with the product roadmap.** Upcoming work implements Groups first.
 
-- **Allowed:** UI layout, colors, typography, components, navigation presentation, UX polish
-- **Needs review:** domain models, repository interfaces, data layer, provider/DI architecture
+---
 
-## Hard constraints
+## MVP target scope (Group-first)
 
-- Mock / local only — no backend / Supabase yet
-- No Business / marketplace
-- No comments, photos, search, chat, notifications, payments
-- Do not redesign frozen data architecture during 3.5
+See `MVP_SPEC.md` for full in/out lists.
+
+**In:** Home feed, Groups (join/leave), Group posts, comments, likes, view tracking, Event Announcements, RSVP, profiles, search, filtering, Korean & English disclaimer.
+
+**Out:** Marketplace, payments, AI recommendations, advanced moderation, real-time chat, push notifications (until later phase), advertising.
+
+---
+
+## Roadmap (summary)
+
+| Phase | Focus |
+|-------|--------|
+| 3.6 | Documentation pivot (**this phase**) |
+| 3.7 | Group + Event local models |
+| 3.8 | Home recommendations, filtering, search |
+| 3.9 | Profile onboarding |
+| 4.0 | Auth + Supabase |
+| 4.1 | Comments, likes, view tracking |
+| 4.2 | Event Announcements + RSVP |
+| 4.3 | Disclaimer, safety, reporting |
+| 4.4 | Notifications |
+| 4.5 | Pilot with real moms |
+
+Canonical detail: `DEVELOPMENT_PLAN.md`.
+
+---
+
+## Architecture freeze status
+
+The Phase 3.4.8 Architecture Freeze described the **Playdate-first** engineering baseline and is **superseded** for product direction.
+
+- Historical freeze: `docs/ARCHITECTURE_FREEZE.md` (read-only context)
+- Live engineering detail: `ARCHITECTURE.md`
+- Product baseline: **this file** + `MVP_SPEC.md`
+
+Layer patterns (UI → Provider → Repository → Data Source) remain the intended engineering approach. Domain models will change for Groups.
+
+---
 
 ## Docs map
 
-- Spec → `MVP_SPEC.md`
-- Plan → `DEVELOPMENT_PLAN.md`
-- Architecture → `ARCHITECTURE.md`
-- **Freeze** → `docs/ARCHITECTURE_FREEZE.md`
-- Backend prep → `BACKEND_MIGRATION_CHECKLIST.md`
-- Agent rules → `CLAUDE.md`
+| Doc | Use for |
+|-----|---------|
+| `PROJECT_CONTEXT.md` | Product truth (this file) |
+| `MVP_SPEC.md` | Scope in / out |
+| `DEVELOPMENT_PLAN.md` | Phased roadmap |
+| `ARCHITECTURE.md` | Code layers + intended domain |
+| `README.md` | Overview, run, status |
+| `CLAUDE.md` | Agent operating rules |
+| `BACKEND_MIGRATION_CHECKLIST.md` | Pre-Supabase engineering checklist |

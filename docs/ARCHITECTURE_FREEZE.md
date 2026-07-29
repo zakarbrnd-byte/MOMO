@@ -1,16 +1,27 @@
-# Architecture Freeze — Baseline Checkpoint
+# Architecture Freeze — Historical Baseline (Superseded)
 
-## 1. Freeze Date
-
-**2026-07-22**
-
-Phase **3.4.8** — Architecture freeze before Phase **3.5** UI/UX validation.
-
-This document is a **stable engineering baseline**. Do not treat it as permission to redesign layers during Phase 3.5.
+> **SUPERSEDED (Phase 3.6)**  
+> This freeze documented the **Playdate-first** MVP engineering baseline (Phase 3.4.8).  
+> It has been **retired as the product/architecture baseline** after the Group-first product pivot.  
+>
+> - **Product truth now:** [`../PROJECT_CONTEXT.md`](../PROJECT_CONTEXT.md) · [`../MVP_SPEC.md`](../MVP_SPEC.md)  
+> - **Live engineering layers:** [`../ARCHITECTURE.md`](../ARCHITECTURE.md)  
+> - **Roadmap:** [`../DEVELOPMENT_PLAN.md`](../DEVELOPMENT_PLAN.md)  
+>
+> Keep this file for historical context. Do **not** treat Playdate-first freeze rules as blocking Group domain work in Phase 3.7+.  
+> Layering pattern (UI → Provider → Repository → Data Source) remains the preferred engineering approach.
 
 ---
 
-## 2. Current Architecture Diagram
+## 1. Freeze Date (historical)
+
+**2026-07-22**
+
+Phase **3.4.8** — Architecture freeze before Phase **3.5** UI/UX validation (Playdate-era).
+
+---
+
+## 2. Current Architecture Diagram (still accurate as layering)
 
 ```
 UI (lib/features/*, navigation)
@@ -96,72 +107,59 @@ Provider → Repository → SupabaseDataSource → Supabase / DB
 
 (Optional later: `Repository → Cache + SupabaseDataSource`.)
 
-**UI and feature providers should not need major rewrites.** Swap by overriding `*DataSourceProvider` (preferred) or `*RepositoryProvider` in `ProviderScope`. See `BACKEND_MIGRATION_CHECKLIST.md`.
+**UI and feature providers should not need major rewrites** for storage swaps. Domain expansion for Groups is expected in Phase 3.7+.
 
 ---
 
-## 5. Architecture Verification (3.4.8)
+## 5. Architecture Verification (3.4.8) — historical checklist
 
 | Check | Result |
 |-------|--------|
-| UI does not import mock data | **Pass** — no `mock_*` imports under `lib/features/` |
-| Providers do not bypass repositories | **Pass** — feature providers `ref.watch(*RepositoryProvider)` |
-| Repositories have no UI logic | **Pass** — no `BuildContext` / widgets in `lib/repositories/` |
-| Data sources separated from repositories | **Pass** — mock stores only under `datasources/mock/` |
-| DI centralized | **Pass** — `data_source_providers.dart` + `repository_providers.dart` |
+| UI does not import mock data | **Pass** (as of 3.4.8) |
+| Providers do not bypass repositories | **Pass** |
+| Repositories have no UI logic | **Pass** |
+| Data sources separated from repositories | **Pass** |
+| DI centralized | **Pass** |
 
-### Documented non-blocking notes (not layer violations)
+### Documented non-blocking notes (Playdate-era)
 
-- `playdateParticipationMutationProvider` exists but join/leave UI still updates list state directly (same UX; full Loading path deferred).
-- Provider `_readSync` assumes mock `SynchronousFuture` — fine until real network (Phase 4).
-- Profile activity counts (`3` / `2`) are UI literals, not mock-file imports.
-
-**No automatic refactors performed in 3.4.8.**
+- `playdateParticipationMutationProvider` exists but join/leave UI may update list state directly.
+- Provider sync helpers assume mock `SynchronousFuture` until real network (Phase 4.0).
+- Profile activity counts may be UI literals.
 
 ---
 
-## 6. Known Limitations Before Backend
+## 6. Known Limitations (historical / still partly true)
 
-These belong to **Phase 4** (or later). Do **not** fix during Phase 3.5 unless product explicitly expands scope.
+- Authentication uses a mock user
+- No real database — in-memory mock only
+- Legacy Playdate date/time fields are display strings
+- Participant model vs `participantIds` array decision pending for backend
+- No Supabase client / RLS yet
 
-- Authentication uses a **mock user** (`MockUserDataSource` / seed `user_001`)
-- **No real database** — in-memory mock only
-- Playdate **date/time** fields are display **strings** — may need schema refinement
-- **Participant** domain model exists; live path still uses `participantIds` — backend table vs array decision pending
-- **Profile statistics** are not backend-driven (hardcoded activity numbers on Profile)
-- No Supabase client, RLS, or production error taxonomy yet
-
----
-
-## 7. Architecture Rules After Freeze
-
-### Allowed during Phase 3.5 (UI / UX validation)
-
-- UI layout, spacing, colors, typography
-- Components, buttons, cards, feedback visuals
-- Navigation presentation improvements
-- Copy / microcopy / empty-state presentation
-- User experience polish that does **not** change data contracts
-
-### Require review before modifying
-
-- Domain models (`lib/models/`)
-- Repository interfaces and method signatures
-- Data layer (`lib/data/datasources/`, seed files)
-- Provider architecture / DI wiring (`*RepositoryProvider`, `*DataSourceProvider`)
-- DTO contracts (`lib/dto/`)
-- Request lifecycle / `Result` / mutation contracts
-
-If a Phase 3.5 task seems to need a reviewed change, stop and confirm before editing those layers.
+**Product note:** Event Announcement + Group models supersede standalone Playdate as the primary meetup concept going forward.
 
 ---
 
-## 8. Phase Status
+## 7. Rules after Phase 3.6
+
+The Phase 3.5 “UI-only / freeze domain” rule set is **no longer the product baseline**.
+
+For new work:
+
+- Follow `DEVELOPMENT_PLAN.md` for the active phase
+- Prefer Group-first domain changes when the phase requires them
+- Keep DI layering intact unless a phase explicitly redesigns it
+- Do not resurrect Playdate-first product language in new docs or features
+
+---
+
+## 8. Phase Status (updated)
 
 | Phase | Status |
 |-------|--------|
-| 3.4.x Backend architecture preparation | **Complete / frozen** |
-| 3.5 UI/UX validation | **Next** |
-| 4 Backend / auth / Supabase | **Future** |
-
-**Freeze readiness:** Ready for Phase 3.5 UI validation against this baseline.
+| 3.4.x Backend architecture preparation | Complete (historical freeze) |
+| 3.5 UI/UX validation | Complete (foundation UI) |
+| 3.6 Product pivot & docs | **Current** |
+| 3.7 Group + Event local models | **Next** |
+| 4.0+ Auth / Supabase / engagement | Future |
