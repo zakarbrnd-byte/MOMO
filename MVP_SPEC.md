@@ -1,82 +1,135 @@
 # MVP Spec
 
+Canonical product scope for MOMO. If anything conflicts with older Playdate-first notes, **this file + `PROJECT_CONTEXT.md` win**.
+
+---
+
 ## Target users
 
-Korean mothers in the US with young children who want offline, local connections with other moms.
+Korean mothers in the US with young children who want trusted local community — not cold 1-on-1 stranger meetups.
 
 ## Problem
 
-Finding trusted playdates and parenting peers nearby is hard. Existing apps are either too broad or too heavy. Moms need a simple place to:
-
-1. Discover local playdates
-2. Create a playdate invitation
-3. Share short parenting posts
+Finding trusted parenting peers nearby is hard. Mothers generally feel uncomfortable meeting strangers one-on-one. They prefer joining an existing community first, building trust through membership and discussion, then meeting offline through activities organized inside that community.
 
 ## MVP purpose
 
-Help Korean moms **discover and create local playdates** and **share parenting-related posts**.
+Help Korean moms **discover and join Groups** based on shared interests, child age, and location; **participate in discussions**; and **organize Event Announcements** inside Groups.
 
-Core product principle: **Everything is a Card.**
+```
+MOMO
+├── Community Feed
+├── Groups
+│      ├── Members
+│      ├── Posts
+│      └── Event Announcements
+└── User Profiles
+```
 
-Card types (only):
+---
 
-1. Playdate Card
-2. Post Card
+## Terminology
 
-## MVP scope (current)
+| Term | Definition |
+|------|------------|
+| **Group** | Persistent community. Not a scheduled event. |
+| **Post** | Discussion content (feed and/or Group-scoped). |
+| **Event Announcement** | Meetup created *inside* a Group (park, lunch, swim, library, etc.). |
+| **RSVP** | Member response: Joining / Not Joining. |
+| **Playdate** | Legacy name in current code for standalone meetup cards. Not the primary product surface going forward. |
 
-### Included
+### Event Announcement fields (target)
+
+- Date, time, location, description, child age
+- Optional participant limit
+- RSVP: Joining / Not Joining
+- Participant usernames displayed
+- Reminder notifications — **future** (Phase 4.4)
+
+---
+
+## Scope
+
+### Included (target MVP)
+
+- Home / community feed
+- Groups (browse, open, membership)
+- Join Group / Leave Group
+- Group Posts
+- Comments
+- Likes
+- View tracking
+- Event Announcements (inside Groups)
+- RSVP
+- User Profiles
+- Search
+- Filtering
+- Korean & English Disclaimer
+
+### Current shipped foundation (code today)
+
+Still Playdate-shaped local MVP used as technical base:
 
 - Bottom navigation: Home, Create, Profile
-- Home feed with mock Playdate and Post cards
-- Tap card → detail screen
-- Create selection → Create Playdate / Create Post forms
-- Profile screen with placeholder mock user info
-- Local mock data only (no backend)
+- Home feed with mock Playdate + Post cards
+- Create / detail / join-leave local flows
+- Repository + mock data-source architecture
+- Profile placeholder
 
-### Implemented screens
+These screens will be **redirected / replaced** toward Groups in upcoming phases. Do not expand Playdate as the long-term primary feature.
 
-| Screen | Role |
-|--------|------|
-| Home Feed | Mixed card list |
-| Create Selection | Two large action cards |
-| Create Playdate | Title, Date, Time, Location, Child Age, Description, Save |
-| Create Post | Title, Content, Post |
-| Playdate Detail | Full playdate fields |
-| Post Detail | Title + content |
-| Profile | Mock name, neighborhood, child info, bio |
+### Out of scope
 
-### Data entities (mock)
+Do **not** build:
 
-- `Playdate` — id, title, date, time, location, childAge, description, hostName
-- `Post` — id, title, content, authorName
-- Feed items — sealed `FeedItem` (`PlaydateFeedItem` / `PostFeedItem`)
-- Mock profile record — display name, neighborhood, child info, bio
-
-## Excluded from MVP
-
-Do **not** build these in the current MVP:
-
-- Business listings / marketplace
-- Chat / messaging
+- Business marketplace / listings
 - Payments
-- Comments, likes, photos, search
-- Notifications
-- Complex matching algorithms
-- Community tabs beyond Home / Create / Profile
-- Authentication
-- Backend database / APIs
-- Real-time sync
+- AI recommendations
+- Advanced moderation tooling
+- Real-time chat
+- Push notifications (until Phase 4.4)
+- Advertising
 
-## Future possibilities (out of MVP)
+### Future / phased (see DEVELOPMENT_PLAN.md)
 
-Listed for orientation only — not current work:
+| Area | Phase |
+|------|-------|
+| Group + Event local models | 3.7 |
+| Recommendations, filter, search | 3.8 |
+| Profile onboarding | 3.9 |
+| Auth + Supabase | 4.0 |
+| Comments / likes / views | 4.1 |
+| Event Announcements + RSVP | 4.2 |
+| Disclaimer / safety / reporting | 4.3 |
+| Notifications | 4.4 |
+| Pilot with real moms | 4.5 |
 
-- Auth and real user accounts
-- Persistent backend
-- Join / RSVP for playdates
-- Richer profiles
-- Location-aware discovery
-- Real-time community features
+---
 
-See [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) for phased sequencing.
+## Product principles
+
+1. **Community first** — Groups before stranger meetups.
+2. **Trust before logistics** — membership and discussion enable offline events.
+3. **Event Announcements live inside Groups** — not standalone primary cards long-term.
+4. **Scope discipline** — if it is not in this spec’s Included list (or the active phase in `DEVELOPMENT_PLAN.md`), do not build it yet.
+5. **Simple > Complex** — local/mock validation before infrastructure where possible.
+
+---
+
+## Data entities
+
+### Target domain (product direction)
+
+- User
+- Group (members)
+- Post
+- Comment
+- Event Announcement
+- RSVP
+
+### Current code domain (legacy foundation)
+
+- `Playdate`, `Post`, `FeedItem`, `User` / Profile, `Participant` — still present in Flutter models
+- Do **not** rename classes in documentation-only phases; model migration starts Phase 3.7
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for layering and intended domain diagram.

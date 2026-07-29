@@ -1,55 +1,103 @@
 # Development Plan
 
-Status labels: **Completed** · **Next** · **Future**
+Status labels: **Completed** · **Current** · **Next** · **Future**
+
+Product direction is **Group-first**. See `PROJECT_CONTEXT.md` and `MVP_SPEC.md`.
 
 ---
 
-## Phase 1 — App foundation (Completed)
+## Completed foundation (Phases 1–3.5)
 
-Shipped in MVP 0.1:
+Shipped as the Playdate-shaped technical MVP:
 
-- [x] Flutter app structure (`main.dart`, `app.dart`, theme)
-- [x] Bottom navigation shell (Home · Create · Profile)
+- [x] Flutter app structure, theme, bottom navigation
 - [x] Home feed with mock Playdate + Post cards
-- [x] Card UI components
-- [x] Playdate / Post detail screens
-- [x] Create selection screen
-- [x] Create Playdate form (basic required-field validation)
-- [x] Create Post form (basic required-field validation)
-- [x] Profile placeholder screen
-- [x] Local mock data (`lib/data/mock_feed.dart`)
-- [x] Models: `Playdate`, `Post`, `FeedItem`
-- [x] Riverpod dependency + root `ProviderScope` (no feature providers yet)
+- [x] Create / detail / join-leave local flows
+- [x] Riverpod + repository + mock data-source DI
+- [x] DTOs, `Result`, mutation lifecycle
+- [x] Phase 3.5 card UI / metadata polish
 
-**Known gaps after Phase 1:**
-
-- Create Save/Post does not update the Home feed (snackbar + pop only)
-- Feed is static mock list
-- No Join / RSVP
-- Riverpod not used for feature state yet
+This foundation is reused; it is not the final product surface.
 
 ---
 
-## Phase 2 — Next development
+## Phase 3.6 — Product Pivot & Documentation Refresh (**Current**)
 
-Focus: make create/browse interactive with **local state**, still no backend.
-
-- [ ] Connect Create flow to Home Feed (new items appear in feed)
-- [ ] Implement Riverpod providers for feed / create / profile state
-- [ ] Replace mock-only interaction with local in-memory state
-- [ ] Improve form validation and error UX
-- [ ] Add Join functionality for playdates (local state)
-- [ ] UX/UI polish (spacing, empty states, feedback)
-
-**Still out of scope in Phase 2:** auth, backend, chat, payments, marketplace.
+- [x] Redefine vision around Groups and Event Announcements
+- [x] Update README, MVP_SPEC, PROJECT_CONTEXT, DEVELOPMENT_PLAN, ARCHITECTURE, agent docs
+- [x] Retire Playdate-first Architecture Freeze as product baseline
+- [ ] Keep Flutter source unchanged in this phase (docs only)
 
 ---
 
-## Phase 3 — Future
+## Phase 3.7 — Group + Event local models (**Next**)
+
+- [ ] Introduce local domain models: Group, Event Announcement, membership, RSVP stubs
+- [ ] Seed mock Groups and Event Announcements
+- [ ] Map migration path from legacy Playdate entities (no backend yet)
+- [ ] Minimal UI surfaces to browse Groups (local only)
+
+---
+
+## Phase 3.8 — Home recommendations, Filtering, Search
+
+- [ ] Home recommendations for Groups / feed items
+- [ ] Filtering (interest, child age, location)
+- [ ] Search
+
+---
+
+## Phase 3.9 — Profile onboarding
+
+- [ ] Profile onboarding flow (location, child age, interests)
+- [ ] Tie profile signals to Group discovery
+
+---
+
+## Phase 4.0 — Authentication & Supabase
 
 - [ ] Authentication
-- [ ] Backend database / API
-- [ ] Real user profiles (edit, persistence)
-- [ ] Real-time community features
+- [ ] Supabase (or equivalent) persistent backend
+- [ ] Replace mock data sources via DI overrides
 
-Order and stack for Phase 3 are TBD after Phase 2 validates local flows.
+---
+
+## Phase 4.1 — Comments, Likes, View tracking
+
+- [ ] Comments
+- [ ] Likes
+- [ ] View tracking
+
+---
+
+## Phase 4.2 — Event Announcements & RSVP
+
+- [ ] Create Event Announcement inside a Group
+- [ ] RSVP: Joining / Not Joining
+- [ ] Show participant usernames
+
+---
+
+## Phase 4.3 — Disclaimer, Safety, Reporting
+
+- [ ] Korean & English Disclaimer
+- [ ] Safety / reporting basics
+
+---
+
+## Phase 4.4 — Notifications
+
+- [ ] Reminder / engagement notifications (product-appropriate channels)
+
+---
+
+## Phase 4.5 — Pilot testing with real moms
+
+- [ ] Pilot with interview cohort / local moms
+- [ ] Capture feedback against Group-first experience
+
+---
+
+## Explicitly not on this roadmap
+
+Marketplace, payments, AI recommendations, advanced moderation, real-time chat, advertising.

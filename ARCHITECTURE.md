@@ -4,6 +4,10 @@
 
 MOMO is a Flutter client with feature-first folders under `lib/`. MVP data is local mock only.
 
+**Product direction (Phase 3.6+):** Group-first communities. See `PROJECT_CONTEXT.md` and `MVP_SPEC.md`.
+
+Engineering stack (unchanged pattern):
+
 ```
 UI (features/*)
     ↓
@@ -17,6 +21,24 @@ Data source providers       (interfaces — DI)
     ↓
 Mock / future Supabase data sources
 ```
+
+### Intended product domain (before backend)
+
+```
+User
+ ↓
+Group
+ ↓
+Post
+ ↓
+Comment
+ ↓
+Event Announcement
+ ↓
+RSVP
+```
+
+Current code still models a **Playdate-first** feed (`Playdate`, `Post`, `FeedItem`). Treat those types as the legacy foundation until Phase 3.7 introduces Group + Event Announcement models. Do not rename classes in documentation-only work.
 
 ---
 
@@ -230,10 +252,18 @@ lib/
 
 ## Models
 
-- **User, Playdate, Post, Participant, Child, Profile, FeedItem** — see prior phase notes.
-- Playdate `date` / `time` remain display strings in MVP.
+### Target domain (product direction)
+
+- **User → Group → Post → Comment → Event Announcement → RSVP**
+
+### Current code domain (legacy foundation)
+
+- **User, Playdate, Post, Participant, Child, Profile, FeedItem** — still used by the shipped local MVP.
+- Playdate `date` / `time` remain display strings today; Event Announcement schema will be designed in Phase 3.7 / 4.2.
 
 ## Constraints
 
-- No backend, auth, or remote persistence yet
-- See `BACKEND_MIGRATION_CHECKLIST.md` before Phase 4 / Supabase
+- No backend, auth, or remote persistence yet (Phase 4.0)
+- Product roadmap is Group-first — see `DEVELOPMENT_PLAN.md`
+- See `BACKEND_MIGRATION_CHECKLIST.md` before Supabase work
+- Historical Playdate-era freeze: `docs/ARCHITECTURE_FREEZE.md` (**superseded** as product baseline)

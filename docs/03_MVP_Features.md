@@ -2,15 +2,28 @@
 
 Canonical detail: [`../MVP_SPEC.md`](../MVP_SPEC.md).
 
-## Status: Implemented (Phase 1)
+## Target product (Group-first)
+
+- Community / Home feed
+- Groups (join / leave)
+- Group Posts
+- Comments, likes, view tracking
+- Event Announcements + RSVP
+- Profiles, search, filtering
+- Korean & English Disclaimer
+
+## Shipped foundation (legacy Playdate-shaped UI)
+
+Still in the Flutter app as technical base:
 
 - Bottom nav: Home · Create · Profile
 - Home feed: Playdate cards + Post cards
-- Detail screens for both card types
-- Create selection + Create Playdate / Create Post forms
+- Detail / create / join-leave local flows
 - Profile placeholder
-- Local mock data
+- Local mock data + repository DI
+
+Upcoming phases replace primary surfaces with Groups.
 
 ## Explicitly excluded
 
-Business listings, marketplace, chat, payments, comments, photos, search, notifications, complex matching, auth, backend.
+Marketplace, payments, AI recommendations, advanced moderation, real-time chat, advertising. Notifications wait for a later phase.

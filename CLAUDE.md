@@ -6,52 +6,61 @@ Guidance for Cursor agents and contributors working on MOMO.
 
 **MOMO** — community app for Korean mothers in the US.
 
-**MVP goal:** Help moms discover and create local playdates and share parenting-related posts.
+**Vision:** Help Korean mothers discover and join **Groups** based on shared interests, child age, and location; discuss with peers; and organize **Event Announcements** inside Groups.
 
-Version: MVP 0.1
+Version: MVP 0.1 · Phase **3.6** (docs pivot)
 
-## Core principle
+**Read first:** `PROJECT_CONTEXT.md` (single source of truth) · `MVP_SPEC.md` · `DEVELOPMENT_PLAN.md`
 
-Everything is a Card.
+## Product structure
 
-Card types only:
+```
+MOMO
+├── Community Feed
+├── Groups
+│      ├── Members
+│      ├── Posts
+│      └── Event Announcements
+└── User Profiles
+```
 
-1. Playdate Card
-2. Post Card
+| Term | Meaning |
+|------|---------|
+| Group | Persistent community (primary product) |
+| Post | Discussion |
+| Event Announcement | Meetup *inside* a Group |
+| Playdate | Legacy code/UI name — not the long-term primary feature |
 
-## Navigation
+## Why Groups first
 
-Bottom tabs: **Home** · **Create** · **Profile**
+Interviews: moms often dislike stranger 1-on-1 meetups; they prefer joining a community, building trust, then meeting offline through Group activities.
 
-## Implemented screens
+## Current code vs roadmap
 
-- Home Feed (mock Playdate + Post cards → detail)
-- Create Selection → Create Playdate / Create Post
-- Playdate Detail / Post Detail
-- Profile (mock placeholder)
+The Flutter app still contains Playdate + Post feed/create/detail flows as **technical foundation**. Upcoming phases implement Groups. Do not expand Playdate as the primary product surface unless the active phase explicitly says so.
 
 ## Rules
 
-- Use mock / local data first.
-- No backend until Phase 3.
+- Prefer Group-first product language in new work.
+- Use mock / local data until Phase 4.0.
 - Do not over-engineer.
-- Every feature must help moms connect offline.
-- Stay inside MVP scope (see `MVP_SPEC.md`).
+- Stay inside active-phase scope (`DEVELOPMENT_PLAN.md` + `MVP_SPEC.md`).
+- Documentation-only phases must not change Flutter source.
 
-## Out of scope (do not add)
+## Out of scope (do not add unless phase says so)
 
-Business listings, marketplace, chat, payments, comments, photos, search, notifications, complex matching.
+Marketplace, payments, AI recommendations, advanced moderation, real-time chat, advertising. Push notifications wait for Phase 4.4.
 
 ## Canonical docs
 
 | Doc | Use for |
 |-----|---------|
-| `README.md` | Overview, run, status |
+| `PROJECT_CONTEXT.md` | Product truth |
 | `MVP_SPEC.md` | Scope in / out |
-| `DEVELOPMENT_PLAN.md` | Phases |
-| `ARCHITECTURE.md` | Code structure + data flow |
-| `PROJECT_CONTEXT.md` | Short current snapshot |
+| `DEVELOPMENT_PLAN.md` | Roadmap phases |
+| `ARCHITECTURE.md` | Engineering layers + intended domain |
+| `README.md` | Overview, run, status |
 
-## Current gap for next work
+## Next engineering work
 
-Create Save/Post does not update the Home feed. Riverpod is wired at app root but feature providers are not implemented yet. Prefer Phase 2 local-state work over new product surfaces.
+Phase **3.7** — Group + Event local models (after 3.6 docs land).
