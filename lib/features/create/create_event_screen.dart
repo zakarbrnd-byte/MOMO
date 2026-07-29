@@ -5,6 +5,7 @@ import '../../core/async/mutation_notifier.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/momo_button.dart';
 import '../../core/widgets/momo_error.dart';
+import '../../core/widgets/momo_error_banner.dart';
 import '../../core/widgets/momo_form_body.dart';
 import '../../core/widgets/momo_text_field.dart';
 import '../../providers/group_provider.dart';
@@ -64,7 +65,9 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
 
   Future<void> _submit() async {
     setState(() => _error = null);
-    if (!ref.read(groupProvider.notifier).isMember(widget.groupId)) {
+    final joinedIds =
+        ref.read(currentUserGroupIdsProvider).valueOrNull ?? const <String>{};
+    if (!joinedIds.contains(widget.groupId)) {
       setState(() => _error = '그룹 멤버만 일정을 만들 수 있어요.');
       return;
     }
@@ -82,8 +85,9 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
       return;
     }
 
-    await ref.read(createEventMutationProvider.notifier).run(() async {
-      ref.read(groupProvider.notifier).createEvent(
+    final ok =
+        await ref.read(createEventMutationProvider.notifier).run(() async {
+      await ref.read(groupProvider.notifier).createEvent(
             groupId: widget.groupId,
             title: title,
             description: description,
@@ -95,8 +99,13 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     });
 
     if (!mounted) return;
-    if (ref.read(createEventMutationProvider).isSuccess) {
+    if (ok) {
       Navigator.of(context).pop();
+    } else {
+      MomoErrorBanner.show(
+        context,
+        '이벤트를 만들지 못했습니다. 다시 시도해주세요.',
+      );
     }
   }
 
@@ -144,7 +153,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
             const SizedBox(height: AppSpacing.md),
             MomoError(
               title: 'Could not create',
-              message: 'Try again',
+              message: '이벤트를 만들지 못했습니다. 다시 시도해주세요.',
               onRetry: _submit,
             ),
           ],

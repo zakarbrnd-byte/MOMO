@@ -8,7 +8,7 @@ Guidance for Cursor agents and contributors working on MOMO.
 
 **Vision:** Help Korean mothers discover and join **Groups** based on shared interests, child age, and location; discuss with peers; and organize **Event Announcements** inside Groups.
 
-Version: MVP 0.1 · Phase **3.7.2** complete (content-first Group Detail) → **3.8** next
+Version: MVP 0.1 · Phase **3.7.3** complete (async Group data flow) → **3.8** next
 
 **Read first:** `PROJECT_CONTEXT.md` (single source of truth) · `MVP_SPEC.md` · `DEVELOPMENT_PLAN.md`
 

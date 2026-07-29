@@ -31,7 +31,10 @@ class GroupCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isJoined = ref.watch(currentUserGroupIdsProvider).contains(group.id);
+    final isJoined = ref.watch(currentUserGroupIdsProvider).maybeWhen(
+          data: (ids) => ids.contains(group.id),
+          orElse: () => false,
+        );
 
     return MomoCard(
       onTap: onTap,

@@ -67,7 +67,12 @@ class _MainShellState extends ConsumerState<MainShell> {
   @override
   Widget build(BuildContext context) {
     final index = ref.watch(mainTabProvider);
-    final joinedCount = ref.watch(currentUserGroupIdsProvider).length;
+    final joinedAsync = ref.watch(currentUserGroupIdsProvider);
+    final joinedCount = joinedAsync.maybeWhen(
+      data: (ids) => ids.length,
+      // Preserve previous count while refreshing; hide on cold load / error.
+      orElse: () => joinedAsync.valueOrNull?.length ?? 0,
+    );
 
     final destinations = [
       const NavigationDestination(

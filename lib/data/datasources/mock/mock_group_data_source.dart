@@ -43,6 +43,14 @@ class MockGroupDataSource implements GroupDataSource {
   }
 
   @override
+  Future<Set<String>> getJoinedGroupIds(String userId) {
+    return SynchronousFuture({
+      for (final member in _members)
+        if (member.userId == userId) member.groupId,
+    });
+  }
+
+  @override
   Future<void> joinGroup({
     required String groupId,
     required String userId,

@@ -12,7 +12,7 @@ Engineering stack (unchanged pattern):
 UI (features/*)
     ↓
 Riverpod feature providers  (domain + AsyncOpState / AsyncValue only)
-    ↓
+    ↓  (always await repository Futures — never `_readSync`)
 Repository providers        (interfaces — DI)
     ↓
 Repository implementations
@@ -147,6 +147,18 @@ Retry            ← calls the same Provider → Repository path again
 | Success | `MutationNotifier` + list providers | Navigate / `MomoSuccessBanner` / refreshed feed |
 | Error | `MutationNotifier` | `MomoError` + retry |
 | List load | `AsyncNotifier` (`AsyncValue`) | `MomoLoading` / `MomoError` / cards |
+
+### Group data flow (Phase 3.7.3)
+
+- Group list: `groupProvider` (`AsyncValue<List<Group>>`)
+- Joined ids: `currentUserGroupIdsProvider` (`FutureProvider<Set<String>>`) via `loadJoinedGroupIds`
+- Parameterized reads: `groupByIdProvider`, `groupMembersProvider`, `groupEventsProvider`, `eventByIdProvider`, `eventRsvpsProvider`
+- Mutations: `joinGroupMutationProvider`, `leaveGroupMutationProvider`, `createGroupMutationProvider`, `createEventMutationProvider`, `rsvpMutationProvider`
+- After mutations, invalidate only related providers (membership, members, events, RSVPs) and refresh the group list when member counts change
+- UI owns snackbars; repositories never touch `BuildContext`
+- Mock and future backend data sources share the same async contract
+
+**Legacy Playdate / Post providers may still use mock `SynchronousFuture` helpers; do not reintroduce `_readSync` into the active Group flow.**
 
 ### Current flows (where each layer starts / ends)
 

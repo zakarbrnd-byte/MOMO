@@ -1,85 +1,56 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/result/result.dart';
 import '../models/entity_status.dart';
 import '../models/group.dart';
+import '../models/post.dart';
 import '../repositories/group_repository.dart';
 import '../repositories/repository_providers.dart';
 import 'current_user_provider.dart';
+import 'post_provider.dart';
 
-T _readSync<T>(Future<T> future) {
-  late T value;
-  var completed = false;
-  future.then((result) {
-    value = result;
-    completed = true;
-  });
-  assert(
-    completed,
-    'GroupRepository Futures must complete synchronously in the mock MVP.',
-  );
-  return value;
-}
-
-bool _ok(Result<bool> result) => result.isSuccess;
-
-/// Group list as [AsyncValue].
+/// Group list as [AsyncValue]. Repository Futures are always awaited.
 class GroupNotifier extends AsyncNotifier<List<Group>> {
-  GroupRepository get _repo => ref.watch(groupRepositoryProvider);
+  GroupRepository get _repo => ref.read(groupRepositoryProvider);
 
   @override
   Future<List<Group>> build() => _repo.load();
 
   List<Group> get groups => state.valueOrNull ?? const [];
 
-  void _refresh() {
-    state = AsyncData(_readSync(_repo.load()));
+  /// Reload groups while preserving previous data when possible.
+  Future<void> refreshGroups() async {
+    final previous = state;
+    state = const AsyncLoading<List<Group>>().copyWithPrevious(previous);
+    state = await AsyncValue.guard(_repo.load);
   }
 
-  Group? getById(String id) {
-    for (final group in groups) {
-      if (group.id == id) return group;
-    }
-    return _readSync(_repo.getById(id));
-  }
-
-  bool isMember(String groupId) {
-    final userId = ref.read(currentUserProvider).id;
-    final members = _readSync(_repo.loadMembers(groupId));
-    return members.any((m) => m.userId == userId);
-  }
-
-  List<GroupMember> membersOf(String groupId) {
-    return _readSync(_repo.loadMembers(groupId));
-  }
-
-  void joinGroup(String groupId) {
+  Future<void> joinGroup(String groupId) async {
     final user = ref.read(currentUserProvider);
-    final result = _readSync(
-      _repo.join(
-        groupId: groupId,
-        userId: user.id,
-        userName: user.displayName,
-      ),
+    final result = await _repo.join(
+      groupId: groupId,
+      userId: user.id,
+      userName: user.displayName,
     );
-    if (!_ok(result)) {
+    if (!result.isSuccess) {
       throw Exception(result.errorOrNull ?? 'Could not join group.');
     }
-    _refresh();
+    ref.invalidate(currentUserGroupIdsProvider);
+    ref.invalidate(groupMembersProvider(groupId));
+    await refreshGroups();
   }
 
-  void leaveGroup(String groupId) {
+  Future<void> leaveGroup(String groupId) async {
     final user = ref.read(currentUserProvider);
-    final result = _readSync(
-      _repo.leave(groupId: groupId, userId: user.id),
-    );
-    if (!_ok(result)) {
+    final result = await _repo.leave(groupId: groupId, userId: user.id);
+    if (!result.isSuccess) {
       throw Exception(result.errorOrNull ?? 'Could not leave group.');
     }
-    _refresh();
+    ref.invalidate(currentUserGroupIdsProvider);
+    ref.invalidate(groupMembersProvider(groupId));
+    await refreshGroups();
   }
 
-  void createGroup({
+  Future<void> createGroup({
     required String name,
     required String description,
     required String category,
@@ -87,36 +58,27 @@ class GroupNotifier extends AsyncNotifier<List<Group>> {
     List<String> childAgeRanges = const [],
     List<String> interestTags = const [],
     String? coverEmoji,
-  }) {
+  }) async {
     final user = ref.read(currentUserProvider);
-    final result = _readSync(
-      _repo.createGroup(
-        name: name,
-        description: description,
-        category: category,
-        location: location,
-        ownerId: user.id,
-        ownerName: user.displayName,
-        childAgeRanges: childAgeRanges,
-        interestTags: interestTags,
-        coverEmoji: coverEmoji,
-      ),
+    final result = await _repo.createGroup(
+      name: name,
+      description: description,
+      category: category,
+      location: location,
+      ownerId: user.id,
+      ownerName: user.displayName,
+      childAgeRanges: childAgeRanges,
+      interestTags: interestTags,
+      coverEmoji: coverEmoji,
     );
-    if (!_ok(result)) {
+    if (!result.isSuccess) {
       throw Exception(result.errorOrNull ?? 'Could not create group.');
     }
-    _refresh();
+    ref.invalidate(currentUserGroupIdsProvider);
+    await refreshGroups();
   }
 
-  List<EventAnnouncement> eventsOf(String groupId) {
-    return _readSync(_repo.loadEvents(groupId));
-  }
-
-  EventAnnouncement? eventById(String id) {
-    return _readSync(_repo.getEventById(id));
-  }
-
-  void createEvent({
+  Future<void> createEvent({
     required String groupId,
     required String title,
     required String description,
@@ -124,65 +86,104 @@ class GroupNotifier extends AsyncNotifier<List<Group>> {
     required String location,
     String childAgeRange = '',
     int? participantLimit,
-  }) {
+  }) async {
     final user = ref.read(currentUserProvider);
-    final result = _readSync(
-      _repo.createEvent(
-        groupId: groupId,
-        creatorId: user.id,
-        creatorName: user.displayName,
-        title: title,
-        description: description,
-        dateTime: dateTime,
-        location: location,
-        childAgeRange: childAgeRange,
-        participantLimit: participantLimit,
-      ),
+    final result = await _repo.createEvent(
+      groupId: groupId,
+      creatorId: user.id,
+      creatorName: user.displayName,
+      title: title,
+      description: description,
+      dateTime: dateTime,
+      location: location,
+      childAgeRange: childAgeRange,
+      participantLimit: participantLimit,
     );
-    if (!_ok(result)) {
+    if (!result.isSuccess) {
       throw Exception(result.errorOrNull ?? 'Could not create event.');
     }
-    _refresh();
+    ref.invalidate(groupEventsProvider(groupId));
   }
 
-  List<Rsvp> rsvpsOf(String eventId) {
-    return _readSync(_repo.loadRsvps(eventId));
-  }
-
-  void setRsvp({
+  Future<void> setRsvp({
     required String eventId,
     required RsvpStatus status,
-  }) {
+  }) async {
     final user = ref.read(currentUserProvider);
-    final result = _readSync(
-      _repo.setRsvp(
-        Rsvp(
-          eventId: eventId,
-          userId: user.id,
-          userName: user.displayName,
-          status: status,
-          updatedAt: DateTime.now(),
-        ),
+    final result = await _repo.setRsvp(
+      Rsvp(
+        eventId: eventId,
+        userId: user.id,
+        userName: user.displayName,
+        status: status,
+        updatedAt: DateTime.now(),
       ),
     );
-    if (!_ok(result)) {
+    if (!result.isSuccess) {
       throw Exception(result.errorOrNull ?? 'Could not update RSVP.');
     }
-    // RSVP store is separate from group list; bump state so watchers rebuild.
-    _refresh();
+    ref.invalidate(eventRsvpsProvider(eventId));
   }
 }
 
 final groupProvider =
     AsyncNotifierProvider<GroupNotifier, List<Group>>(GroupNotifier.new);
 
-/// Membership ids for the current user (derived).
-final currentUserGroupIdsProvider = Provider<Set<String>>((ref) {
+/// Joined group ids for the current user (async source of truth).
+final currentUserGroupIdsProvider = FutureProvider<Set<String>>((ref) async {
+  final user = ref.watch(currentUserProvider);
+  final repo = ref.watch(groupRepositoryProvider);
+  return repo.loadJoinedGroupIds(user.id);
+});
+
+/// Single group by id. Prefers the loaded group list when available.
+final groupByIdProvider =
+    FutureProvider.family<Group?, String>((ref, groupId) async {
   final groupsAsync = ref.watch(groupProvider);
-  final groups = groupsAsync.valueOrNull ?? const <Group>[];
-  final notifier = ref.read(groupProvider.notifier);
-  return {
-    for (final group in groups)
-      if (notifier.isMember(group.id)) group.id,
-  };
+  final groups = groupsAsync.valueOrNull;
+  if (groups != null) {
+    for (final group in groups) {
+      if (group.id == groupId) return group;
+    }
+    return null;
+  }
+  if (groupsAsync.hasError) {
+    Error.throwWithStackTrace(
+      groupsAsync.error!,
+      groupsAsync.stackTrace ?? StackTrace.current,
+    );
+  }
+  return ref.watch(groupRepositoryProvider).getById(groupId);
+});
+
+final groupMembersProvider =
+    FutureProvider.family<List<GroupMember>, String>((ref, groupId) async {
+  return ref.watch(groupRepositoryProvider).loadMembers(groupId);
+});
+
+final groupEventsProvider =
+    FutureProvider.family<List<EventAnnouncement>, String>(
+        (ref, groupId) async {
+  return ref.watch(groupRepositoryProvider).loadEvents(groupId);
+});
+
+final eventByIdProvider =
+    FutureProvider.family<EventAnnouncement?, String>((ref, eventId) async {
+  return ref.watch(groupRepositoryProvider).getEventById(eventId);
+});
+
+final eventRsvpsProvider =
+    FutureProvider.family<List<Rsvp>, String>((ref, eventId) async {
+  return ref.watch(groupRepositoryProvider).loadRsvps(eventId);
+});
+
+/// Group-scoped posts derived from [postProvider] (no sync repository bridge).
+final groupPostsProvider =
+    Provider.family<AsyncValue<List<Post>>, String>((ref, groupId) {
+  return ref.watch(postProvider).whenData(
+        (posts) => [
+          for (final post in posts)
+            if (post.groupId == groupId) post,
+        ],
+      );
 });

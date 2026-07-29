@@ -13,6 +13,9 @@ abstract class GroupRepository {
 
   Future<List<GroupMember>> loadMembers(String groupId);
 
+  /// Joined group ids for [userId] (backend-ready single query).
+  Future<Set<String>> loadJoinedGroupIds(String userId);
+
   Future<Result<bool>> join({
     required String groupId,
     required String userId,

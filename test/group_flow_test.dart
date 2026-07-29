@@ -142,10 +142,14 @@ void main() {
       before + 1,
     );
     expect(
-      container.read(groupProvider.notifier).isMember(groupOcWork.id),
+      (await container.read(currentUserGroupIdsProvider.future))
+          .contains(groupOcWork.id),
       isTrue,
     );
-    expect(container.read(currentUserGroupIdsProvider).length, 3);
+    expect(
+      (await container.read(currentUserGroupIdsProvider.future)).length,
+      3,
+    );
 
     await tester.tap(find.widgetWithText(OutlinedButton, 'Leave Group'));
     await tester.pumpAndSettle();
@@ -162,7 +166,8 @@ void main() {
       before,
     );
     expect(
-      container.read(groupProvider.notifier).isMember(groupOcWork.id),
+      (await container.read(currentUserGroupIdsProvider.future))
+          .contains(groupOcWork.id),
       isFalse,
     );
   });
@@ -206,7 +211,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      container.read(currentUserGroupIdsProvider).contains(groupOcWork.id),
+      (await container.read(currentUserGroupIdsProvider.future))
+          .contains(groupOcWork.id),
       isTrue,
     );
 
@@ -232,8 +238,9 @@ void main() {
   testWidgets('Groups empty state navigates to Home', (tester) async {
     final container = await pumpApp(tester);
 
-    for (final id in container.read(currentUserGroupIdsProvider).toList()) {
-      container.read(groupProvider.notifier).leaveGroup(id);
+    final joined = await container.read(currentUserGroupIdsProvider.future);
+    for (final id in joined.toList()) {
+      await container.read(groupProvider.notifier).leaveGroup(id);
     }
     await tester.pumpAndSettle();
 

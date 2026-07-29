@@ -62,7 +62,7 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
         .toList();
 
     await ref.read(createGroupMutationProvider.notifier).run(() async {
-      ref.read(groupProvider.notifier).createGroup(
+      await ref.read(groupProvider.notifier).createGroup(
             name: name,
             description: description,
             category: category.isEmpty ? '커뮤니티' : category,
@@ -121,8 +121,9 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
             MomoError(
               title: 'Could not create',
               message: switch (mutation) {
-                AsyncOpError(:final message) => message,
-                _ => 'Try again',
+                AsyncOpError(:final message) =>
+                  message.isEmpty ? '모임을 만들지 못했습니다. 다시 시도해주세요.' : message,
+                _ => '모임을 만들지 못했습니다. 다시 시도해주세요.',
               },
               onRetry: _submit,
             ),

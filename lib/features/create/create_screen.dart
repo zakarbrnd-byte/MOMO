@@ -16,8 +16,11 @@ class CreateScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
-    final joinedIds = ref.watch(currentUserGroupIdsProvider);
-    final hasJoinedGroup = joinedIds.isNotEmpty;
+    final joinedAsync = ref.watch(currentUserGroupIdsProvider);
+    final hasJoinedGroup = joinedAsync.maybeWhen(
+      data: (ids) => ids.isNotEmpty,
+      orElse: () => false,
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Create')),
