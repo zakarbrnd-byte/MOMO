@@ -34,6 +34,6 @@ Current code still uses Playdate + Post models as foundation until Phase 3.7.
 
 | Stage | State |
 |-------|--------|
-| Phase 3.6 Product pivot & docs | **Current** |
-| Phase 3.7 Group + Event models | **Next** |
+| Phase 3.7 Group + Event local models | **Completed** |
+| Phase 3.8 Recommendations / search | **Next** |
 | Phase 4.0 Supabase / auth | Future |

@@ -5,9 +5,9 @@ Canonical plan: [`../DEVELOPMENT_PLAN.md`](../DEVELOPMENT_PLAN.md).
 | Phase | Status | Summary |
 |-------|--------|---------|
 | 1–3.5 | Completed | Technical MVP foundation (Playdate-shaped UI) |
-| 3.6 | Current | Product pivot & documentation refresh (Group-first) |
-| 3.7 | Next | Group + Event local models |
-| 3.8 | Future | Recommendations, filtering, search |
+| 3.6 | Completed | Product pivot & documentation refresh (Group-first) |
+| 3.7 | Completed | Group + Event local models (mock) |
+| 3.8 | Next | Recommendations, filtering, search |
 | 3.9 | Future | Profile onboarding |
 | 4.0 | Future | Auth + Supabase |
 | 4.1 | Future | Comments, likes, view tracking |

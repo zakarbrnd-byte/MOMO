@@ -13,7 +13,7 @@ Agents: prefer this file + `CLAUDE.md` + `MVP_SPEC.md` over older Playdate-first
 **Vision:** Help Korean mothers discover and join communities based on shared interests, child age, and location — then organize activities together inside those communities.
 
 Version: MVP 0.1  
-Current phase: **3.6 Product Pivot & Documentation Refresh**
+Current phase: **3.7 Local Group + Event domain (completed)** → **3.8 next**
 
 ---
 
@@ -80,15 +80,17 @@ Engineering layers (UI → Riverpod → Repository → Data Source) stay. Domain
 
 ---
 
-## What exists in code today (foundation)
+## What exists in code today
 
 - Flutter + Material 3 + design system
 - Bottom nav: Home / Create / Profile
 - Riverpod + repository + mock data-source DI
-- Legacy Playdate + Post feed/create/detail/join (local mock)
+- **Active UI:** Group Cards on Home, Group Detail, Event Detail + RSVP, Create Group / Post
+- Global + Group-scoped Posts (`Post.groupId`)
+- Legacy Playdate stack may remain for dormant unit paths — **not** on active Home/Create
 - DTOs, `Result`, mutation lifecycle
 
-**Do not confuse current UI labels with the product roadmap.** Upcoming work implements Groups first.
+**Backend is not connected.** All Group/Event/RSVP state is local mock.
 
 ---
 
@@ -106,9 +108,9 @@ See `MVP_SPEC.md` for full in/out lists.
 
 | Phase | Focus |
 |-------|--------|
-| 3.6 | Documentation pivot (**this phase**) |
-| 3.7 | Group + Event local models |
-| 3.8 | Home recommendations, filtering, search |
+| 3.6 | Documentation pivot (**done**) |
+| 3.7 | Group + Event local models (**done**) |
+| 3.8 | Home recommendations, filtering, search (**next**) |
 | 3.9 | Profile onboarding |
 | 4.0 | Auth + Supabase |
 | 4.1 | Comments, likes, view tracking |

@@ -21,25 +21,30 @@ This foundation is reused; it is not the final product surface.
 
 ---
 
-## Phase 3.6 — Product Pivot & Documentation Refresh (**Current**)
+## Phase 3.6 — Product Pivot & Documentation Refresh (**Completed**)
 
 - [x] Redefine vision around Groups and Event Announcements
 - [x] Update README, MVP_SPEC, PROJECT_CONTEXT, DEVELOPMENT_PLAN, ARCHITECTURE, agent docs
 - [x] Retire Playdate-first Architecture Freeze as product baseline
-- [ ] Keep Flutter source unchanged in this phase (docs only)
 
 ---
 
-## Phase 3.7 — Group + Event local models (**Next**)
+## Phase 3.7 — Group + Event local models (**Completed**)
 
-- [ ] Introduce local domain models: Group, Event Announcement, membership, RSVP stubs
-- [ ] Seed mock Groups and Event Announcements
-- [ ] Map migration path from legacy Playdate entities (no backend yet)
-- [ ] Minimal UI surfaces to browse Groups (local only)
+- [x] Domain models: Group, GroupMember, EventAnnouncement, RSVP; Post.groupId
+- [x] DTOs + mock data (LA/OC Korean mom communities)
+- [x] Group repository / data source + Riverpod providers
+- [x] Home Group Cards + global Posts (Playdate retired from active Home/Create)
+- [x] Group Detail (posts, events, members) + local join/leave
+- [x] Event Detail + local RSVP (참석 / 불참)
+- [x] Create Group; Create Event from joined Group Detail
+- [x] Tests for domain, feed, group flows
+
+**Still local/mock only — no backend, auth, or persistence.**
 
 ---
 
-## Phase 3.8 — Home recommendations, Filtering, Search
+## Phase 3.8 — Home recommendations, Filtering, Search (**Next**)
 
 - [ ] Home recommendations for Groups / feed items
 - [ ] Filtering (interest, child age, location)

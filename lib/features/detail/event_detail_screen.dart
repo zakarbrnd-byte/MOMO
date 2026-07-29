@@ -65,7 +65,7 @@ class EventDetailScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.sm),
           Text('주최 ${event.creatorName}', style: AppTextStyles.caption),
           const SizedBox(height: AppSpacing.xl),
-          Text('내 응답', style: AppTextStyles.subtitle),
+          const Text('내 응답', style: AppTextStyles.subtitle),
           const SizedBox(height: AppSpacing.sm),
           Row(
             children: [

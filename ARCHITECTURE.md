@@ -38,7 +38,7 @@ Event Announcement
 RSVP
 ```
 
-Current code still models a **Playdate-first** feed (`Playdate`, `Post`, `FeedItem`). Treat those types as the legacy foundation until Phase 3.7 introduces Group + Event Announcement models. Do not rename classes in documentation-only work.
+Phase 3.7 introduced **Group**, **GroupMember**, **EventAnnouncement**, **Rsvp**, and `Post.groupId`. Home feed uses `GroupFeedItem` + `PostFeedItem`. Legacy `Playdate` types may remain dormant in the codebase but are retired from active Home/Create UI.
 
 ---
 
@@ -256,10 +256,11 @@ lib/
 
 - **User → Group → Post → Comment → Event Announcement → RSVP**
 
-### Current code domain (legacy foundation)
+### Current code domain
 
-- **User, Playdate, Post, Participant, Child, Profile, FeedItem** — still used by the shipped local MVP.
-- Playdate `date` / `time` remain display strings today; Event Announcement schema will be designed in Phase 3.7 / 4.2.
+- **Active:** User, Group, GroupMember, EventAnnouncement, Rsvp, Post (+ optional `groupId`), Profile, FeedItem (`GroupFeedItem` / `PostFeedItem`)
+- **Legacy / dormant:** Playdate, Participant — kept for older unit paths; not primary product UI
+- Event Announcements use `DateTime` (not split date/time strings)
 
 ## Constraints
 

@@ -8,7 +8,7 @@ Guidance for Cursor agents and contributors working on MOMO.
 
 **Vision:** Help Korean mothers discover and join **Groups** based on shared interests, child age, and location; discuss with peers; and organize **Event Announcements** inside Groups.
 
-Version: MVP 0.1 · Phase **3.6** (docs pivot)
+Version: MVP 0.1 · Phase **3.7** complete (local Groups) → **3.8** next
 
 **Read first:** `PROJECT_CONTEXT.md` (single source of truth) · `MVP_SPEC.md` · `DEVELOPMENT_PLAN.md`
 
@@ -37,7 +37,7 @@ Interviews: moms often dislike stranger 1-on-1 meetups; they prefer joining a co
 
 ## Current code vs roadmap
 
-The Flutter app still contains Playdate + Post feed/create/detail flows as **technical foundation**. Upcoming phases implement Groups. Do not expand Playdate as the primary product surface unless the active phase explicitly says so.
+Active UI is **Group-first** (local mock): Home Group Cards, Group Detail, Event RSVP, Create Group/Post. Legacy Playdate code may exist dormant — do not revive it as the primary surface. Next: Phase 3.8 search/filter/recommendations.
 
 ## Rules
 
@@ -63,4 +63,4 @@ Marketplace, payments, AI recommendations, advanced moderation, real-time chat, 
 
 ## Next engineering work
 
-Phase **3.7** — Group + Event local models (after 3.6 docs land).
+Phase **3.8** — Home recommendations, filtering, search (still local/mock).
