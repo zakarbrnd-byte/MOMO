@@ -112,8 +112,10 @@ void main() {
     await tester.tap(find.textContaining('LA 3살'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Leave Group'), findsOneWidget);
-    expect(find.textContaining(groupLa3.location), findsWidgets);
+    expect(find.byIcon(Icons.info_outline), findsOneWidget);
+    expect(find.text('Posts'), findsOneWidget);
+    expect(find.text('Leave Group'), findsNothing);
+    expect(find.textContaining(groupLa3.location), findsNothing);
 
     await tester.pageBack();
     await tester.pumpAndSettle();

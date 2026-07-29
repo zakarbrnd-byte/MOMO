@@ -4,20 +4,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/widgets/momo_button.dart';
 import '../../core/widgets/momo_card.dart';
-import '../../core/widgets/momo_success_banner.dart';
 import '../../models/entity_status.dart';
 import '../../models/group.dart';
 import '../../models/post.dart';
 import '../../navigation/app_navigation.dart';
 import '../../providers/group_provider.dart';
 import '../../providers/post_provider.dart';
-import '../create/create_event_screen.dart';
 import '../detail/event_detail_screen.dart';
 import '../detail/post_detail_screen.dart';
+import 'group_info_screen.dart';
 
-/// Group community detail: join/leave, posts, events, members.
+/// Content-first Group community surface: Posts · Events · Members.
+///
+/// Static group info, join/leave, and event creation live on [GroupInfoScreen].
 class GroupDetailScreen extends ConsumerStatefulWidget {
   const GroupDetailScreen({super.key, required this.groupId});
 
@@ -65,103 +65,32 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen>
     }
 
     final current = group;
-    final isMember =
-        ref.watch(currentUserGroupIdsProvider).contains(current.id);
     final members = ref.read(groupProvider.notifier).membersOf(current.id);
     final events = ref.read(groupProvider.notifier).eventsOf(current.id);
     final posts = ref.read(postProvider.notifier).postsByGroup(current.id);
 
     return Scaffold(
-      appBar: AppBar(title: Text(current.name)),
+      appBar: AppBar(
+        title: Text(
+          current.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        actions: [
+          IconButton(
+            tooltip: '모임 정보',
+            icon: const Icon(Icons.info_outline),
+            onPressed: () {
+              AppNavigation.pushPage(
+                context,
+                GroupInfoScreen(groupId: current.id),
+              );
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
-          Padding(
-            padding: AppSpacing.page,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(current.category, style: AppTextStyles.caption),
-                const SizedBox(height: AppSpacing.sm),
-                Text(current.name, style: AppTextStyles.title),
-                const SizedBox(height: AppSpacing.sm),
-                Text(current.description, style: AppTextStyles.bodySmall),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  [
-                    current.location,
-                    if (current.childAgeRanges.isNotEmpty)
-                      current.childAgeRanges.join(' · '),
-                    '멤버 ${current.memberCount}명',
-                  ].join(' · '),
-                  style: AppTextStyles.caption,
-                ),
-                if (current.interestTags.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacing.sm),
-                  Wrap(
-                    spacing: AppSpacing.sm,
-                    children: [
-                      for (final tag in current.interestTags)
-                        Text(
-                          '#$tag',
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppColors.primaryDark,
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
-                const SizedBox(height: AppSpacing.lg),
-                if (isMember) ...[
-                  Text(
-                    'Joined',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.success,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  MomoButton(
-                    label: 'Leave Group',
-                    onPressed: () {
-                      final notifier = ref.read(groupProvider.notifier);
-                      if (!notifier.isMember(current.id)) return;
-                      notifier.leaveGroup(current.id);
-                      if (!context.mounted) return;
-                      if (notifier.isMember(current.id)) return;
-                      MomoSuccessBanner.show(context, '모임에서 나왔습니다.');
-                    },
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  TextButton(
-                    onPressed: () {
-                      AppNavigation.pushPage(
-                        context,
-                        CreateEventScreen(groupId: current.id),
-                      );
-                    },
-                    child: const Text('Create Event Announcement'),
-                  ),
-                ] else
-                  MomoButton(
-                    label: 'Join Group',
-                    onPressed: () {
-                      final notifier = ref.read(groupProvider.notifier);
-                      if (notifier.isMember(current.id)) return;
-                      notifier.joinGroup(current.id);
-                      if (!context.mounted) return;
-                      if (!notifier.isMember(current.id)) return;
-                      MomoSuccessBanner.show(
-                        context,
-                        '모임에 가입했습니다.',
-                        actionLabel: '내 모임에서 보기',
-                        onAction: () {
-                          AppNavigation.selectTab(ref, MainTabs.groups);
-                        },
-                      );
-                    },
-                  ),
-              ],
-            ),
-          ),
           TabBar(
             controller: _tabs,
             labelColor: AppColors.primaryDark,
@@ -177,7 +106,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen>
               controller: _tabs,
               children: [
                 _PostsTab(posts: posts),
-                _EventsTab(events: events, groupId: current.id),
+                _EventsTab(events: events),
                 _MembersTab(members: members),
               ],
             ),
@@ -196,10 +125,12 @@ class _PostsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (posts.isEmpty) {
-      return const Center(child: Text('아직 그룹 게시글이 없습니다.'));
+      return const Center(
+        child: Text('아직 게시글이 없습니다.', style: AppTextStyles.bodyMedium),
+      );
     }
     return ListView.separated(
-      padding: AppSpacing.page,
+      padding: _tabListPadding(context),
       itemCount: posts.length,
       separatorBuilder: (_, __) =>
           const SizedBox(height: AppSpacing.cardListGap),
@@ -231,18 +162,19 @@ class _PostsTab extends StatelessWidget {
 }
 
 class _EventsTab extends ConsumerWidget {
-  const _EventsTab({required this.events, required this.groupId});
+  const _EventsTab({required this.events});
 
   final List<EventAnnouncement> events;
-  final String groupId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (events.isEmpty) {
-      return const Center(child: Text('아직 일정이 없습니다.'));
+      return const Center(
+        child: Text('예정된 이벤트가 없습니다.', style: AppTextStyles.bodyMedium),
+      );
     }
     return ListView.separated(
-      padding: AppSpacing.page,
+      padding: _tabListPadding(context),
       itemCount: events.length,
       separatorBuilder: (_, __) =>
           const SizedBox(height: AppSpacing.cardListGap),
@@ -298,20 +230,59 @@ class _MembersTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (members.isEmpty) {
-      return const Center(child: Text('멤버가 없습니다.'));
+      return const Center(
+        child: Text('표시할 멤버가 없습니다.', style: AppTextStyles.bodyMedium),
+      );
     }
     return ListView.separated(
-      padding: AppSpacing.page,
+      padding: _tabListPadding(context),
       itemCount: members.length,
       separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final member = members[index];
         return ListTile(
           contentPadding: EdgeInsets.zero,
+          leading: CircleAvatar(
+            backgroundColor: AppColors.primarySoft,
+            foregroundColor: AppColors.primaryDark,
+            child: Text(
+              _initial(member.userName),
+              style: AppTextStyles.caption.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryDark,
+              ),
+            ),
+          ),
           title: Text(member.userName, style: AppTextStyles.bodyMedium),
-          subtitle: Text(member.role.name, style: AppTextStyles.caption),
+          subtitle: member.role == GroupMemberRole.member
+              ? null
+              : Text(_roleLabel(member.role), style: AppTextStyles.caption),
         );
       },
     );
   }
+
+  static String _initial(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return '?';
+    return String.fromCharCode(trimmed.runes.first);
+  }
+
+  static String _roleLabel(GroupMemberRole role) {
+    return switch (role) {
+      GroupMemberRole.owner => 'Owner',
+      GroupMemberRole.admin => 'Admin',
+      GroupMemberRole.member => 'Member',
+    };
+  }
+}
+
+EdgeInsets _tabListPadding(BuildContext context) {
+  final bottomInset = MediaQuery.paddingOf(context).bottom;
+  return EdgeInsets.fromLTRB(
+    AppSpacing.xl,
+    AppSpacing.sm,
+    AppSpacing.xl,
+    AppSpacing.xl + bottomInset,
+  );
 }

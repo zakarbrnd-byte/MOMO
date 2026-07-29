@@ -68,13 +68,14 @@ MOMO
 
 ### Current shipped foundation (code today)
 
-Phase 3.7 local Group-first UI:
+Phase 3.7 local Group-first UI (refined through 3.7.2):
 
-- Bottom navigation: Home, Create, Profile
+- Bottom navigation: Home, Create, Groups, Profile
 - Home feed with Group Cards + global Post cards
-- Group Detail (posts, Event Announcements, members) + join/leave
+- Group Detail is **content-first** (Posts default; Events; Members)
+- Group Information (ⓘ) for description, join/leave, and create event
 - Event Detail with local RSVP
-- Create Group / Create Post; Create Event from joined Group
+- Create Group / Create Post; Create Event from Group Information (joined members)
 - Repository + mock data-source architecture
 
 Legacy Playdate screens may remain in the tree for dormant tests — not on active Home/Create.
