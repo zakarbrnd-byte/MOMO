@@ -35,7 +35,8 @@ void main() {
 
     await tester.tap(find.textContaining('LA 3살'));
     await tester.pumpAndSettle();
-    expect(find.text('Leave Group'), findsOneWidget);
+    expect(find.byIcon(Icons.info_outline), findsOneWidget);
+    expect(find.text('Posts'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
 
     await tester.pageBack();
@@ -118,7 +119,8 @@ void main() {
 
     await tester.tap(find.textContaining('LA 3살'));
     await tester.pumpAndSettle();
-    expect(find.text('Leave Group'), findsOneWidget);
+    expect(find.byIcon(Icons.info_outline), findsOneWidget);
+    expect(find.text('Posts'), findsOneWidget);
 
     // Bottom bar stays available on detail.
     await tester.tap(find.byIcon(Icons.person_outline));
@@ -130,13 +132,13 @@ void main() {
     await tester.pumpAndSettle();
     expect(container.read(mainTabProvider), MainTabs.home);
     // Home tab stack preserved — detail still open.
-    expect(find.text('Leave Group'), findsOneWidget);
+    expect(find.byIcon(Icons.info_outline), findsOneWidget);
 
     // Re-tap Home to pop to feed root.
     await tester.tap(find.byIcon(Icons.home));
     await tester.pumpAndSettle();
     expect(find.textContaining('LA 3살'), findsOneWidget);
-    expect(find.text('Leave Group'), findsNothing);
+    expect(find.byIcon(Icons.info_outline), findsNothing);
   });
 
   testWidgets('Bottom nav shows Home Create Groups Profile', (tester) async {

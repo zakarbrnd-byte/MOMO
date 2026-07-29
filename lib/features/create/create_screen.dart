@@ -60,7 +60,7 @@ class CreateScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.lg),
           if (hasJoinedGroup)
             Text(
-              'Event Announcements: open a Group you joined → Create Event.',
+              'Event Announcements: open a joined Group → Info → 이벤트 만들기.',
               style: textTheme.bodySmall,
               textAlign: TextAlign.center,
             )

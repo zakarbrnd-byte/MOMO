@@ -63,7 +63,7 @@ void main() {
     expect(find.text('Create Post'), findsOneWidget);
     expect(find.text('Create Playdate'), findsNothing);
     expect(
-      find.textContaining('Event Announcements: open a Group'),
+      find.textContaining('Event Announcements: open a joined Group'),
       findsOneWidget,
     );
   });
