@@ -62,6 +62,40 @@ void main() {
     expect(find.text('Create Group'), findsOneWidget);
     expect(find.text('Create Post'), findsOneWidget);
     expect(find.text('Create Playdate'), findsNothing);
+    expect(
+      find.textContaining('Event Announcements: open a Group'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Create shows event gate when user joined zero groups',
+      (tester) async {
+    final container = newContainer();
+    await pumpApp(tester, container);
+
+    for (final id in container.read(currentUserGroupIdsProvider).toList()) {
+      container.read(groupProvider.notifier).leaveGroup(id);
+    }
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.add_circle_outline));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('이벤트 공지를 만들려면 먼저 모임에 가입해야 합니다.'),
+      findsOneWidget,
+    );
+    expect(find.text('모임 찾아보기'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('모임 찾아보기'),
+      100,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('모임 찾아보기'));
+    await tester.pumpAndSettle();
+    expect(container.read(mainTabProvider), MainTabs.home);
   });
 
   testWidgets('Create Group blocks submit without required fields',

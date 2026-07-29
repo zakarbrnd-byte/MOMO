@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/card_header.dart';
-import '../../../core/widgets/momo_button.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/group.dart';
-import '../../../providers/group_provider.dart';
 
-/// Home / browse card for a persistent Group community.
-class GroupCard extends ConsumerWidget {
+/// Shared Group community card.
+///
+/// [variant] controls discovery vs personal-library presentation.
+/// Membership Join/Leave never appear here — only on Group Detail.
+class GroupCard extends StatelessWidget {
   const GroupCard({
     super.key,
     required this.group,
     required this.onTap,
+    this.variant = GroupCardVariant.discovery,
     @visibleForTesting this.now,
   });
 
   final Group group;
   final VoidCallback onTap;
+  final GroupCardVariant variant;
 
   @visibleForTesting
   final DateTime? now;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isMember = ref.watch(currentUserGroupIdsProvider).contains(group.id);
-
+  Widget build(BuildContext context) {
     return MomoCard(
       onTap: onTap,
       child: Column(
@@ -84,24 +84,25 @@ class GroupCard extends ConsumerWidget {
               ],
             ),
           ],
-          const SizedBox(height: AppSpacing.cardFooterGap),
-          if (isMember)
+          if (variant == GroupCardVariant.myGroups) ...[
+            const SizedBox(height: AppSpacing.cardContentGap),
             Text(
               'Joined',
-              style: AppTextStyles.button.copyWith(color: AppColors.success),
-            )
-          else
-            MomoButton(
-              label: 'Join Group',
-              fullWidth: true,
-              onPressed: () {
-                ref.read(groupProvider.notifier).joinGroup(group.id);
-              },
+              style: AppTextStyles.caption.copyWith(color: AppColors.success),
             ),
+          ],
         ],
       ),
     );
   }
+}
+
+enum GroupCardVariant {
+  /// Home discovery — info only, no membership CTA.
+  discovery,
+
+  /// My Groups library — optional joined caption, no Join button.
+  myGroups,
 }
 
 class _GroupCategoryBadge extends StatelessWidget {

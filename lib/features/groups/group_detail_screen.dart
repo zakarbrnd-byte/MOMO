@@ -110,18 +110,20 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen>
                   ),
                 ],
                 const SizedBox(height: AppSpacing.lg),
-                MomoButton(
-                  label: isMember ? 'Leave Group' : 'Join Group',
-                  onPressed: () {
-                    final notifier = ref.read(groupProvider.notifier);
-                    if (isMember) {
-                      notifier.leaveGroup(current.id);
-                    } else {
-                      notifier.joinGroup(current.id);
-                    }
-                  },
-                ),
                 if (isMember) ...[
+                  Text(
+                    'Joined',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.success,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  MomoButton(
+                    label: 'Leave Group',
+                    onPressed: () {
+                      ref.read(groupProvider.notifier).leaveGroup(current.id);
+                    },
+                  ),
                   const SizedBox(height: AppSpacing.sm),
                   TextButton(
                     onPressed: () {
@@ -132,7 +134,13 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen>
                     },
                     child: const Text('Create Event Announcement'),
                   ),
-                ],
+                ] else
+                  MomoButton(
+                    label: 'Join Group',
+                    onPressed: () {
+                      ref.read(groupProvider.notifier).joinGroup(current.id);
+                    },
+                  ),
               ],
             ),
           ),
