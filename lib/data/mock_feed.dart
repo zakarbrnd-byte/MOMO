@@ -2,7 +2,10 @@ import '../models/playdate.dart';
 import '../models/post.dart';
 import 'mock_user.dart';
 
-/// Seed playdates / posts for [MockPlaydateDataSource] / [MockPostDataSource].
+/// Seed playdates (and legacy [mockPosts]) for [MockPlaydateDataSource].
+///
+/// Post seeds for the live data source live in [mock_groups.dart]
+/// (`mockAllPosts`). [mockPosts] remains for engagement / DTO tests.
 ///
 /// Do not import from UI or providers — go through repository → data source.
 ///

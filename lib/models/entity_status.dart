@@ -1,4 +1,4 @@
-/// Lifecycle status for a [Playdate].
+/// Lifecycle status for a [Playdate] (legacy foundation entity).
 enum PlaydateStatus {
   active,
   cancelled,
@@ -12,9 +12,23 @@ enum PostStatus {
   deleted,
 }
 
-/// Lifecycle status for a [Participant] join record.
+/// Lifecycle status for a [Participant] join record (legacy playdate).
 enum ParticipantStatus {
   active,
   left,
   removed,
+}
+
+/// Lifecycle status for an [EventAnnouncement].
+enum EventStatus {
+  scheduled,
+  cancelled,
+  completed,
+}
+
+/// RSVP response for an [EventAnnouncement].
+enum RsvpStatus {
+  attending,
+  notAttending,
+  undecided,
 }

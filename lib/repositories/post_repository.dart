@@ -6,8 +6,11 @@ import '../models/post.dart';
 /// Convention: [load], [create], [update], [delete] — all async;
 /// mutations return [Result] (`true` on success).
 abstract class PostRepository {
-  /// Load all posts (future: GET /posts).
+  /// Load all posts — global + group-scoped (future: GET /posts).
   Future<List<Post>> load();
+
+  /// Load posts for one Group (future: GET /groups/:id/posts).
+  Future<List<Post>> loadByGroup(String groupId);
 
   /// Create a post (future: POST /posts).
   Future<Result<bool>> create({

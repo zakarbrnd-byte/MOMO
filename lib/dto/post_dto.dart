@@ -14,6 +14,8 @@ class PostDto {
     required this.content,
     required this.authorName,
     this.creatorId,
+    this.groupId,
+    this.groupName,
     this.category = PostCategory.parenting,
     this.viewCount = 0,
     this.commentCount = 0,
@@ -28,6 +30,8 @@ class PostDto {
   final String content;
   final String authorName;
   final String? creatorId;
+  final String? groupId;
+  final String? groupName;
   final PostCategory category;
   final int viewCount;
   final int commentCount;
@@ -43,6 +47,8 @@ class PostDto {
       content: JsonConverters.stringFromJson(json['content']),
       authorName: JsonConverters.stringFromJson(json['authorName']),
       creatorId: JsonConverters.nullableStringFromJson(json['creatorId']),
+      groupId: JsonConverters.nullableStringFromJson(json['groupId']),
+      groupName: JsonConverters.nullableStringFromJson(json['groupName']),
       category: JsonConverters.enumFromJson(
         json['category'],
         PostCategory.values,
@@ -68,6 +74,8 @@ class PostDto {
       'content': content,
       'authorName': authorName,
       if (creatorId != null) 'creatorId': creatorId,
+      if (groupId != null) 'groupId': groupId,
+      if (groupName != null) 'groupName': groupName,
       'category': JsonConverters.enumToJson(category),
       'viewCount': viewCount,
       'commentCount': commentCount,
@@ -87,6 +95,8 @@ class PostDto {
       content: content,
       authorName: authorName,
       creatorId: creatorId,
+      groupId: groupId,
+      groupName: groupName,
       category: category,
       viewCount: viewCount,
       commentCount: commentCount,
@@ -104,6 +114,8 @@ class PostDto {
       content: post.content,
       authorName: post.authorName,
       creatorId: post.creatorId,
+      groupId: post.groupId,
+      groupName: post.groupName,
       category: post.category,
       viewCount: post.viewCount,
       commentCount: post.commentCount,

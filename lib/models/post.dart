@@ -20,6 +20,8 @@ class Post {
     required this.content,
     required this.authorName,
     this.creatorId,
+    this.groupId,
+    this.groupName,
     this.category = PostCategory.parenting,
     this.viewCount = 0,
     this.commentCount = 0,
@@ -39,6 +41,12 @@ class Post {
   /// Owning user id when known.
   final String? creatorId;
 
+  /// When null, post is global community; otherwise belongs to a Group.
+  final String? groupId;
+
+  /// Denormalized Group name for cards / detail.
+  final String? groupName;
+
   /// Topic chip for community cards (default [PostCategory.parenting]).
   final PostCategory category;
 
@@ -57,12 +65,18 @@ class Post {
 
   bool get isActive => status == PostStatus.active;
 
+  bool get isGlobal => groupId == null;
+
+  bool get isGroupPost => groupId != null;
+
   Post copyWith({
     String? id,
     String? title,
     String? content,
     String? authorName,
     Object? creatorId = _unset,
+    Object? groupId = _unset,
+    Object? groupName = _unset,
     PostCategory? category,
     int? viewCount,
     int? commentCount,
@@ -79,6 +93,11 @@ class Post {
       creatorId: identical(creatorId, _unset)
           ? this.creatorId
           : creatorId as String?,
+      groupId:
+          identical(groupId, _unset) ? this.groupId : groupId as String?,
+      groupName: identical(groupName, _unset)
+          ? this.groupName
+          : groupName as String?,
       category: category ?? this.category,
       viewCount: viewCount ?? this.viewCount,
       commentCount: commentCount ?? this.commentCount,

@@ -5,7 +5,11 @@ import '../../models/post.dart';
 /// Implementations: [MockPostDataSource] today,
 /// future `SupabasePostDataSource` later — repositories stay stable.
 abstract class PostDataSource {
+  /// All posts (global community + group-scoped).
   Future<List<Post>> getPosts();
+
+  /// Posts belonging to a single Group (`groupId` match).
+  Future<List<Post>> getPostsByGroup(String groupId);
 
   Future<void> createPost({
     required String title,

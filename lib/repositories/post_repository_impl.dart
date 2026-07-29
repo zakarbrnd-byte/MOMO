@@ -20,6 +20,15 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
+  Future<List<Post>> loadByGroup(String groupId) {
+    return _dataSource.getPostsByGroup(groupId).then((items) {
+      return [
+        for (final item in items) PostDto.fromDomain(item).toDomain(),
+      ];
+    });
+  }
+
+  @override
   Future<Result<bool>> create({
     required String title,
     required String content,

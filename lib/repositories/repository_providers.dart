@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/datasources/data_source_providers.dart';
+import 'group_repository.dart';
+import 'group_repository_impl.dart';
 import 'playdate_repository.dart';
 import 'playdate_repository_impl.dart';
 import 'post_repository.dart';
@@ -20,6 +22,11 @@ final playdateRepositoryProvider = Provider<PlaydateRepository>((ref) {
 /// Exposes [PostRepository] (interface only to feature providers).
 final postRepositoryProvider = Provider<PostRepository>((ref) {
   return PostRepositoryImpl(ref.watch(postDataSourceProvider));
+});
+
+/// Exposes [GroupRepository] (interface only to feature providers).
+final groupRepositoryProvider = Provider<GroupRepository>((ref) {
+  return GroupRepositoryImpl(ref.watch(groupDataSourceProvider));
 });
 
 /// Exposes [ProfileRepository] for the Profile tab.

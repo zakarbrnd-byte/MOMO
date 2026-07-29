@@ -1,23 +1,31 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../models/post.dart';
-import '../../mock_feed.dart';
+import '../../mock_groups.dart';
 import '../../mock_user.dart';
 import '../post_data_source.dart';
 import 'mock_profile_data_source.dart';
 
-/// In-memory post store seeded from [mockPosts].
+/// In-memory post store seeded from [mockAllPosts] (group + global).
 ///
 /// Owns mock collections — repositories must not hold seed lists.
 class MockPostDataSource implements PostDataSource {
   MockPostDataSource({List<Post>? seed})
-    : _items = List<Post>.from(seed ?? mockPosts);
+    : _items = List<Post>.from(seed ?? mockAllPosts);
 
   final List<Post> _items;
 
   @override
   Future<List<Post>> getPosts() {
     return SynchronousFuture(List<Post>.from(_items));
+  }
+
+  @override
+  Future<List<Post>> getPostsByGroup(String groupId) {
+    return SynchronousFuture([
+      for (final post in _items)
+        if (post.groupId == groupId) post,
+    ]);
   }
 
   @override
