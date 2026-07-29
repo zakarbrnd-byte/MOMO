@@ -43,7 +43,7 @@ void main() {
     await pumpApp(tester);
 
     expect(find.textContaining('LA 3살'), findsWidgets);
-    expect(find.text('필터'), findsOneWidget);
+    expect(find.byIcon(Icons.tune_rounded), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.text(mockGlobalPosts.first.title),

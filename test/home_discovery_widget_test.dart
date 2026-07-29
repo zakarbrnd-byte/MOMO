@@ -32,11 +32,15 @@ void main() {
     return container;
   }
 
-  testWidgets('Home shows search field and Filter button', (tester) async {
+  testWidgets('Home shows compact Filter and Search AppBar actions',
+      (tester) async {
     await pumpHome(tester);
 
-    expect(find.text('모임 이름, 지역, 관심사 검색'), findsOneWidget);
-    expect(find.text('필터'), findsOneWidget);
+    expect(find.text('MOMO'), findsOneWidget);
+    expect(find.byIcon(Icons.tune_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.search_rounded), findsOneWidget);
+    expect(find.text('모임 이름, 지역, 관심사 검색'), findsNothing);
+    expect(find.text('필터'), findsNothing);
     expect(find.text('추천 모임'), findsOneWidget);
     expect(find.text('전체 모임'), findsOneWidget);
   });
@@ -44,6 +48,7 @@ void main() {
   testWidgets('Search query shows results mode', (tester) async {
     final container = await pumpHome(tester);
 
+    await openHomeSearch(tester);
     await tester.enterText(find.byType(TextField).first, '도서관');
     await tester.pumpAndSettle();
 
@@ -55,6 +60,7 @@ void main() {
   testWidgets('Search no-results state appears', (tester) async {
     await pumpHome(tester);
 
+    await openHomeSearch(tester);
     await tester.enterText(find.byType(TextField).first, 'zzzz-no-match');
     await tester.pumpAndSettle();
 
@@ -66,7 +72,7 @@ void main() {
       (tester) async {
     final container = await pumpHome(tester);
 
-    await tester.tap(find.byIcon(Icons.tune));
+    await tester.tap(find.byIcon(Icons.tune_rounded));
     await tester.pumpAndSettle();
 
     expect(find.text('모임 필터'), findsOneWidget);
@@ -164,12 +170,12 @@ void main() {
   testWidgets('Home remains functional during async refresh', (tester) async {
     final container = await pumpHome(tester);
 
-    expect(find.text('필터'), findsOneWidget);
+    expect(find.byIcon(Icons.tune_rounded), findsOneWidget);
     await container.read(groupProvider.notifier).refreshGroups();
     await tester.pump();
     await tester.pumpAndSettle();
 
-    expect(find.text('필터'), findsOneWidget);
+    expect(find.byIcon(Icons.tune_rounded), findsOneWidget);
     expect(container.read(mainTabProvider), MainTabs.home);
   });
 }
