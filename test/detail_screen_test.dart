@@ -9,6 +9,8 @@ import 'package:momo/features/detail/post_detail_screen.dart';
 import 'package:momo/models/playdate.dart';
 import 'package:momo/models/post.dart';
 
+import 'support/home_test_helpers.dart';
+
 void main() {
   testWidgets('Playdate detail shows full information', (tester) async {
     const playdate = Playdate(
@@ -109,8 +111,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.textContaining('LA 3살'));
-    await tester.pumpAndSettle();
+    await openHomeGroupBySearch(tester, 'LA 3살');
 
     expect(find.byIcon(Icons.info_outline), findsOneWidget);
     expect(find.text('Posts'), findsOneWidget);
@@ -120,6 +121,6 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('LA 3살'), findsOneWidget);
+    expect(find.textContaining('LA 3살'), findsWidgets);
   });
 }

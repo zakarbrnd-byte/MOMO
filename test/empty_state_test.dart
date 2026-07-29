@@ -42,8 +42,8 @@ void main() {
   testWidgets('Home shows mock feed content', (tester) async {
     await pumpApp(tester);
 
-    expect(find.textContaining('LA 3살'), findsOneWidget);
-    expect(find.text(mockGlobalPosts.first.title), findsNothing);
+    expect(find.textContaining('LA 3살'), findsWidgets);
+    expect(find.text('필터'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.text(mockGlobalPosts.first.title),
@@ -53,7 +53,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(mockGlobalPosts.first.title), findsOneWidget);
-    expect(find.text('아직 그룹이 없습니다.'), findsNothing);
+    expect(find.text('아직 등록된 모임이 없습니다.'), findsNothing);
     expect(find.text('아직 커뮤니티 게시글이 없습니다.'), findsNothing);
     expect(find.text('Create Playdate'), findsNothing);
   });
@@ -67,7 +67,7 @@ void main() {
     );
 
     expect(find.byType(EmptyState), findsOneWidget);
-    expect(find.text('아직 그룹이 없습니다.'), findsOneWidget);
+    expect(find.text('아직 등록된 모임이 없습니다.'), findsOneWidget);
     expect(find.text('관심사·나이·지역으로 첫 커뮤니티를 만들어보세요.'), findsOneWidget);
     expect(find.widgetWithText(FilledButton, 'Create Group'), findsOneWidget);
 
@@ -86,19 +86,26 @@ void main() {
       ],
     );
 
+    await tester.scrollUntilVisible(
+      find.text('아직 커뮤니티 게시글이 없습니다.'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
     expect(find.byType(EmptyState), findsOneWidget);
     expect(find.text('아직 커뮤니티 게시글이 없습니다.'), findsOneWidget);
     expect(find.text('첫 번째 이야기를 공유해보세요.'), findsOneWidget);
-    expect(find.widgetWithText(FilledButton, 'Create Post'), findsOneWidget);
-
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Post'));
+    final createPost = find.widgetWithText(FilledButton, 'Create Post');
+    await tester.ensureVisible(createPost);
+    await tester.tap(createPost);
     await tester.pumpAndSettle();
 
     expect(find.text('Create Post'), findsWidgets);
     expect(find.byType(TextFormField), findsWidgets);
   });
 
-  testWidgets('Both empty shows group and post empty states', (tester) async {
+  testWidgets('Both empty shows group empty state first', (tester) async {
     await pumpApp(
       tester,
       overrides: [
@@ -107,8 +114,7 @@ void main() {
       ],
     );
 
-    expect(find.byType(EmptyState), findsNWidgets(2));
-    expect(find.text('아직 그룹이 없습니다.'), findsOneWidget);
-    expect(find.text('아직 커뮤니티 게시글이 없습니다.'), findsOneWidget);
+    expect(find.text('아직 등록된 모임이 없습니다.'), findsOneWidget);
+    expect(find.text('아직 커뮤니티 게시글이 없습니다.'), findsNothing);
   });
 }

@@ -9,6 +9,7 @@ import 'package:momo/providers/group_provider.dart';
 import 'package:momo/providers/main_tab_provider.dart';
 
 import 'support/test_overrides.dart';
+import 'support/home_test_helpers.dart';
 
 void main() {
   Future<ProviderContainer> pumpApp(WidgetTester tester) async {
@@ -30,18 +31,20 @@ void main() {
     return container;
   }
 
+  Future<void> openLa3(WidgetTester tester) =>
+      openHomeGroupBySearch(tester, 'LA 3살');
+
   testWidgets('Journey: Home → Group detail → Back → Home', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.textContaining('LA 3살'));
-    await tester.pumpAndSettle();
+    await openLa3(tester);
     expect(find.byIcon(Icons.info_outline), findsOneWidget);
     expect(find.text('Posts'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
 
     await tester.pageBack();
     await tester.pumpAndSettle();
-    expect(find.textContaining('LA 3살'), findsOneWidget);
+    expect(find.textContaining('LA 3살'), findsWidgets);
     expect(find.text('MOMO'), findsOneWidget);
   });
 
@@ -117,8 +120,7 @@ void main() {
       (tester) async {
     final container = await pumpApp(tester);
 
-    await tester.tap(find.textContaining('LA 3살'));
-    await tester.pumpAndSettle();
+    await openLa3(tester);
     expect(find.byIcon(Icons.info_outline), findsOneWidget);
     expect(find.text('Posts'), findsOneWidget);
 
@@ -137,7 +139,7 @@ void main() {
     // Re-tap Home to pop to feed root.
     await tester.tap(find.byIcon(Icons.home));
     await tester.pumpAndSettle();
-    expect(find.textContaining('LA 3살'), findsOneWidget);
+    expect(find.textContaining('LA 3살'), findsWidgets);
     expect(find.byIcon(Icons.info_outline), findsNothing);
   });
 
@@ -198,7 +200,7 @@ void main() {
   testWidgets('Home has no Playdate cards', (tester) async {
     await pumpApp(tester);
 
-    expect(find.text(groupLa3.name), findsOneWidget);
+    expect(find.text(groupLa3.name), findsWidgets);
     expect(find.text('Join Playdate'), findsNothing);
     expect(find.text('Create Playdate'), findsNothing);
   });

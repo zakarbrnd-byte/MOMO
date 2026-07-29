@@ -9,6 +9,7 @@ import 'package:momo/providers/group_provider.dart';
 import 'package:momo/providers/main_tab_provider.dart';
 
 import 'support/test_overrides.dart';
+import 'support/home_test_helpers.dart';
 
 void main() {
   Future<ProviderContainer> pumpApp(WidgetTester tester) async {
@@ -30,6 +31,10 @@ void main() {
     return container;
   }
 
+  Future<void> openLa3(WidgetTester tester) async {
+    await openHomeGroupBySearch(tester, 'LA 3살');
+  }
+
   Future<void> openGroupInfo(WidgetTester tester) async {
     await tester.tap(find.byIcon(Icons.info_outline));
     await tester.pumpAndSettle();
@@ -40,8 +45,8 @@ void main() {
       (tester) async {
     await pumpApp(tester);
 
-    expect(find.textContaining('LA 3살'), findsOneWidget);
-    expect(find.text(groupOcWork.name), findsOneWidget);
+    expect(find.textContaining('LA 3살'), findsWidgets);
+    expect(find.text(groupOcWork.name), findsWidgets);
     expect(find.text('Create Playdate'), findsNothing);
     expect(find.text('Join Playdate'), findsNothing);
     expect(find.text('Join Group'), findsNothing);
@@ -59,7 +64,7 @@ void main() {
   testWidgets('Group Detail is content-first with info action', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.textContaining('LA 3살'));
+    await openLa3(tester);
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.info_outline), findsOneWidget);
@@ -84,7 +89,7 @@ void main() {
       (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.textContaining('LA 3살'));
+    await openLa3(tester);
     await tester.pumpAndSettle();
     await openGroupInfo(tester);
 
@@ -105,15 +110,7 @@ void main() {
       (tester) async {
     final container = await pumpApp(tester);
 
-    await tester.scrollUntilVisible(
-      find.text(groupOcWork.name),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text(groupOcWork.name));
-    await tester.pumpAndSettle();
+    await openHomeGroupBySearch(tester, 'OC 워킹맘');
     await openGroupInfo(tester);
 
     expect(find.text('Join Group'), findsOneWidget);
@@ -175,14 +172,7 @@ void main() {
   testWidgets('Join snackbar action opens Groups tab', (tester) async {
     final container = await pumpApp(tester);
 
-    await tester.scrollUntilVisible(
-      find.text(groupOcWork.name),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text(groupOcWork.name));
-    await tester.pumpAndSettle();
+    await openHomeGroupBySearch(tester, 'OC 워킹맘');
     await openGroupInfo(tester);
     await tester.tap(find.widgetWithText(FilledButton, 'Join Group'));
     await tester.pumpAndSettle();
@@ -198,14 +188,7 @@ void main() {
   testWidgets('Join syncs to Groups tab; Leave removes it', (tester) async {
     final container = await pumpApp(tester);
 
-    await tester.scrollUntilVisible(
-      find.text(groupOcWork.name),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text(groupOcWork.name));
-    await tester.pumpAndSettle();
+    await openHomeGroupBySearch(tester, 'OC 워킹맘');
     await openGroupInfo(tester);
     await tester.tap(find.widgetWithText(FilledButton, 'Join Group'));
     await tester.pumpAndSettle();
@@ -260,7 +243,7 @@ void main() {
   testWidgets('Event creation opens from Group Information', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.textContaining('LA 3살'));
+    await openLa3(tester);
     await tester.pumpAndSettle();
     await openGroupInfo(tester);
 
@@ -274,7 +257,7 @@ void main() {
   testWidgets('Group detail shows posts and events', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.textContaining('LA 3살'));
+    await openLa3(tester);
     await tester.pumpAndSettle();
 
     expect(find.text('이번 주 Lafayette Park 가실 분?'), findsOneWidget);
@@ -290,7 +273,7 @@ void main() {
   testWidgets('Members tab lists member names', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.textContaining('LA 3살'));
+    await openLa3(tester);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Members'));
     await tester.pumpAndSettle();
@@ -302,7 +285,7 @@ void main() {
   testWidgets('RSVP attending and not attending', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.textContaining('LA 3살'));
+    await openLa3(tester);
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Events'));

@@ -58,7 +58,7 @@ This foundation is reused; it is not the final product surface.
 
 ---
 
-## Phase 3.7.3 — Backend readiness hardening (**Active**)
+## Phase 3.7.3 — Backend readiness hardening (**Completed**)
 
 - [x] Remove Group `_readSync()` / synchronous Future assumptions
 - [x] Async family providers for group reads + joined ids
@@ -67,15 +67,21 @@ This foundation is reused; it is not the final product surface.
 
 ---
 
-## Phase 3.8 — Home recommendations, Filtering, Search (**Next**)
+## Phase 3.8 — Home recommendations, Filtering, Search (**Completed**)
 
-- [ ] Home recommendations for Groups / feed items
-- [ ] Filtering (interest, child age, location)
-- [ ] Search
+- [x] Home structured discovery (추천 / 내 주변 / 아이 연령 / 새로운 / 전체 모임)
+- [x] Local keyword search (name, description, category, location, ages, tags)
+- [x] Immutable filters + bottom sheet (location, age, interests, category, membership)
+- [x] Deterministic recommendation scoring (not AI / not GPS)
+- [x] Active filter chips, empty / loading / error states
+- [x] Discovery providers derive from existing async Group + membership providers
+- [x] Tests for pure logic, providers, and Home widgets
+
+**Still local/mock only — no backend search, GPS, or AI.**
 
 ---
 
-## Phase 3.9 — Profile onboarding
+## Phase 3.9 — Profile onboarding (**Next**)
 
 - [ ] Profile onboarding flow (location, child age, interests)
 - [ ] Tie profile signals to Group discovery

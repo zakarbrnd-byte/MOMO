@@ -100,12 +100,107 @@ final groupPark = Group(
   recentActivityAt: mockGroupSeedNow.subtract(const Duration(hours: 4)),
 );
 
+final groupBook = Group(
+  id: 'grp_book',
+  name: 'LA 한국어 책 읽기 모임',
+  description: '한인타운·인근 도서관에서 한국어 그림책·동화 같이 읽어요. '
+      '아이 연령에 맞는 책 추천도 나눕니다.',
+  category: '육아',
+  location: 'Koreatown, Los Angeles',
+  childAgeRanges: const ['2–4세', '3–5세'],
+  interestTags: const ['도서관', '한국어', '책'],
+  ownerId: 'mom_sora',
+  ownerName: '김소라',
+  memberCount: 6,
+  coverEmoji: '📖',
+  isFeatured: true,
+  createdAt: mockGroupSeedNow.subtract(const Duration(days: 14)),
+  recentActivityAt: mockGroupSeedNow.subtract(const Duration(hours: 5)),
+);
+
+final groupTorrance = Group(
+  id: 'grp_torrance',
+  name: '토런스 초등맘 정보 모임',
+  description: 'Torrance·South Bay 초등 엄마들 정보 공유. '
+      '방과후, 학원, 급식·캠퍼스 생활 tip을 나눠요.',
+  category: '학교·킨더',
+  location: 'Torrance / South Bay',
+  childAgeRanges: const ['초등', '6–8세'],
+  interestTags: const ['초등', '방과후', 'Torrance'],
+  ownerId: 'mom_yuna',
+  ownerName: '최유나',
+  memberCount: 3,
+  coverEmoji: '🎒',
+  isFeatured: false,
+  createdAt: mockGroupSeedNow.subtract(const Duration(days: 75)),
+  recentActivityAt: mockGroupSeedNow.subtract(const Duration(days: 2)),
+);
+
+final groupPasadena = Group(
+  id: 'grp_pasadena',
+  name: 'Pasadena 자연놀이 모임',
+  description: 'Pasadena·Glendale 쪽 자연·하이킹·공원 놀이 모임. '
+      '날씨 좋은 날 가벼운 산책부터 시작해요.',
+  category: '야외·나들이',
+  location: 'Pasadena / Glendale',
+  childAgeRanges: const ['2–4세', '4–6세'],
+  interestTags: const ['자연놀이', '하이킹', '공원'],
+  ownerId: 'mom_jiwoo',
+  ownerName: '한지우',
+  memberCount: 4,
+  coverEmoji: '🥾',
+  isFeatured: false,
+  createdAt: mockGroupSeedNow.subtract(const Duration(days: 10)),
+  recentActivityAt: mockGroupSeedNow.subtract(const Duration(hours: 9)),
+);
+
+final groupCafe = Group(
+  id: 'grp_cafe',
+  name: '한인타운 키즈카페 수다',
+  description: '한인타운 키즈카페에서 비 오는 날·더운 날 모여요. '
+      '카페 후기랑 할인 정보도 공유합니다.',
+  category: '육아',
+  location: 'Koreatown, Los Angeles',
+  childAgeRanges: const ['1–3세', '2–4세'],
+  interestTags: const ['키즈카페', '한인타운', '실내'],
+  ownerId: 'mom_minji',
+  ownerName: '박민지',
+  memberCount: 4,
+  coverEmoji: '☕',
+  isFeatured: false,
+  createdAt: mockGroupSeedNow.subtract(const Duration(days: 7)),
+  recentActivityAt: mockGroupSeedNow.subtract(const Duration(hours: 1)),
+);
+
+final groupOcPark = Group(
+  id: 'grp_ocpark',
+  name: 'OC 주말 놀이터 모임',
+  description: 'Irvine·Orange County 주말 놀이터 번개. '
+      '워킹맘·전업맘 모두 환영이에요.',
+  category: '야외·나들이',
+  location: 'Irvine, Orange County',
+  childAgeRanges: const ['2–4세', '3–6세'],
+  interestTags: const ['놀이터', '주말', 'Irvine'],
+  ownerId: 'mom_eunji',
+  ownerName: '한은지',
+  memberCount: 3,
+  coverEmoji: '🛝',
+  isFeatured: false,
+  createdAt: mockGroupSeedNow.subtract(const Duration(days: 5)),
+  recentActivityAt: mockGroupSeedNow.subtract(const Duration(hours: 3)),
+);
+
 final mockGroups = [
   groupLa3,
   groupOcWork,
   groupSwim,
   groupPreschool,
   groupPark,
+  groupBook,
+  groupTorrance,
+  groupPasadena,
+  groupCafe,
+  groupOcPark,
 ];
 
 // ── Members ─────────────────────────────────────────────────────────────
@@ -267,6 +362,156 @@ final mockGroupMembers = [
     userName: '김소라',
     role: GroupMemberRole.member,
     joinedAt: mockGroupSeedNow.subtract(const Duration(days: 8)),
+  ),
+
+  // grp_book
+  GroupMember(
+    groupId: 'grp_book',
+    userId: 'mom_sora',
+    userName: '김소라',
+    role: GroupMemberRole.owner,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 14)),
+  ),
+  GroupMember(
+    groupId: 'grp_book',
+    userId: 'mom_minji',
+    userName: '박민지',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 12)),
+  ),
+  GroupMember(
+    groupId: 'grp_book',
+    userId: 'mom_yuna',
+    userName: '최유나',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 10)),
+  ),
+  GroupMember(
+    groupId: 'grp_book',
+    userId: 'mom_jiwoo',
+    userName: '한지우',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 9)),
+  ),
+  GroupMember(
+    groupId: 'grp_book',
+    userId: 'mom_hyejin',
+    userName: '이혜진',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 6)),
+  ),
+  GroupMember(
+    groupId: 'grp_book',
+    userId: 'mom_eunji',
+    userName: '한은지',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 4)),
+  ),
+
+  // grp_torrance
+  GroupMember(
+    groupId: 'grp_torrance',
+    userId: 'mom_yuna',
+    userName: '최유나',
+    role: GroupMemberRole.owner,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 75)),
+  ),
+  GroupMember(
+    groupId: 'grp_torrance',
+    userId: 'mom_jiwoo',
+    userName: '한지우',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 60)),
+  ),
+  GroupMember(
+    groupId: 'grp_torrance',
+    userId: 'mom_eunji',
+    userName: '한은지',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 40)),
+  ),
+
+  // grp_pasadena
+  GroupMember(
+    groupId: 'grp_pasadena',
+    userId: 'mom_jiwoo',
+    userName: '한지우',
+    role: GroupMemberRole.owner,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 10)),
+  ),
+  GroupMember(
+    groupId: 'grp_pasadena',
+    userId: 'mom_sora',
+    userName: '김소라',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 8)),
+  ),
+  GroupMember(
+    groupId: 'grp_pasadena',
+    userId: 'mom_hyejin',
+    userName: '이혜진',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 7)),
+  ),
+  GroupMember(
+    groupId: 'grp_pasadena',
+    userId: 'mom_minji',
+    userName: '박민지',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 5)),
+  ),
+
+  // grp_cafe
+  GroupMember(
+    groupId: 'grp_cafe',
+    userId: 'mom_minji',
+    userName: '박민지',
+    role: GroupMemberRole.owner,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 7)),
+  ),
+  GroupMember(
+    groupId: 'grp_cafe',
+    userId: 'mom_sora',
+    userName: '김소라',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 6)),
+  ),
+  GroupMember(
+    groupId: 'grp_cafe',
+    userId: 'mom_yuna',
+    userName: '최유나',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 5)),
+  ),
+  GroupMember(
+    groupId: 'grp_cafe',
+    userId: 'mom_jiwoo',
+    userName: '한지우',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 3)),
+  ),
+
+  // grp_ocpark
+  GroupMember(
+    groupId: 'grp_ocpark',
+    userId: 'mom_eunji',
+    userName: '한은지',
+    role: GroupMemberRole.owner,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 5)),
+  ),
+  GroupMember(
+    groupId: 'grp_ocpark',
+    userId: 'mom_hyejin',
+    userName: '이혜진',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 4)),
+  ),
+  GroupMember(
+    groupId: 'grp_ocpark',
+    userId: 'mom_minji',
+    userName: '박민지',
+    role: GroupMemberRole.member,
+    joinedAt: mockGroupSeedNow.subtract(const Duration(days: 2)),
   ),
 ];
 
