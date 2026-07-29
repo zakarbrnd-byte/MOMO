@@ -4,7 +4,7 @@ Community app for Korean mothers in the US.
 
 **Product vision:** Join trusted communities of Korean mothers in your area, participate in discussions, and organize activities together.
 
-Version: **MVP 0.1** · Status: **Phase 3.6 — Product Pivot & Documentation Refresh**
+Version: **MVP 0.1** · Status: **Phase 3.7 — Local Group + Event domain (mock)**
 
 ## What MOMO is
 
@@ -43,7 +43,8 @@ The Flutter client still ships the Playdate-first local MVP (feed cards, create 
 | Bottom nav: Home · Create · Profile | Done (foundation) |
 | Local mock feed / create / detail / join | Done (legacy Playdate-shaped UI) |
 | Repository + data source + DI layer | Done (reuse for Groups) |
-| Groups / Event Announcements product surface | **Not started** (Phase 3.7+) |
+| Groups / Event Announcements (local mock) | **Done** (Phase 3.7) |
+| Home Group Cards + Group Detail + RSVP | **Done** (local only) |
 | Backend / auth / Supabase | Not started (Phase 4.0+) |
 
 ## Tech stack
@@ -76,7 +77,7 @@ flutter run
 
 ## Development status
 
-- **Completed:** Phases 1–3.5 — technical MVP foundation + UI/UX card work (Playdate-shaped)
-- **Current:** Phase 3.6 — documentation refresh for Group-first product
-- **Next:** Phase 3.7 — Group + Event local models
-- **Later:** Search/filter, profile onboarding, auth/Supabase, engagement, RSVP, safety, notifications, pilot
+- **Completed:** Phases 1–3.7 — foundation, docs pivot, local Groups / Events / RSVP
+- **Next:** Phase 3.8 — Home recommendations, filtering, search
+- **Later:** Profile onboarding, auth/Supabase, engagement APIs, safety, notifications, pilot
+- **Note:** Legacy Playdate code may remain dormant; active UI is Group-first (local mock only, no backend)

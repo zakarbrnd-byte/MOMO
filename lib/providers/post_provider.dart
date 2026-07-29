@@ -35,6 +35,12 @@ class PostNotifier extends AsyncNotifier<List<Post>> {
 
   List<Post> get posts => state.valueOrNull ?? const [];
 
+  List<Post> postsByGroup(String groupId) {
+    return _readSync(_repo.loadByGroup(groupId));
+  }
+
+  List<Post> get globalPosts => posts.where((p) => p.isGlobal).toList();
+
   void _refresh() {
     state = AsyncData(_readSync(_repo.load()));
   }

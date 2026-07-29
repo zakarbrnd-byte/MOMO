@@ -36,8 +36,7 @@ class DebugPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(debugSessionProvider);
-    final playdateCount =
-        ref.watch(playdateProvider).valueOrNull?.length ?? 0;
+    final playdateCount = ref.watch(playdateProvider).valueOrNull?.length ?? 0;
     final postCount = ref.watch(postProvider).valueOrNull?.length ?? 0;
     final tab = ref.watch(mainTabProvider);
     final textTheme = Theme.of(context).textTheme;

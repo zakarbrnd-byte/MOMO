@@ -168,9 +168,8 @@ class PlaydateJoinActionBar extends ConsumerWidget {
 
     if (confirmed != true || !context.mounted) return;
 
-    final cancelled = ref
-        .read(playdateProvider.notifier)
-        .cancelPlaydate(playdate.id, userId);
+    final cancelled =
+        ref.read(playdateProvider.notifier).cancelPlaydate(playdate.id, userId);
 
     if (cancelled && context.mounted) {
       MomoSuccessBanner.show(context, 'Playdate cancelled.');

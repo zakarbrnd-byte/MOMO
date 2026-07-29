@@ -4,7 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/widgets/momo_card.dart';
 import '../../navigation/app_navigation.dart';
-import 'create_playdate_screen.dart';
+import 'create_group_screen.dart';
 import 'create_post_screen.dart';
 
 class CreateScreen extends StatelessWidget {
@@ -27,19 +27,19 @@ class CreateScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'You can create two types of content for the community.',
+              'Groups are communities. Event Announcements are created inside a Group.',
               style: textTheme.bodyMedium,
             ),
             const SizedBox(height: AppSpacing.xl),
             Expanded(
               child: _ActionCard(
-                icon: Icons.event_available_outlined,
-                title: 'Create Playdate',
-                subtitle: 'Invite moms to meet offline',
+                icon: Icons.groups_outlined,
+                title: 'Create Group',
+                subtitle: 'Start a community around interest, age, or location',
                 onTap: () {
                   AppNavigation.pushPage(
                     context,
-                    const CreatePlaydateScreen(),
+                    const CreateGroupScreen(),
                   );
                 },
               ),
@@ -49,7 +49,7 @@ class CreateScreen extends StatelessWidget {
               child: _ActionCard(
                 icon: Icons.edit_note_outlined,
                 title: 'Create Post',
-                subtitle: 'Ask a question or share an idea',
+                subtitle: 'Ask a question or share with the community',
                 onTap: () {
                   AppNavigation.pushPage(
                     context,
@@ -57,6 +57,12 @@ class CreateScreen extends StatelessWidget {
                   );
                 },
               ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'Event Announcements: open a Group you joined → Create Event.',
+              style: textTheme.bodySmall,
+              textAlign: TextAlign.center,
             ),
           ],
         ),

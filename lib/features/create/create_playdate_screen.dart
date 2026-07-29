@@ -77,8 +77,7 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
     );
   }
 
-  bool get _isBusy =>
-      ref.read(createPlaydateMutationProvider).isLoading;
+  bool get _isBusy => ref.read(createPlaydateMutationProvider).isLoading;
 
   Future<void> _pickDate() async {
     if (_isBusy) return;
@@ -133,7 +132,8 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
       if (!_formKey.currentState!.validate()) return;
     }
 
-    final succeeded = await ref.read(createPlaydateMutationProvider.notifier).run(
+    final succeeded =
+        await ref.read(createPlaydateMutationProvider.notifier).run(
       () {
         ref.read(playdateProvider.notifier).createPlaydate(
               title: _titleController.text,

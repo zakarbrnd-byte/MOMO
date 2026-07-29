@@ -68,15 +68,16 @@ MOMO
 
 ### Current shipped foundation (code today)
 
-Still Playdate-shaped local MVP used as technical base:
+Phase 3.7 local Group-first UI:
 
 - Bottom navigation: Home, Create, Profile
-- Home feed with mock Playdate + Post cards
-- Create / detail / join-leave local flows
+- Home feed with Group Cards + global Post cards
+- Group Detail (posts, Event Announcements, members) + join/leave
+- Event Detail with local RSVP
+- Create Group / Create Post; Create Event from joined Group
 - Repository + mock data-source architecture
-- Profile placeholder
 
-These screens will be **redirected / replaced** toward Groups in upcoming phases. Do not expand Playdate as the long-term primary feature.
+Legacy Playdate screens may remain in the tree for dormant tests — not on active Home/Create.
 
 ### Out of scope
 

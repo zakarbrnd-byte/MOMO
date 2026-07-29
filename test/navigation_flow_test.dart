@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:momo/app.dart';
+import 'package:momo/data/mock_groups.dart';
 import 'package:momo/navigation/app_navigation.dart';
 import 'package:momo/providers/main_tab_provider.dart';
 
@@ -28,43 +29,46 @@ void main() {
     return container;
   }
 
-  testWidgets('Journey: Home → Playdate detail → Back → Home', (tester) async {
+  testWidgets('Journey: Home → Group detail → Back → Home', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
+    await tester.tap(find.textContaining('LA 3살'));
     await tester.pumpAndSettle();
-    expect(find.text('Join Playdate'), findsOneWidget);
+    expect(find.text('Leave Group'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
 
     await tester.pageBack();
     await tester.pumpAndSettle();
-    expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
+    expect(find.textContaining('LA 3살'), findsOneWidget);
     expect(find.text('MOMO'), findsOneWidget);
   });
 
-  testWidgets('Journey: Create Playdate → submit → Home tab', (tester) async {
+  testWidgets('Journey: Create Group → submit → Home tab', (tester) async {
     final container = await pumpApp(tester);
 
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
     expect(container.read(mainTabProvider), MainTabs.create);
 
-    await tester.tap(find.text('Create Playdate'));
+    await tester.tap(find.text('Create Group'));
     await tester.pumpAndSettle();
 
     final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), 'Nav Flow Playdate');
-    await tester.tap(find.byKey(const Key('playdate_date_field')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('OK'));
-    await tester.pumpAndSettle();
-    await tester.enterText(fields.at(3), 'Irvine Park');
+    await tester.enterText(fields.at(0), 'Nav Flow Group');
+    await tester.enterText(fields.at(1), 'A test community for navigation.');
+    await tester.enterText(fields.at(3), 'Irvine');
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Create Group'));
     await tester.pumpAndSettle();
 
     expect(container.read(mainTabProvider), MainTabs.home);
-    expect(find.text('Nav Flow Playdate'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Nav Flow Group'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Nav Flow Group'), findsOneWidget);
     expect(find.text('What would you like to share?'), findsNothing);
   });
 
@@ -84,6 +88,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(container.read(mainTabProvider), MainTabs.home);
+    await tester.scrollUntilVisible(
+      find.text('Nav Flow Post'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     expect(find.text('Nav Flow Post'), findsOneWidget);
   });
 
@@ -105,9 +115,9 @@ void main() {
       (tester) async {
     final container = await pumpApp(tester);
 
-    await tester.tap(find.text('이번 토요일 공원에서 같이 놀아요 😊'));
+    await tester.tap(find.textContaining('LA 3살'));
     await tester.pumpAndSettle();
-    expect(find.text('Join Playdate'), findsOneWidget);
+    expect(find.text('Leave Group'), findsOneWidget);
 
     // Bottom bar stays available on detail.
     await tester.tap(find.byIcon(Icons.person_outline));
@@ -119,13 +129,13 @@ void main() {
     await tester.pumpAndSettle();
     expect(container.read(mainTabProvider), MainTabs.home);
     // Home tab stack preserved — detail still open.
-    expect(find.text('Join Playdate'), findsOneWidget);
+    expect(find.text('Leave Group'), findsOneWidget);
 
     // Re-tap Home to pop to feed root.
     await tester.tap(find.byIcon(Icons.home_rounded));
     await tester.pumpAndSettle();
-    expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsOneWidget);
-    expect(find.text('Join Playdate'), findsNothing);
+    expect(find.textContaining('LA 3살'), findsOneWidget);
+    expect(find.text('Leave Group'), findsNothing);
   });
 
   testWidgets('Create back returns to Create selection', (tester) async {
@@ -133,14 +143,23 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Playdate'));
+    await tester.tap(find.text('Create Group'));
     await tester.pumpAndSettle();
 
     await tester.pageBack();
     await tester.pumpAndSettle();
 
     expect(find.text('What would you like to share?'), findsOneWidget);
-    expect(find.text('Create Playdate'), findsOneWidget);
+    expect(find.text('Create Group'), findsOneWidget);
     expect(find.text('Create Post'), findsOneWidget);
+    expect(find.text('Create Playdate'), findsNothing);
+  });
+
+  testWidgets('Home has no Playdate cards', (tester) async {
+    await pumpApp(tester);
+
+    expect(find.text(groupLa3.name), findsOneWidget);
+    expect(find.text('Join Playdate'), findsNothing);
+    expect(find.text('Create Playdate'), findsNothing);
   });
 }

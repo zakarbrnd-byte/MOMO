@@ -9,7 +9,7 @@ import 'package:momo/core/widgets/author_summary.dart';
 import 'package:momo/core/widgets/card_author_metadata.dart';
 import 'package:momo/core/widgets/card_header.dart';
 import 'package:momo/core/widgets/engagement_row.dart';
-import 'package:momo/data/mock_feed.dart';
+import 'package:momo/data/mock_groups.dart';
 import 'package:momo/features/home/widgets/category_chip.dart';
 import 'package:momo/features/home/widgets/post_card.dart';
 import 'package:momo/models/post.dart';
@@ -410,6 +410,8 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
+      final homePost = mockGlobalPosts.first;
+
       await tester.pumpWidget(
         const ProviderScope(
           child: MomoApp(),
@@ -417,14 +419,21 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text(postSeolleung.category.labelKo), findsWidgets);
-      expect(find.text('${postSeolleung.viewCount}'), findsWidgets);
-
-      await tester.tap(find.text(postSeolleung.title));
+      await tester.scrollUntilVisible(
+        find.text(homePost.title),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.pumpAndSettle();
 
-      expect(find.text(postSeolleung.content), findsOneWidget);
-      expect(find.text(postSeolleung.authorName), findsOneWidget);
+      expect(find.text(homePost.category.labelKo), findsWidgets);
+      expect(find.text('${homePost.viewCount}'), findsWidgets);
+
+      await tester.tap(find.text(homePost.title));
+      await tester.pumpAndSettle();
+
+      expect(find.text(homePost.content), findsOneWidget);
+      expect(find.text(homePost.authorName), findsOneWidget);
     });
   });
 }

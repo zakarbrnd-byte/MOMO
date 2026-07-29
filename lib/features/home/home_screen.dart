@@ -8,13 +8,13 @@ import '../../core/widgets/momo_loading.dart';
 import '../../models/feed_item.dart';
 import '../../navigation/app_navigation.dart';
 import '../../providers/feed_provider.dart';
-import '../../providers/playdate_provider.dart';
+import '../../providers/group_provider.dart';
 import '../../providers/post_provider.dart';
-import '../create/create_playdate_screen.dart';
+import '../create/create_group_screen.dart';
 import '../create/create_post_screen.dart';
-import '../detail/playdate_detail_screen.dart';
 import '../detail/post_detail_screen.dart';
-import 'widgets/playdate_card.dart';
+import '../groups/group_detail_screen.dart';
+import 'widgets/group_card.dart';
 import 'widgets/post_card.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -23,7 +23,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final feedAsync = ref.watch(feedProvider);
-    final playdatesAsync = ref.watch(playdateProvider);
+    final groupsAsync = ref.watch(groupProvider);
     final postsAsync = ref.watch(postProvider);
 
     return Scaffold(
@@ -37,34 +37,35 @@ class HomeScreen extends ConsumerWidget {
           title: 'Something went wrong',
           message: error.toString(),
           onRetry: () {
-            ref.invalidate(playdateProvider);
+            ref.invalidate(groupProvider);
             ref.invalidate(postProvider);
           },
         ),
         data: (feedItems) {
-          final playdates = playdatesAsync.valueOrNull ?? const [];
+          final groups = groupsAsync.valueOrNull ?? const [];
           final posts = postsAsync.valueOrNull ?? const [];
+          final globalPosts = posts.where((p) => p.isGlobal).toList();
 
           return ListView(
             padding: AppSpacing.page,
             children: [
-              if (playdates.isEmpty) ...[
+              if (groups.isEmpty) ...[
                 MomoEmptyState(
-                  title: '아직 등록된 Play Date가 없습니다.',
-                  message: '첫 번째 모임을 만들어보세요.',
-                  buttonText: 'Create Playdate',
+                  title: '아직 그룹이 없습니다.',
+                  message: '관심사·나이·지역으로 첫 커뮤니티를 만들어보세요.',
+                  buttonText: 'Create Group',
                   onPressed: () {
                     AppNavigation.pushPage(
                       context,
-                      const CreatePlaydateScreen(),
+                      const CreateGroupScreen(),
                     );
                   },
                 ),
                 const SizedBox(height: AppSpacing.cardListGap),
               ],
-              if (posts.isEmpty) ...[
+              if (globalPosts.isEmpty) ...[
                 MomoEmptyState(
-                  title: '아직 게시글이 없습니다.',
+                  title: '아직 커뮤니티 게시글이 없습니다.',
                   message: '첫 번째 이야기를 공유해보세요.',
                   buttonText: 'Create Post',
                   onPressed: () {
@@ -96,12 +97,12 @@ class _FeedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (item) {
-      PlaydateFeedItem(:final playdate) => PlaydateCard(
-          playdate: playdate,
+      GroupFeedItem(:final group) => GroupCard(
+          group: group,
           onTap: () {
             AppNavigation.pushPage(
               context,
-              PlaydateDetailScreen(playdate: playdate),
+              GroupDetailScreen(groupId: group.id),
             );
           },
         ),
@@ -114,6 +115,7 @@ class _FeedCard extends StatelessWidget {
             );
           },
         ),
+      PlaydateFeedItem() => const SizedBox.shrink(),
     };
   }
 }

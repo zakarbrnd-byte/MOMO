@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:momo/app.dart';
 import 'package:momo/data/mock_user.dart';
+import 'package:momo/features/create/create_playdate_screen.dart';
+import 'package:momo/features/detail/playdate_detail_screen.dart';
 import 'package:momo/providers/playdate_provider.dart';
 
 import 'support/test_overrides.dart';
 
+/// Capacity rules for dormant Playdate layer (not Home / Create hub).
 void main() {
-  Future<ProviderContainer> pumpApp(WidgetTester tester) async {
+  Future<ProviderContainer> pumpDetailById(
+    WidgetTester tester,
+    String playdateId,
+  ) async {
     tester.view.physicalSize = const Size(400, 1000);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -17,45 +22,39 @@ void main() {
 
     final container = ProviderContainer(overrides: testBackendOverrides);
     addTearDown(container.dispose);
+    await container.read(playdateProvider.future);
+
+    final playdate = container
+        .read(playdateProvider)
+        .requireValue
+        .firstWhere((item) => item.id == playdateId);
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MomoApp(),
+        child: MaterialApp(
+          home: PlaydateDetailScreen(playdate: playdate),
+        ),
       ),
     );
     await tester.pumpAndSettle();
     return container;
   }
 
-  Future<void> openCreatePlaydate(WidgetTester tester) async {
-    await tester.tap(find.byIcon(Icons.add_circle_outline));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Create Playdate'));
-    await tester.pumpAndSettle();
-  }
-
-  Future<void> fillRequiredPlaydateFields(
-    WidgetTester tester, {
-    required String title,
-  }) async {
-    final fields = find.byType(TextFormField);
-    await tester.enterText(fields.at(0), title);
-    await tester.tap(find.byKey(const Key('playdate_date_field')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('OK'));
-    await tester.pumpAndSettle();
-    await tester.enterText(fields.at(3), 'Irvine Park');
-  }
-
   testWidgets('Create unlimited playdate shows 0 joined for owner',
       (tester) async {
-    final container = await pumpApp(tester);
-    await openCreatePlaydate(tester);
-    await fillRequiredPlaydateFields(tester, title: 'Unlimited Park Day');
+    final container = ProviderContainer(overrides: testBackendOverrides);
+    addTearDown(container.dispose);
+    await container.read(playdateProvider.future);
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
-    await tester.pumpAndSettle();
+    container.read(playdateProvider.notifier).createPlaydate(
+          title: 'Unlimited Park Day',
+          date: 'Sat',
+          time: '',
+          location: 'Irvine Park',
+          childAge: '',
+          description: '',
+        );
 
     final created = container
         .read(playdateProvider)
@@ -65,8 +64,21 @@ void main() {
     expect(created.creatorId, currentUser.id);
     expect(created.participantsLabel, '0 joined');
 
-    await tester.tap(find.text('Unlimited Park Day'));
+    tester.view.physicalSize = const Size(400, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: PlaydateDetailScreen(playdate: created),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
+
     expect(find.text('0 joined'), findsWidgets);
     expect(find.text('My Playdate'), findsOneWidget);
     expect(find.text('Cancel Playdate'), findsOneWidget);
@@ -74,36 +86,67 @@ void main() {
   });
 
   testWidgets('Create limited playdate stores capacity', (tester) async {
-    final container = await pumpApp(tester);
-    await openCreatePlaydate(tester);
-    await fillRequiredPlaydateFields(tester, title: 'Limited Park Day');
+    final container = ProviderContainer(overrides: testBackendOverrides);
+    addTearDown(container.dispose);
+    await container.read(playdateProvider.future);
 
-    await tester.enterText(
-      find.byKey(const Key('playdate_capacity_field')),
-      '5',
-    );
-
-    await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
-    await tester.pumpAndSettle();
+    container.read(playdateProvider.notifier).createPlaydate(
+          title: 'Limited Park Day',
+          date: 'Sat',
+          time: '',
+          location: 'Irvine Park',
+          childAge: '',
+          description: '',
+          maxParticipants: 5,
+        );
 
     final created = container
         .read(playdateProvider)
         .requireValue
         .firstWhere((item) => item.title == 'Limited Park Day');
     expect(created.maxParticipants, 5);
-    // Creator is owner, not counted as a participant.
     expect(created.participantsLabel, '0 / 5 joined');
 
-    await tester.tap(find.text('Limited Park Day'));
+    tester.view.physicalSize = const Size(400, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: PlaydateDetailScreen(playdate: created),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
+
     expect(find.text('0 / 5 joined'), findsWidgets);
     expect(find.text('Edit Playdate'), findsOneWidget);
   });
 
   testWidgets('Invalid capacity shows validation error', (tester) async {
-    await pumpApp(tester);
-    await openCreatePlaydate(tester);
-    await fillRequiredPlaydateFields(tester, title: 'Bad Capacity Day');
+    tester.view.physicalSize = const Size(400, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: testBackendOverrides,
+        child: const MaterialApp(home: CreatePlaydateScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Bad Capacity Day');
+    await tester.tap(find.byKey(const Key('playdate_date_field')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    await tester.enterText(fields.at(3), 'Irvine Park');
 
     final capacity = find.byKey(const Key('playdate_capacity_field'));
     await tester.enterText(capacity, '0');
@@ -113,7 +156,6 @@ void main() {
         find.text('Please enter a valid participant limit.'), findsOneWidget);
 
     await tester.enterText(capacity, '');
-    // digitsOnly blocks letters; set invalid via controller for non-digit case
     final field = tester.widget<TextFormField>(
       find.descendant(
         of: capacity,
@@ -129,35 +171,15 @@ void main() {
 
   testWidgets('Unlimited mock playdate label has no capacity slash',
       (tester) async {
-    await pumpApp(tester);
+    await pumpDetailById(tester, 'pd2');
 
-    await tester.scrollUntilVisible(
-      find.text('도서관 스토리타임 같이 가실 분?'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('3 joined'), findsOneWidget);
-
-    await tester.tap(find.text('도서관 스토리타임 같이 가실 분?'));
-    await tester.pumpAndSettle();
     expect(find.text('3 joined'), findsWidgets);
     expect(find.text('Join Playdate'), findsOneWidget);
   });
 
   testWidgets('Join until full then leave still works', (tester) async {
-    final container = await pumpApp(tester);
+    final container = await pumpDetailById(tester, 'pd4');
 
-    await tester.scrollUntilVisible(
-      find.text('비 오는 날 실내 놀이터 번개해요'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('비 오는 날 실내 놀이터 번개해요'));
-    await tester.pumpAndSettle();
     expect(find.text('4 / 5 joined'), findsWidgets);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Join Playdate'));

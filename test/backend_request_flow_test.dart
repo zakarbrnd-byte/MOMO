@@ -33,7 +33,8 @@ class _FakeEmptyPlaydateRepository implements PlaydateRepository {
   Future<Result<bool>> update(Playdate playdate) async => const Success(true);
 
   @override
-  Future<Result<bool>> delete(String playdateId, String requestingUserId) async =>
+  Future<Result<bool>> delete(
+          String playdateId, String requestingUserId) async =>
       const Success(true);
 
   @override
@@ -75,8 +76,9 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final result =
-          await container.read(playdateRepositoryProvider).join('pd5', currentUserId);
+      final result = await container
+          .read(playdateRepositoryProvider)
+          .join('pd5', currentUserId);
       expect(result.isFailure, isTrue);
       expect(result.errorOrNull, contains('Owners'));
     });

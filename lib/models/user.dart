@@ -43,9 +43,8 @@ class User {
       profileImageUrl: identical(profileImageUrl, _unset)
           ? this.profileImageUrl
           : profileImageUrl as String?,
-      location: identical(location, _unset)
-          ? this.location
-          : location as String?,
+      location:
+          identical(location, _unset) ? this.location : location as String?,
       children: children ?? this.children,
       createdAt: identical(createdAt, _unset)
           ? this.createdAt
