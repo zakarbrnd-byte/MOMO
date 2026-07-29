@@ -75,7 +75,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('LA 3살'), findsWidgets);
-    expect(find.text('필터'), findsOneWidget);
+    expect(find.byIcon(Icons.tune_rounded), findsOneWidget);
     expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsNothing);
 
     await tester.scrollUntilVisible(

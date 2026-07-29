@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/momo_empty_state.dart';
@@ -31,18 +30,22 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   late final TextEditingController _searchController;
+  late final FocusNode _searchFocusNode;
+  var _searchExpanded = false;
 
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController(
-      text: ref.read(groupSearchQueryProvider),
-    );
+    final initialQuery = ref.read(groupSearchQueryProvider);
+    _searchController = TextEditingController(text: initialQuery);
+    _searchFocusNode = FocusNode();
+    _searchExpanded = initialQuery.trim().isNotEmpty;
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -55,15 +58,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.read(groupSearchQueryProvider.notifier).state = '';
   }
 
+  void _openSearch() {
+    setState(() => _searchExpanded = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _searchFocusNode.requestFocus();
+    });
+  }
+
+  void _closeSearch() {
+    _clearSearch();
+    _searchFocusNode.unfocus();
+    setState(() => _searchExpanded = false);
+  }
+
+  String _filterBadgeLabel(int count) {
+    if (count >= 3) return '3+';
+    return '$count';
+  }
+
   @override
   Widget build(BuildContext context) {
     final discoveryAsync = ref.watch(homeDiscoveryProvider);
     final filters = ref.watch(groupDiscoveryFiltersProvider);
     final query = ref.watch(groupSearchQueryProvider);
     final postsAsync = ref.watch(homeCommunityPostsProvider);
+    final showSearch = _searchExpanded || query.trim().isNotEmpty;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('MOMO')),
+      appBar: AppBar(
+        leading: showSearch
+            ? IconButton(
+                tooltip: '검색 닫기',
+                onPressed: _closeSearch,
+                icon: const Icon(Icons.arrow_back_rounded),
+              )
+            : null,
+        title: showSearch
+            ? _SearchField(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                onChanged: _onSearchChanged,
+                onClear: _clearSearch,
+                autofocus: _searchExpanded && query.isEmpty,
+              )
+            : const Text('MOMO'),
+        actions: [
+          IconButton(
+            tooltip: filters.activeCount > 0
+                ? '필터 ${filters.activeCount}개 적용됨'
+                : '필터',
+            onPressed: () => showGroupFilterSheet(context, ref),
+            icon: filters.activeCount > 0
+                ? Badge(
+                    label: Text(_filterBadgeLabel(filters.activeCount)),
+                    child: const Icon(Icons.tune_rounded),
+                  )
+                : const Icon(Icons.tune_rounded),
+          ),
+          if (!showSearch)
+            IconButton(
+              tooltip: '검색',
+              onPressed: _openSearch,
+              icon: const Icon(Icons.search_rounded),
+            ),
+        ],
+      ),
       body: discoveryAsync.when(
         loading: () => const MomoLoading(
           title: 'Loading...',
@@ -88,35 +147,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _SearchField(
-                  controller: _searchController,
-                  onChanged: _onSearchChanged,
-                  onClear: _clearSearch,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _FilterBar(
-                  filters: filters,
-                  onOpenFilters: () => showGroupFilterSheet(context, ref),
-                  onClearAll: () {
-                    ref.read(groupDiscoveryFiltersProvider.notifier).clear();
-                  },
-                  onRemoveLocation: (v) => ref
-                      .read(groupDiscoveryFiltersProvider.notifier)
-                      .removeLocation(v),
-                  onRemoveAge: (v) => ref
-                      .read(groupDiscoveryFiltersProvider.notifier)
-                      .removeAgeRange(v),
-                  onRemoveInterest: (v) => ref
-                      .read(groupDiscoveryFiltersProvider.notifier)
-                      .removeInterest(v),
-                  onRemoveCategory: (v) => ref
-                      .read(groupDiscoveryFiltersProvider.notifier)
-                      .removeCategory(v),
-                  onClearMembership: () => ref
-                      .read(groupDiscoveryFiltersProvider.notifier)
-                      .clearMembership(),
-                ),
-                const SizedBox(height: AppSpacing.lg),
+                if (!filters.isEmpty) ...[
+                  _ActiveFilterChips(
+                    filters: filters,
+                    onClearAll: () {
+                      ref.read(groupDiscoveryFiltersProvider.notifier).clear();
+                    },
+                    onRemoveLocation: (v) => ref
+                        .read(groupDiscoveryFiltersProvider.notifier)
+                        .removeLocation(v),
+                    onRemoveAge: (v) => ref
+                        .read(groupDiscoveryFiltersProvider.notifier)
+                        .removeAgeRange(v),
+                    onRemoveInterest: (v) => ref
+                        .read(groupDiscoveryFiltersProvider.notifier)
+                        .removeInterest(v),
+                    onRemoveCategory: (v) => ref
+                        .read(groupDiscoveryFiltersProvider.notifier)
+                        .removeCategory(v),
+                    onClearMembership: () => ref
+                        .read(groupDiscoveryFiltersProvider.notifier)
+                        .clearMembership(),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
                 if (catalogEmpty)
                   MomoEmptyState(
                     title: '아직 등록된 모임이 없습니다.',
@@ -281,11 +335,15 @@ class _SearchField extends StatefulWidget {
     required this.controller,
     required this.onChanged,
     required this.onClear,
+    this.focusNode,
+    this.autofocus = false,
   });
 
   final TextEditingController controller;
+  final FocusNode? focusNode;
   final ValueChanged<String> onChanged;
   final VoidCallback onClear;
+  final bool autofocus;
 
   @override
   State<_SearchField> createState() => _SearchFieldState();
@@ -324,34 +382,33 @@ class _SearchFieldState extends State<_SearchField> {
       textField: true,
       child: TextField(
         controller: widget.controller,
+        focusNode: widget.focusNode,
+        autofocus: widget.autofocus,
         onChanged: widget.onChanged,
         textInputAction: TextInputAction.search,
+        style: AppTextStyles.body,
         decoration: InputDecoration(
           hintText: '모임 이름, 지역, 관심사 검색',
-          prefixIcon: const Icon(Icons.search),
+          hintStyle: AppTextStyles.bodySmall,
+          border: InputBorder.none,
+          isDense: true,
           suffixIcon: widget.controller.text.isEmpty
               ? null
               : IconButton(
                   tooltip: '검색어 지우기',
                   onPressed: widget.onClear,
-                  icon: const Icon(Icons.clear),
+                  icon: const Icon(Icons.clear_rounded),
                 ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.md),
-          ),
-          isDense: true,
-          filled: true,
-          fillColor: AppColors.surface,
         ),
       ),
     );
   }
 }
 
-class _FilterBar extends StatelessWidget {
-  const _FilterBar({
+/// Removable active-filter chips only (entry point lives in the AppBar).
+class _ActiveFilterChips extends StatelessWidget {
+  const _ActiveFilterChips({
     required this.filters,
-    required this.onOpenFilters,
     required this.onClearAll,
     required this.onRemoveLocation,
     required this.onRemoveAge,
@@ -361,7 +418,6 @@ class _FilterBar extends StatelessWidget {
   });
 
   final GroupDiscoveryFilters filters;
-  final VoidCallback onOpenFilters;
   final VoidCallback onClearAll;
   final ValueChanged<String> onRemoveLocation;
   final ValueChanged<String> onRemoveAge;
@@ -372,18 +428,6 @@ class _FilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chips = <Widget>[
-      Semantics(
-        button: true,
-        label:
-            filters.activeCount > 0 ? '필터 ${filters.activeCount}개 적용됨' : '필터',
-        child: ActionChip(
-          avatar: const Icon(Icons.tune, size: 18),
-          label: Text(
-            filters.activeCount > 0 ? '필터 ${filters.activeCount}' : '필터',
-          ),
-          onPressed: onOpenFilters,
-        ),
-      ),
       for (final location in filters.locations)
         InputChip(
           label: Text(location),
@@ -416,11 +460,10 @@ class _FilterBar extends StatelessWidget {
           onDeleted: onClearMembership,
           deleteButtonTooltipMessage: '필터 제거',
         ),
-      if (!filters.isEmpty)
-        ActionChip(
-          label: const Text('전체 초기화'),
-          onPressed: onClearAll,
-        ),
+      ActionChip(
+        label: const Text('전체 초기화'),
+        onPressed: onClearAll,
+      ),
     ];
 
     return SingleChildScrollView(

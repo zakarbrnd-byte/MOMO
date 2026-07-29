@@ -45,7 +45,9 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
     expect(find.textContaining('LA 3살'), findsWidgets);
-    expect(find.text('MOMO'), findsOneWidget);
+    // Search remains expanded after returning from a search-driven open.
+    expect(find.byType(TextField), findsOneWidget);
+    expect(find.byIcon(Icons.tune_rounded), findsOneWidget);
   });
 
   testWidgets('Journey: Create Group → submit → Home tab', (tester) async {
