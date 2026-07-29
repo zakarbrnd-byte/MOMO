@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -6,12 +7,13 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/card_header.dart';
 import '../../../core/widgets/momo_card.dart';
 import '../../../models/group.dart';
+import '../../../providers/group_provider.dart';
 
 /// Shared Group community card.
 ///
 /// [variant] controls discovery vs personal-library presentation.
 /// Membership Join/Leave never appear here — only on Group Detail.
-class GroupCard extends StatelessWidget {
+class GroupCard extends ConsumerWidget {
   const GroupCard({
     super.key,
     required this.group,
@@ -28,7 +30,9 @@ class GroupCard extends StatelessWidget {
   final DateTime? now;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isJoined = ref.watch(currentUserGroupIdsProvider).contains(group.id);
+
     return MomoCard(
       onTap: onTap,
       child: Column(
@@ -84,6 +88,10 @@ class GroupCard extends StatelessWidget {
               ],
             ),
           ],
+          if (variant == GroupCardVariant.discovery && isJoined) ...[
+            const SizedBox(height: AppSpacing.cardContentGap),
+            const _JoinedMembershipChip(),
+          ],
           if (variant == GroupCardVariant.myGroups) ...[
             const SizedBox(height: AppSpacing.cardContentGap),
             Text(
@@ -103,6 +111,33 @@ enum GroupCardVariant {
 
   /// My Groups library — optional joined caption, no Join button.
   myGroups,
+}
+
+/// Soft, non-interactive membership indicator for Home discovery cards.
+class _JoinedMembershipChip extends StatelessWidget {
+  const _JoinedMembershipChip();
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.success.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppSpacing.sm),
+      ),
+      child: Padding(
+        padding: AppSpacing.chipPadding,
+        child: Text(
+          '내 모임',
+          style: AppTextStyles.caption.copyWith(
+            color: AppColors.success,
+            fontWeight: FontWeight.w600,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    );
+  }
 }
 
 class _GroupCategoryBadge extends StatelessWidget {

@@ -6,6 +6,7 @@ import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/momo_button.dart';
 import '../../core/widgets/momo_card.dart';
+import '../../core/widgets/momo_success_banner.dart';
 import '../../models/entity_status.dart';
 import '../../models/group.dart';
 import '../../models/post.dart';
@@ -121,7 +122,12 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen>
                   MomoButton(
                     label: 'Leave Group',
                     onPressed: () {
-                      ref.read(groupProvider.notifier).leaveGroup(current.id);
+                      final notifier = ref.read(groupProvider.notifier);
+                      if (!notifier.isMember(current.id)) return;
+                      notifier.leaveGroup(current.id);
+                      if (!context.mounted) return;
+                      if (notifier.isMember(current.id)) return;
+                      MomoSuccessBanner.show(context, '모임에서 나왔습니다.');
                     },
                   ),
                   const SizedBox(height: AppSpacing.sm),
@@ -138,7 +144,19 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen>
                   MomoButton(
                     label: 'Join Group',
                     onPressed: () {
-                      ref.read(groupProvider.notifier).joinGroup(current.id);
+                      final notifier = ref.read(groupProvider.notifier);
+                      if (notifier.isMember(current.id)) return;
+                      notifier.joinGroup(current.id);
+                      if (!context.mounted) return;
+                      if (!notifier.isMember(current.id)) return;
+                      MomoSuccessBanner.show(
+                        context,
+                        '모임에 가입했습니다.',
+                        actionLabel: '내 모임에서 보기',
+                        onAction: () {
+                          AppNavigation.selectTab(ref, MainTabs.groups);
+                        },
+                      );
                     },
                   ),
               ],
