@@ -19,12 +19,16 @@ class GroupCard extends ConsumerWidget {
     required this.group,
     required this.onTap,
     this.variant = GroupCardVariant.discovery,
+    this.recommendationReasons = const [],
     @visibleForTesting this.now,
   });
 
   final Group group;
   final VoidCallback onTap;
   final GroupCardVariant variant;
+
+  /// Optional secondary discovery reasons (max two shown).
+  final List<String> recommendationReasons;
 
   @visibleForTesting
   final DateTime? now;
@@ -54,6 +58,17 @@ class GroupCard extends ConsumerWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
+          if (recommendationReasons.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              recommendationReasons.take(2).join(' · '),
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
           if (group.description.trim().isNotEmpty) ...[
             const SizedBox(height: AppSpacing.cardContentGap),
             Text(

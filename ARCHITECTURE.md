@@ -38,7 +38,19 @@ Event Announcement
 RSVP
 ```
 
-Phase 3.7 introduced **Group**, **GroupMember**, **EventAnnouncement**, **Rsvp**, and `Post.groupId`. Home feed uses `GroupFeedItem` + `PostFeedItem`. Legacy `Playdate` types may remain dormant in the codebase but are retired from active Home/Create UI.
+Phase 3.7 introduced **Group**, **GroupMember**, **EventAnnouncement**, **Rsvp**, and `Post.groupId`. Phase 3.8 Home discovery derives from async `groupProvider` + `currentUserGroupIdsProvider` via `homeDiscoveryProvider` (search / filters / deterministic recommendations). Legacy `Playdate` types may remain dormant in the codebase but are retired from active Home/Create UI.
+
+### Home discovery data flow (Phase 3.8)
+
+```
+HomeScreen
+  → groupSearchQueryProvider / groupDiscoveryFiltersProvider
+  → homeDiscoveryProvider / filteredGroupsProvider
+  → groupProvider + currentUserGroupIdsProvider + currentUserProvider
+  → GroupRepository → MockGroupDataSource
+```
+
+Pure logic lives in `lib/features/home/discovery/` (`GroupDiscoveryService`). Recommendation scores are presentation-only (`GroupRecommendation`) and are not stored on `Group`.
 
 ---
 

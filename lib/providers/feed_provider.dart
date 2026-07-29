@@ -6,10 +6,10 @@ import '../models/post.dart';
 import 'group_provider.dart';
 import 'post_provider.dart';
 
-/// Home feed: featured/recommended Groups first, then global community posts.
+/// Home feed helpers retained for mixed-feed composition tests.
 ///
-/// Ordering is mock/static for Phase 3.7 — Phase 3.8 will add real filters /
-/// recommendation rules.
+/// Phase 3.8 Home UI uses [homeDiscoveryProvider] for Group discovery.
+/// [composeFeedItems] remains available for featured-group + global-post ordering.
 List<FeedItem> composeFeedItems({
   required List<Group> groups,
   required List<Post> posts,

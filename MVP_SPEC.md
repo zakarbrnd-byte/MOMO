@@ -68,15 +68,24 @@ MOMO
 
 ### Current shipped foundation (code today)
 
-Phase 3.7 local Group-first UI (refined through 3.7.2):
+Phase 3.8 local Group discovery (builds on 3.7.x):
 
 - Bottom navigation: Home, Create, Groups, Profile
-- Home feed with Group Cards + global Post cards
+- Home discovery: search, filters, deterministic recommendation sections, 전체 모임
+- Secondary “커뮤니티 이야기” global posts on Home (not search targets)
 - Group Detail is **content-first** (Posts default; Events; Members)
 - Group Information (ⓘ) for description, join/leave, and create event
 - Event Detail with local RSVP
 - Create Group / Create Post; Create Event from Group Information (joined members)
 - Repository + mock data-source architecture
+
+### Home discovery rules (Phase 3.8)
+
+- **Search:** local partial match on name, description, category, location, child ages, interest tags; blank query is not a search
+- **Filters:** OR within a facet; AND across facets; membership all / joined / notJoined
+- **Recommendations:** deterministic local scoring (location +40, age +30, interest +15/tag, featured +10, joined −100); not AI; not GPS
+- **Sections:** 추천 → 내 주변 → 아이 연령 → 새로운 (deduped); 전체 모임 keeps full filtered catalog
+- **Local-only:** no backend search, GPS distance, or ML personalization
 
 Legacy Playdate screens may remain in the tree for dormant tests — not on active Home/Create.
 
@@ -97,7 +106,7 @@ Do **not** build:
 | Area | Phase |
 |------|-------|
 | Group + Event local models | 3.7 |
-| Recommendations, filter, search | 3.8 |
+| Recommendations, filter, search | 3.8 (done, local) |
 | Profile onboarding | 3.9 |
 | Auth + Supabase | 4.0 |
 | Comments / likes / views | 4.1 |

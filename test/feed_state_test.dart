@@ -60,7 +60,8 @@ void main() {
     expect((items[2] as PostFeedItem).post.id, 'p1');
   });
 
-  testWidgets('Home shows seeded mock groups and global posts', (tester) async {
+  testWidgets('Home shows seeded mock groups and discovery chrome',
+      (tester) async {
     tester.view.physicalSize = const Size(400, 900);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -73,7 +74,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('LA 3살'), findsOneWidget);
+    expect(find.textContaining('LA 3살'), findsWidgets);
+    expect(find.text('필터'), findsOneWidget);
     expect(find.text('이번 토요일 공원에서 같이 놀아요 😊'), findsNothing);
 
     await tester.scrollUntilVisible(

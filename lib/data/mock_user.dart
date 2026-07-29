@@ -14,4 +14,10 @@ const currentUser = User(
   children: [
     Child(id: 'child_001', displayName: '첫째', ageLabel: '4'),
   ],
+  interestTags: [
+    '도서관',
+    '놀이터',
+    '한인타운',
+    '주말',
+  ],
 );

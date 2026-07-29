@@ -8,7 +8,7 @@ Guidance for Cursor agents and contributors working on MOMO.
 
 **Vision:** Help Korean mothers discover and join **Groups** based on shared interests, child age, and location; discuss with peers; and organize **Event Announcements** inside Groups.
 
-Version: MVP 0.1 · Phase **3.7.3** complete (async Group data flow) → **3.8** next
+Version: MVP 0.1 · Phase **3.8** complete (Home Group discovery) → **3.9** next
 
 **Read first:** `PROJECT_CONTEXT.md` (single source of truth) · `MVP_SPEC.md` · `DEVELOPMENT_PLAN.md`
 
@@ -37,7 +37,11 @@ Interviews: moms often dislike stranger 1-on-1 meetups; they prefer joining a co
 
 ## Current code vs roadmap
 
-Active UI is **Group-first** (local mock): Home Group Cards, content-first Group Detail (Posts / Events / Members), Group Information for join/leave and event creation, Event RSVP, Create Group/Post. Legacy Playdate code may exist dormant — do not revive it as the primary surface. Next: Phase 3.8 search/filter/recommendations.
+Active UI is **Group-first** (local mock): Home discovery (search, filters, deterministic recommendations), content-first Group Detail, Group Information for join/leave and event creation, Event RSVP, Create Group/Post, My Groups. Legacy Playdate code may exist dormant — do not revive it as the primary surface. Next: Phase 3.9 profile onboarding (not Phase 4.0).
+
+## Current gap for next work
+
+Phase 3.8 Home discovery is local-only (no GPS, no AI, no backend search). Prefer Phase 3.9 onboarding / profile fields over new product surfaces. Do not begin Phase 4.0.
 
 ## Rules
 
@@ -63,4 +67,4 @@ Marketplace, payments, AI recommendations, advanced moderation, real-time chat, 
 
 ## Next engineering work
 
-Phase **3.8** — Home recommendations, filtering, search (still local/mock).
+Phase **3.9** — Profile onboarding (location, child age, interests). Do not begin Phase 4.0.

@@ -12,6 +12,7 @@ class UserDto {
     this.profileImageUrl,
     this.location,
     this.children = const [],
+    this.interestTags = const [],
     this.createdAt,
     this.updatedAt,
   });
@@ -21,6 +22,7 @@ class UserDto {
   final String? profileImageUrl;
   final String? location;
   final List<ChildDto> children;
+  final List<String> interestTags;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -46,6 +48,7 @@ class UserDto {
           JsonConverters.nullableStringFromJson(json['profileImageUrl']),
       location: JsonConverters.nullableStringFromJson(json['location']),
       children: children,
+      interestTags: JsonConverters.stringListFromJson(json['interestTags']),
       createdAt: JsonConverters.dateTimeFromJson(json['createdAt']),
       updatedAt: JsonConverters.dateTimeFromJson(json['updatedAt']),
     );
@@ -58,6 +61,7 @@ class UserDto {
       if (profileImageUrl != null) 'profileImageUrl': profileImageUrl,
       if (location != null) 'location': location,
       'children': [for (final child in children) child.toJson()],
+      'interestTags': interestTags,
       if (createdAt != null)
         'createdAt': JsonConverters.dateTimeToJson(createdAt),
       if (updatedAt != null)
@@ -72,6 +76,7 @@ class UserDto {
       profileImageUrl: profileImageUrl,
       location: location,
       children: [for (final child in children) child.toDomain()],
+      interestTags: interestTags,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
@@ -86,6 +91,7 @@ class UserDto {
       children: [
         for (final child in user.children) ChildDto.fromDomain(child),
       ],
+      interestTags: user.interestTags,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     );

@@ -13,7 +13,7 @@ Agents: prefer this file + `CLAUDE.md` + `MVP_SPEC.md` over older Playdate-first
 **Vision:** Help Korean mothers discover and join communities based on shared interests, child age, and location — then organize activities together inside those communities.
 
 Version: MVP 0.1  
-Current phase: **3.7 Local Group + Event domain (completed)** → **3.8 next**
+Current phase: **3.8 Home recommendations / search / filters (completed)** → **3.9 next**
 
 ---
 
@@ -111,8 +111,8 @@ See `MVP_SPEC.md` for full in/out lists.
 |-------|--------|
 | 3.6 | Documentation pivot (**done**) |
 | 3.7 | Group + Event local models (**done**) |
-| 3.8 | Home recommendations, filtering, search (**next**) |
-| 3.9 | Profile onboarding |
+| 3.8 | Home recommendations, filtering, search (**done**) |
+| 3.9 | Profile onboarding (**next**) |
 | 4.0 | Auth + Supabase |
 | 4.1 | Comments, likes, view tracking |
 | 4.2 | Event Announcements + RSVP |

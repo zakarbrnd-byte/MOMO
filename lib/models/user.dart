@@ -8,6 +8,7 @@ class User {
     this.profileImageUrl,
     this.location,
     this.children = const [],
+    this.interestTags = const [],
     this.createdAt,
     this.updatedAt,
   });
@@ -22,6 +23,10 @@ class User {
   final String? location;
 
   final List<Child> children;
+
+  /// Soft interest labels for local discovery scoring (not onboarding).
+  final List<String> interestTags;
+
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -34,6 +39,7 @@ class User {
     Object? profileImageUrl = _unset,
     Object? location = _unset,
     List<Child>? children,
+    List<String>? interestTags,
     Object? createdAt = _unset,
     Object? updatedAt = _unset,
   }) {
@@ -46,6 +52,7 @@ class User {
       location:
           identical(location, _unset) ? this.location : location as String?,
       children: children ?? this.children,
+      interestTags: interestTags ?? this.interestTags,
       createdAt: identical(createdAt, _unset)
           ? this.createdAt
           : createdAt as DateTime?,
