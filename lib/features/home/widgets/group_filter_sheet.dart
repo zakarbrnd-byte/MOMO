@@ -64,8 +64,8 @@ class _GroupFilterSheetState extends ConsumerState<_GroupFilterSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
+          const Padding(
+            padding: EdgeInsets.fromLTRB(
               AppSpacing.xl,
               AppSpacing.sm,
               AppSpacing.xl,
@@ -76,7 +76,7 @@ class _GroupFilterSheetState extends ConsumerState<_GroupFilterSheet> {
           Expanded(
             child: optionsAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, _) => Center(
+              error: (error, _) => const Center(
                 child: Padding(
                   padding: AppSpacing.allXl,
                   child: Text(

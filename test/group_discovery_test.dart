@@ -137,7 +137,7 @@ void main() {
     });
 
     test('interest filters match at least one selected tag', () {
-      final filters = GroupDiscoveryFilters(
+      const filters = GroupDiscoveryFilters(
         interests: {'도서관', '수영'},
       );
       expect(
@@ -201,7 +201,7 @@ void main() {
     });
 
     test('clear filters resets state and active count', () {
-      final filters = GroupDiscoveryFilters(
+      const filters = GroupDiscoveryFilters(
         locations: {'Koreatown, Los Angeles'},
         ageRanges: {'2–4세'},
         membership: GroupMembershipFilter.joined,

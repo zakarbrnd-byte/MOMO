@@ -474,12 +474,12 @@ class _SearchResultsBody extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
+          const Text(
             '검색 결과가 없습니다.',
             style: AppTextStyles.cardTitle,
           ),
           const SizedBox(height: AppSpacing.sm),
-          Text(
+          const Text(
             '다른 검색어나 필터를 사용해보세요.',
             style: AppTextStyles.bodySmall,
           ),
@@ -538,12 +538,12 @@ class _FilterEmptyBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
+        const Text(
           '조건에 맞는 모임이 없습니다.',
           style: AppTextStyles.cardTitle,
         ),
         const SizedBox(height: AppSpacing.sm),
-        Text(
+        const Text(
           '필터를 조정해보세요.',
           style: AppTextStyles.bodySmall,
         ),
