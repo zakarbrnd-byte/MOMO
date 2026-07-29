@@ -28,6 +28,7 @@ class DebugPanel extends ConsumerWidget {
     return switch (index) {
       MainTabs.home => 'Home',
       MainTabs.create => 'Create',
+      MainTabs.groups => 'Groups',
       MainTabs.profile => 'Profile',
       _ => 'Unknown ($index)',
     };

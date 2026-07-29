@@ -132,10 +132,29 @@ void main() {
     expect(find.text('Leave Group'), findsOneWidget);
 
     // Re-tap Home to pop to feed root.
-    await tester.tap(find.byIcon(Icons.home_rounded));
+    await tester.tap(find.byIcon(Icons.home));
     await tester.pumpAndSettle();
     expect(find.textContaining('LA 3살'), findsOneWidget);
     expect(find.text('Leave Group'), findsNothing);
+  });
+
+  testWidgets('Bottom nav shows Home Create Groups Profile', (tester) async {
+    await pumpApp(tester);
+
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Create'), findsOneWidget);
+    expect(find.text('Groups'), findsOneWidget);
+    expect(find.text('Profile'), findsOneWidget);
+  });
+
+  testWidgets('Journey: Groups tab shows joined groups', (tester) async {
+    final container = await pumpApp(tester);
+
+    await tester.tap(find.byIcon(Icons.groups_outlined));
+    await tester.pumpAndSettle();
+    expect(container.read(mainTabProvider), MainTabs.groups);
+    expect(find.text('내 모임'), findsOneWidget);
+    expect(find.textContaining('LA 3살'), findsOneWidget);
   });
 
   testWidgets('Create back returns to Create selection', (tester) async {

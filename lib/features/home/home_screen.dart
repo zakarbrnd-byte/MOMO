@@ -99,6 +99,7 @@ class _FeedCard extends StatelessWidget {
     return switch (item) {
       GroupFeedItem(:final group) => GroupCard(
           group: group,
+          variant: GroupCardVariant.discovery,
           onTap: () {
             AppNavigation.pushPage(
               context,

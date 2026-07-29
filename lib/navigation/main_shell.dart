@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../debug/debug_overlay.dart';
 import '../features/create/create_screen.dart';
+import '../features/groups/my_groups_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../providers/main_tab_provider.dart';
 import 'app_navigation.dart';
 
-/// Bottom navigation: Home · Create · Profile (CLAUDE.md).
+/// Bottom navigation: Home · Create · Groups · Profile.
 ///
 /// Each tab owns a nested [Navigator] so detail/create routes keep the
 /// bottom bar visible and back stacks stay predictable.
@@ -22,18 +23,20 @@ class MainShell extends ConsumerStatefulWidget {
 class _MainShellState extends ConsumerState<MainShell> {
   final _homeNavKey = GlobalKey<NavigatorState>();
   final _createNavKey = GlobalKey<NavigatorState>();
+  final _groupsNavKey = GlobalKey<NavigatorState>();
   final _profileNavKey = GlobalKey<NavigatorState>();
 
   List<GlobalKey<NavigatorState>> get _navKeys => [
         _homeNavKey,
         _createNavKey,
+        _groupsNavKey,
         _profileNavKey,
       ];
 
   static const _destinations = [
     NavigationDestination(
       icon: Icon(Icons.home_outlined),
-      selectedIcon: Icon(Icons.home_rounded),
+      selectedIcon: Icon(Icons.home),
       label: 'Home',
     ),
     NavigationDestination(
@@ -42,8 +45,13 @@ class _MainShellState extends ConsumerState<MainShell> {
       label: 'Create',
     ),
     NavigationDestination(
+      icon: Icon(Icons.groups_outlined),
+      selectedIcon: Icon(Icons.groups),
+      label: 'Groups',
+    ),
+    NavigationDestination(
       icon: Icon(Icons.person_outline),
-      selectedIcon: Icon(Icons.person_rounded),
+      selectedIcon: Icon(Icons.person),
       label: 'Profile',
     ),
   ];
@@ -71,6 +79,10 @@ class _MainShellState extends ConsumerState<MainShell> {
             _TabNavigator(
               navigatorKey: _createNavKey,
               root: const CreateScreen(),
+            ),
+            _TabNavigator(
+              navigatorKey: _groupsNavKey,
+              root: const MyGroupsScreen(),
             ),
             _TabNavigator(
               navigatorKey: _profileNavKey,

@@ -8,7 +8,8 @@ import '../providers/main_tab_provider.dart';
 abstract final class MainTabs {
   static const int home = 0;
   static const int create = 1;
-  static const int profile = 2;
+  static const int groups = 2;
+  static const int profile = 3;
 }
 
 /// Shared navigation helpers for consistent tab + stack behavior.

@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/momo_card.dart';
 import '../../navigation/app_navigation.dart';
+import '../../providers/group_provider.dart';
 import 'create_group_screen.dart';
 import 'create_post_screen.dart';
 
-class CreateScreen extends StatelessWidget {
+class CreateScreen extends ConsumerWidget {
   const CreateScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+    final joinedIds = ref.watch(currentUserGroupIdsProvider);
+    final hasJoinedGroup = joinedIds.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Create')),
@@ -59,13 +64,54 @@ class CreateScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Text(
-              'Event Announcements: open a Group you joined → Create Event.',
-              style: textTheme.bodySmall,
-              textAlign: TextAlign.center,
-            ),
+            if (hasJoinedGroup)
+              Text(
+                'Event Announcements: open a Group you joined → Create Event.',
+                style: textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              )
+            else
+              _EventMembershipGate(
+                onBrowseGroups: () {
+                  AppNavigation.selectTab(ref, MainTabs.home);
+                },
+              ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _EventMembershipGate extends StatelessWidget {
+  const _EventMembershipGate({required this.onBrowseGroups});
+
+  final VoidCallback onBrowseGroups;
+
+  @override
+  Widget build(BuildContext context) {
+    return MomoCard(
+      padding: AppSpacing.allLg,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            '이벤트 공지를 만들려면 먼저 모임에 가입해야 합니다.',
+            style: AppTextStyles.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Home에서 관심 있는 모임을 찾아 가입한 뒤, 모임 상세에서 일정을 만들어보세요.',
+            style: AppTextStyles.caption,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextButton(
+            onPressed: onBrowseGroups,
+            child: const Text('모임 찾아보기'),
+          ),
+        ],
       ),
     );
   }
