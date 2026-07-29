@@ -110,8 +110,25 @@ final createEventMutationProvider =
   MutationNotifier.new,
 );
 
-/// Join / leave can reuse the same pattern later via additional providers
-/// or a [NotifierProvider.family].
+/// Join-group mutation lifecycle.
+final joinGroupMutationProvider =
+    NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
+  MutationNotifier.new,
+);
+
+/// Leave-group mutation lifecycle.
+final leaveGroupMutationProvider =
+    NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
+  MutationNotifier.new,
+);
+
+/// RSVP mutation lifecycle.
+final rsvpMutationProvider =
+    NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
+  MutationNotifier.new,
+);
+
+/// Legacy playdate participation mutation (dormant Playdate UI).
 final playdateParticipationMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
   MutationNotifier.new,

@@ -42,18 +42,24 @@ class GroupRepositoryImpl implements GroupRepository {
   }
 
   @override
+  Future<Set<String>> loadJoinedGroupIds(String userId) {
+    return _dataSource.getJoinedGroupIds(userId);
+  }
+
+  @override
   Future<Result<bool>> join({
     required String groupId,
     required String userId,
     required String userName,
   }) {
-    return _runMutation(() {
-      return _dataSource.joinGroup(
+    return _runMutation(
+      () => _dataSource.joinGroup(
         groupId: groupId,
         userId: userId,
         userName: userName,
-      );
-    });
+      ),
+      failureMessage: 'Could not join group.',
+    );
   }
 
   @override
@@ -61,9 +67,10 @@ class GroupRepositoryImpl implements GroupRepository {
     required String groupId,
     required String userId,
   }) {
-    return _runMutation(() {
-      return _dataSource.leaveGroup(groupId: groupId, userId: userId);
-    });
+    return _runMutation(
+      () => _dataSource.leaveGroup(groupId: groupId, userId: userId),
+      failureMessage: 'Could not leave group.',
+    );
   }
 
   @override
@@ -95,7 +102,10 @@ class GroupRepositoryImpl implements GroupRepository {
 
   @override
   Future<Result<bool>> setRsvp(Rsvp rsvp) {
-    return _runMutation(() => _dataSource.setRsvp(rsvp));
+    return _runMutation(
+      () => _dataSource.setRsvp(rsvp),
+      failureMessage: 'Could not update RSVP.',
+    );
   }
 
   @override
@@ -111,8 +121,8 @@ class GroupRepositoryImpl implements GroupRepository {
     String? coverEmoji,
     bool isFeatured = false,
   }) {
-    return _runMutation(() {
-      return _dataSource.createGroup(
+    return _runMutation(
+      () => _dataSource.createGroup(
         name: name,
         description: description,
         category: category,
@@ -123,8 +133,9 @@ class GroupRepositoryImpl implements GroupRepository {
         interestTags: interestTags,
         coverEmoji: coverEmoji,
         isFeatured: isFeatured,
-      );
-    });
+      ),
+      failureMessage: 'Could not create group.',
+    );
   }
 
   @override
@@ -139,8 +150,8 @@ class GroupRepositoryImpl implements GroupRepository {
     String childAgeRange = '',
     int? participantLimit,
   }) {
-    return _runMutation(() {
-      return _dataSource.createEvent(
+    return _runMutation(
+      () => _dataSource.createEvent(
         groupId: groupId,
         creatorId: creatorId,
         creatorName: creatorName,
@@ -150,20 +161,22 @@ class GroupRepositoryImpl implements GroupRepository {
         location: location,
         childAgeRange: childAgeRange,
         participantLimit: participantLimit,
-      );
-    });
+      ),
+      failureMessage: 'Could not create event.',
+    );
   }
 
-  /// Prefer [.then] over `async` so [SynchronousFuture] from the mock
-  /// data source stays synchronous for [GroupNotifier._readSync].
-  Future<Result<bool>> _runMutation(Future<void> Function() action) {
+  /// Always awaits the data-source Future (sync or async implementations).
+  Future<Result<bool>> _runMutation(
+    Future<void> Function() action, {
+    required String failureMessage,
+  }) async {
     try {
-      return action().then<Result<bool>>(
-        (_) => const Success(true),
-        onError: (Object e, StackTrace _) => Failure(e.toString()),
-      );
-    } catch (e) {
-      return SynchronousFuture(Failure(e.toString()));
+      await action();
+      return const Success(true);
+    } catch (error, stackTrace) {
+      debugPrint('GroupRepository mutation failed: $error\n$stackTrace');
+      return Failure(failureMessage);
     }
   }
 }

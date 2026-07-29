@@ -51,10 +51,19 @@ This foundation is reused; it is not the final product surface.
 
 ---
 
-## Phase 3.7.2 — Group Detail content-first (**Active**)
+## Phase 3.7.2 — Group Detail content-first (**Completed**)
 
 - [x] Compact Group Detail AppBar + Posts / Events / Members first
 - [x] Group Information screen for description, join/leave, create event
+
+---
+
+## Phase 3.7.3 — Backend readiness hardening (**Active**)
+
+- [x] Remove Group `_readSync()` / synchronous Future assumptions
+- [x] Async family providers for group reads + joined ids
+- [x] Async mutations with operation-specific loading/error state
+- [x] Targeted provider invalidation after join/leave/create/RSVP
 
 ---
 

@@ -102,7 +102,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    container.read(groupProvider.notifier).createGroup(
+    await container.read(groupProvider.notifier).createGroup(
           name: 'Test Park Moms',
           description: 'Provider smoke test for groups',
           category: '육아',

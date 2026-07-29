@@ -11,6 +11,9 @@ abstract class GroupDataSource {
 
   Future<List<GroupMember>> getGroupMembers(String groupId);
 
+  /// Group ids the user belongs to (single membership-store query).
+  Future<Set<String>> getJoinedGroupIds(String userId);
+
   Future<void> joinGroup({
     required String groupId,
     required String userId,

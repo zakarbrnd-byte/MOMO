@@ -86,6 +86,7 @@ Engineering layers (UI → Riverpod → Repository → Data Source) stay. Domain
 - Bottom nav: Home / Create / Groups / Profile
 - Riverpod + repository + mock data-source DI
 - **Active UI:** Group Cards on Home, content-first Group Detail (Posts/Events/Members), Group Information (join/leave + create event), Event Detail + RSVP, Create Group / Post
+- Group providers await repository Futures (no `_readSync`); membership via `loadJoinedGroupIds`
 - Global + Group-scoped Posts (`Post.groupId`)
 - Legacy Playdate stack may remain for dormant unit paths — **not** on active Home/Create
 - DTOs, `Result`, mutation lifecycle

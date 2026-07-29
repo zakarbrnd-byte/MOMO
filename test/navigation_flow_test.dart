@@ -158,8 +158,9 @@ void main() {
     expect(find.byType(Badge), findsWidgets);
     expect(find.text('2'), findsOneWidget);
 
-    for (final id in container.read(currentUserGroupIdsProvider).toList()) {
-      container.read(groupProvider.notifier).leaveGroup(id);
+    final joined = await container.read(currentUserGroupIdsProvider.future);
+    for (final id in joined.toList()) {
+      await container.read(groupProvider.notifier).leaveGroup(id);
     }
     await tester.pumpAndSettle();
 
