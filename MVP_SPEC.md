@@ -68,7 +68,7 @@ MOMO
 
 ### Current shipped foundation (code today)
 
-Phase 3.8 local Group discovery (builds on 3.7.x):
+Phase 3.8 local Group discovery (builds on 3.7.x) + Launch Sprint 1.1 comments:
 
 - Bottom navigation: Home, Create, Groups, Profile
 - Home discovery: search, filters, deterministic recommendation sections, 전체 모임
@@ -77,7 +77,16 @@ Phase 3.8 local Group discovery (builds on 3.7.x):
 - Group Information (ⓘ) for description, join/leave, and create event
 - Event Detail with local RSVP
 - Create Group / Create Post; Create Event from Group Information (joined members)
+- **Post Detail comments** (local mock): list, create, one-level replies; count includes replies
 - Repository + mock data-source architecture
+
+### Post comments rules (Launch Sprint 1.1)
+
+- Flat comment list with `parentCommentId` (null = top-level)
+- One visible nesting level only; reply-to-reply attaches to the original thread root
+- Comment count = top-level comments + replies
+- Validation: trim, reject empty / whitespace-only, max 500 characters (no silent truncate)
+- Local/mock only — no Supabase, auth, likes, or push notifications yet
 
 ### Home discovery rules (Phase 3.8)
 
@@ -109,7 +118,7 @@ Do **not** build:
 | Recommendations, filter, search | 3.8 (done, local) |
 | Profile onboarding | 3.9 |
 | Auth + Supabase | 4.0 |
-| Comments / likes / views | 4.1 |
+| Comment likes / post likes / views | 4.1 (comments UI: Sprint 1.1 local) |
 | Event Announcements + RSVP | 4.2 |
 | Disclaimer / safety / reporting | 4.3 |
 | Notifications | 4.4 |
@@ -138,9 +147,10 @@ Do **not** build:
 - Event Announcement
 - RSVP
 
-### Current code domain (legacy foundation)
+### Current code domain
 
-- `Playdate`, `Post`, `FeedItem`, `User` / Profile, `Participant` — still present in Flutter models
-- Do **not** rename classes in documentation-only phases; model migration starts Phase 3.7
+- `Group`, `EventAnnouncement`, `Rsvp`, `Post` (`groupId`), `Comment` (`parentCommentId`), `User` / Profile
+- Legacy `Playdate` / `FeedItem` / `Participant` may remain for dormant paths
+- Do **not** rename classes in documentation-only phases
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for layering and intended domain diagram.

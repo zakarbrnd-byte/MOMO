@@ -10,6 +10,7 @@ import 'package:momo/models/playdate.dart';
 import 'package:momo/models/post.dart';
 
 import 'support/home_test_helpers.dart';
+import 'support/test_overrides.dart';
 
 void main() {
   testWidgets('Playdate detail shows full information', (tester) async {
@@ -29,9 +30,7 @@ void main() {
 
     await tester.pumpWidget(
       const ProviderScope(
-        child: MaterialApp(
-          home: PlaydateDetailScreen(playdate: playdate),
-        ),
+        child: MaterialApp(home: PlaydateDetailScreen(playdate: playdate)),
       ),
     );
     await tester.pumpAndSettle();
@@ -47,8 +46,9 @@ void main() {
     expect(find.text('Join Playdate'), findsOneWidget);
   });
 
-  testWidgets('Playdate detail handles missing optional fields',
-      (tester) async {
+  testWidgets('Playdate detail handles missing optional fields', (
+    tester,
+  ) async {
     const playdate = Playdate(
       id: 'pd_optional',
       creatorId: 'mom_minji',
@@ -63,9 +63,7 @@ void main() {
 
     await tester.pumpWidget(
       const ProviderScope(
-        child: MaterialApp(
-          home: PlaydateDetailScreen(playdate: playdate),
-        ),
+        child: MaterialApp(home: PlaydateDetailScreen(playdate: playdate)),
       ),
     );
     await tester.pumpAndSettle();
@@ -86,14 +84,18 @@ void main() {
     );
 
     await tester.pumpWidget(
-      const MaterialApp(
-        home: PostDetailScreen(post: post),
+      ProviderScope(
+        overrides: testBackendOverrides,
+        child: const MaterialApp(home: PostDetailScreen(post: post)),
       ),
     );
+    await tester.pumpAndSettle();
 
     expect(find.text('Best playground recommendations?'), findsOneWidget);
-    expect(find.text('Looking for toddler-friendly parks nearby.'),
-        findsOneWidget);
+    expect(
+      find.text('Looking for toddler-friendly parks nearby.'),
+      findsOneWidget,
+    );
     expect(find.text('Yuna Choi'), findsOneWidget);
     expect(find.text('Shared with the MOMO community'), findsOneWidget);
   });
@@ -104,11 +106,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MomoApp(),
-      ),
-    );
+    await tester.pumpWidget(const ProviderScope(child: MomoApp()));
     await tester.pumpAndSettle();
 
     await openHomeGroupBySearch(tester, 'LA 3살');

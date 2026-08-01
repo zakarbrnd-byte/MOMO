@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'comment_data_source.dart';
 import 'group_data_source.dart';
+import 'mock/mock_comment_data_source.dart';
 import 'mock/mock_group_data_source.dart';
 import 'mock/mock_playdate_data_source.dart';
 import 'mock/mock_post_data_source.dart';
@@ -22,6 +24,11 @@ final playdateDataSourceProvider = Provider<PlaydateDataSource>((ref) {
 /// Composition root for post persistence.
 final postDataSourceProvider = Provider<PostDataSource>((ref) {
   return MockPostDataSource();
+});
+
+/// Composition root for comment persistence.
+final commentDataSourceProvider = Provider<CommentDataSource>((ref) {
+  return MockCommentDataSource();
 });
 
 /// Composition root for group / event / RSVP persistence.

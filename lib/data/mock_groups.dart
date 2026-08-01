@@ -530,7 +530,7 @@ final mockGroupPosts = [
     groupName: 'LA 3살 아이 엄마 모임',
     category: PostCategory.local,
     viewCount: 142,
-    commentCount: 9,
+    commentCount: 5, // synced with mockComments (Launch Sprint 1.1)
     likeCount: 21,
     createdAt: mockGroupSeedNow.subtract(const Duration(hours: 2)),
   ),
@@ -738,7 +738,7 @@ final mockGlobalPosts = [
     groupName: null,
     category: PostCategory.health,
     viewCount: 317,
-    commentCount: 21,
+    commentCount: 3, // synced with mockComments (Launch Sprint 1.1)
     likeCount: 18,
     createdAt: mockGroupSeedNow.subtract(const Duration(hours: 3)),
   ),
@@ -813,7 +813,7 @@ final mockGlobalPosts = [
     groupName: null,
     category: PostCategory.daily,
     viewCount: 263,
-    commentCount: 11,
+    commentCount: 0, // no seeded comments (Launch Sprint 1.1)
     likeCount: 61,
     createdAt: mockGroupSeedNow.subtract(const Duration(days: 5)),
   ),

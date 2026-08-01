@@ -81,6 +81,20 @@ This foundation is reused; it is not the final product surface.
 
 ---
 
+## Launch Sprint 1.1 — Post comments + one-level replies (**Completed**)
+
+- [x] `Comment` model / DTO / repository / mock data source
+- [x] Async `commentsByPostProvider` + create/reply mutation
+- [x] One-level threads (`parentCommentId`); reply-to-reply → thread root
+- [x] Post Detail list, composer, reply mode, loading / error
+- [x] Comment count sync (comments + replies) on Post Cards / Detail
+- [x] Validation (empty / whitespace / max 500) + double-submit prevention
+- [x] Tests for rules, repository, providers, Post Detail widgets
+
+**Still local/mock only — no Supabase, auth, comment likes, or push.**
+
+---
+
 ## Phase 3.9 — Profile onboarding (**Next**)
 
 - [ ] Profile onboarding flow (location, child age, interests)
@@ -92,14 +106,15 @@ This foundation is reused; it is not the final product surface.
 
 - [ ] Authentication
 - [ ] Supabase (or equivalent) persistent backend
-- [ ] Replace mock data sources via DI overrides
+- [ ] Replace mock data sources via DI overrides (including comments)
 
 ---
 
-## Phase 4.1 — Comments, Likes, View tracking
+## Phase 4.1 — Likes & View tracking
 
-- [ ] Comments
-- [ ] Likes
+- [x] Comments (local UI — Launch Sprint 1.1; backend persistence in 4.0+)
+- [ ] Comment likes
+- [ ] Post likes
 - [ ] View tracking
 
 ---
