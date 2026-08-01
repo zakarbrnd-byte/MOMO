@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/datasources/data_source_providers.dart';
+import 'comment_repository.dart';
+import 'comment_repository_impl.dart';
 import 'group_repository.dart';
 import 'group_repository_impl.dart';
 import 'playdate_repository.dart';
@@ -22,6 +24,11 @@ final playdateRepositoryProvider = Provider<PlaydateRepository>((ref) {
 /// Exposes [PostRepository] (interface only to feature providers).
 final postRepositoryProvider = Provider<PostRepository>((ref) {
   return PostRepositoryImpl(ref.watch(postDataSourceProvider));
+});
+
+/// Exposes [CommentRepository] (interface only to feature providers).
+final commentRepositoryProvider = Provider<CommentRepository>((ref) {
+  return CommentRepositoryImpl(ref.watch(commentDataSourceProvider));
 });
 
 /// Exposes [GroupRepository] (interface only to feature providers).

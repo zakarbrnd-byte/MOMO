@@ -13,7 +13,7 @@ Agents: prefer this file + `CLAUDE.md` + `MVP_SPEC.md` over older Playdate-first
 **Vision:** Help Korean mothers discover and join communities based on shared interests, child age, and location — then organize activities together inside those communities.
 
 Version: MVP 0.1  
-Current phase: **3.8 Home recommendations / search / filters (completed)** → **3.9 next**
+Current phase: **Launch Sprint 1.1 Post comments (local)** shipped → **3.9 / likes & push next**
 
 ---
 
@@ -88,10 +88,11 @@ Engineering layers (UI → Riverpod → Repository → Data Source) stay. Domain
 - **Active UI:** Group Cards on Home, content-first Group Detail (Posts/Events/Members), Group Information (join/leave + create event), Event Detail + RSVP, Create Group / Post
 - Group providers await repository Futures (no `_readSync`); membership via `loadJoinedGroupIds`
 - Global + Group-scoped Posts (`Post.groupId`)
+- **Post comments + one-level replies** (local mock): flat `Comment` + `parentCommentId`; count includes replies; reply-to-reply attaches to thread root
 - Legacy Playdate stack may remain for dormant unit paths — **not** on active Home/Create
 - DTOs, `Result`, mutation lifecycle
 
-**Backend is not connected.** All Group/Event/RSVP state is local mock.
+**Backend is not connected.** All Group/Event/RSVP/Comment state is local mock (no multi-user persistence).
 
 ---
 
@@ -112,9 +113,10 @@ See `MVP_SPEC.md` for full in/out lists.
 | 3.6 | Documentation pivot (**done**) |
 | 3.7 | Group + Event local models (**done**) |
 | 3.8 | Home recommendations, filtering, search (**done**) |
+| Sprint 1.1 | Post comments + one-level replies, local mock (**done**) |
 | 3.9 | Profile onboarding (**next**) |
 | 4.0 | Auth + Supabase |
-| 4.1 | Comments, likes, view tracking |
+| 4.1 | Comment likes, post likes, view tracking (comments UI already local) |
 | 4.2 | Event Announcements + RSVP |
 | 4.3 | Disclaimer, safety, reporting |
 | 4.4 | Notifications |

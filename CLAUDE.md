@@ -8,7 +8,7 @@ Guidance for Cursor agents and contributors working on MOMO.
 
 **Vision:** Help Korean mothers discover and join **Groups** based on shared interests, child age, and location; discuss with peers; and organize **Event Announcements** inside Groups.
 
-Version: MVP 0.1 · Phase **3.8** complete (Home Group discovery) → **3.9** next
+Version: MVP 0.1 · Launch Sprint **1.1** complete (Post comments, local) → **3.9** / likes & push next
 
 **Read first:** `PROJECT_CONTEXT.md` (single source of truth) · `MVP_SPEC.md` · `DEVELOPMENT_PLAN.md`
 
@@ -37,11 +37,11 @@ Interviews: moms often dislike stranger 1-on-1 meetups; they prefer joining a co
 
 ## Current code vs roadmap
 
-Active UI is **Group-first** (local mock): Home discovery (search, filters, deterministic recommendations), content-first Group Detail, Group Information for join/leave and event creation, Event RSVP, Create Group/Post, My Groups. Legacy Playdate code may exist dormant — do not revive it as the primary surface. Next: Phase 3.9 profile onboarding (not Phase 4.0).
+Active UI is **Group-first** (local mock): Home discovery, content-first Group Detail, Event RSVP, Create Group/Post, **Post Detail comments with one-level replies**. Legacy Playdate code may exist dormant — do not revive it as the primary surface.
 
 ## Current gap for next work
 
-Phase 3.8 Home discovery is local-only (no GPS, no AI, no backend search). Prefer Phase 3.9 onboarding / profile fields over new product surfaces. Do not begin Phase 4.0.
+Post comments are local/mock only (`Comment` + `parentCommentId`; count includes replies). Prefer Phase 3.9 onboarding or remaining engagement (likes) over new product surfaces. Do **not** add Supabase, comment likes, or push notifications unless the active phase says so.
 
 ## Rules
 
@@ -53,7 +53,7 @@ Phase 3.8 Home discovery is local-only (no GPS, no AI, no backend search). Prefe
 
 ## Out of scope (do not add unless phase says so)
 
-Marketplace, payments, AI recommendations, advanced moderation, real-time chat, advertising. Push notifications wait for Phase 4.4.
+Marketplace, payments, AI recommendations, advanced moderation, real-time chat, advertising, infinite comment nesting. Comment likes and push notifications wait for later phases.
 
 ## Canonical docs
 
@@ -67,4 +67,4 @@ Marketplace, payments, AI recommendations, advanced moderation, real-time chat, 
 
 ## Next engineering work
 
-Phase **3.9** — Profile onboarding (location, child age, interests). Do not begin Phase 4.0.
+Phase **3.9** — Profile onboarding (location, child age, interests). Do not begin Phase 4.0 or comment likes / push in this gap.

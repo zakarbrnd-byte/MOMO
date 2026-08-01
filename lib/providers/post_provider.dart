@@ -76,6 +76,29 @@ class PostNotifier extends AsyncNotifier<List<Post>> {
     }
     _refresh();
   }
+
+  /// Sync denormalized [Post.commentCount] after local comment mutations.
+  ///
+  /// Temporary dual field: comment collection is the source of truth; this
+  /// keeps Home / Group Post Cards in sync until counts are derived only.
+  void syncCommentCount(String postId, int commentCount) {
+    final current = posts;
+    Post? match;
+    for (final post in current) {
+      if (post.id == postId) {
+        match = post;
+        break;
+      }
+    }
+    if (match == null || match.commentCount == commentCount) return;
+    final result = _readSync(
+      _repo.update(match.copyWith(commentCount: commentCount)),
+    );
+    if (!_ok(result)) {
+      throw Exception(result.errorOrNull ?? 'Could not sync comment count.');
+    }
+    _refresh();
+  }
 }
 
 final postProvider =

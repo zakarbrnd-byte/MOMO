@@ -38,7 +38,7 @@ Event Announcement
 RSVP
 ```
 
-Phase 3.7 introduced **Group**, **GroupMember**, **EventAnnouncement**, **Rsvp**, and `Post.groupId`. Phase 3.8 Home discovery derives from async `groupProvider` + `currentUserGroupIdsProvider` via `homeDiscoveryProvider` (search / filters / deterministic recommendations). Legacy `Playdate` types may remain dormant in the codebase but are retired from active Home/Create UI.
+Phase 3.7 introduced **Group**, **GroupMember**, **EventAnnouncement**, **Rsvp**, and `Post.groupId`. Phase 3.8 Home discovery derives from async `groupProvider` + `currentUserGroupIdsProvider` via `homeDiscoveryProvider` (search / filters / deterministic recommendations). Launch Sprint 1.1 added local **Comment** (`parentCommentId`) with one-level reply threads on Post Detail. Legacy `Playdate` types may remain dormant in the codebase but are retired from active Home/Create UI.
 
 ### Home discovery data flow (Phase 3.8)
 
@@ -52,6 +52,24 @@ HomeScreen
 
 Pure logic lives in `lib/features/home/discovery/` (`GroupDiscoveryService`). Recommendation scores are presentation-only (`GroupRecommendation`) and are not stored on `Group`.
 
+### Post comments data flow (Launch Sprint 1.1)
+
+```
+PostDetailScreen
+  → commentsByPostProvider(postId) / commentThreadsByPostProvider(postId)
+  → createCommentMutationProvider + submitPostComment
+  → CommentRepository → CommentDataSource → MockCommentDataSource
+  → PostNotifier.syncCommentCount (denormalized Post.commentCount for cards)
+```
+
+Rules (pure, in `comment_rules.dart`):
+
+- Flat list is source of truth; no nested `List<Comment>` on the domain model
+- Threads: oldest-first roots; oldest-first replies; orphaned replies render as top-level fallback
+- Reply-to-reply: `resolveReplyParentId` attaches to the original top-level parent
+- Count = all comments for the post (roots + replies)
+- Temporary dual field: comment collection is SoT; `Post.commentCount` is synced after mutations
+
 ---
 
 ## Dependency injection (Phase 3.4.6)
@@ -62,10 +80,14 @@ Pure logic lives in `lib/features/home/discovery/` (`GroupDiscoveryService`). Re
 |----------|---------|-----------------|
 | `playdateDataSourceProvider` | `PlaydateDataSource` | `MockPlaydateDataSource` |
 | `postDataSourceProvider` | `PostDataSource` | `MockPostDataSource` |
+| `commentDataSourceProvider` | `CommentDataSource` | `MockCommentDataSource` |
+| `groupDataSourceProvider` | `GroupDataSource` | `MockGroupDataSource` |
 | `profileDataSourceProvider` | `ProfileDataSource` | `MockProfileDataSource` |
 | `userDataSourceProvider` | `UserDataSource` | `MockUserDataSource` |
 | `playdateRepositoryProvider` | `PlaydateRepository` | `PlaydateRepositoryImpl` |
 | `postRepositoryProvider` | `PostRepository` | `PostRepositoryImpl` |
+| `commentRepositoryProvider` | `CommentRepository` | `CommentRepositoryImpl` |
+| `groupRepositoryProvider` | `GroupRepository` | `GroupRepositoryImpl` |
 | `profileRepositoryProvider` | `ProfileRepository` | `ProfileRepositoryImpl` |
 | `userRepositoryProvider` | `UserRepository` | `UserRepositoryImpl` |
 
