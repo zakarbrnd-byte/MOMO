@@ -82,7 +82,7 @@ Engineering layers (UI → Riverpod → Repository → Data Source) stay. Domain
 
 ## What exists in code today
 
-- Flutter + Material 3 + design system
+- Flutter + Material 3 + design system (bundled Pretendard; web first-frame loading overlay)
 - Bottom nav: Home / Create / Groups / Profile
 - Riverpod + repository + mock data-source DI
 - **Active UI:** Group Cards on Home, content-first Group Detail (Posts/Events/Members), Group Information (join/leave + create event), Event Detail + RSVP, Create Group / Post

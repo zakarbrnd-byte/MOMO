@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
+import 'app_fonts.dart';
 import 'app_spacing.dart';
 import 'app_text_styles.dart';
 
@@ -23,6 +24,8 @@ abstract final class AppTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: colorScheme,
+      fontFamily: AppFonts.family,
+      fontFamilyFallback: AppFonts.fallback,
       scaffoldBackgroundColor: AppColors.background,
       textTheme: AppTextStyles.textTheme,
       primaryTextTheme: AppTextStyles.textTheme,

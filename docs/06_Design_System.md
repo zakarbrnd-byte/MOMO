@@ -10,6 +10,9 @@ Implemented in `lib/core/theme/`.
 - Primary accent: pink `#FF4D6D` (`AppColors.primary`)
 - Background: warm cream `#FFF9F7` (`AppColors.background`)
 - Soft fills: light pink `#FFE7EA`, blush `#FFF3F4`
+- Typography: bundled **Pretendard** (`AppFonts.family`, weights 400/500/600/700)
+- No Google Fonts / runtime CDN fonts — assets under `assets/fonts/`
+- Flutter Web shows a minimal HTML loading overlay until the first app frame (avoids Hangul font flash)
 
 ## UI rules
 

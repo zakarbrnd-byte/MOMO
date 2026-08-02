@@ -54,6 +54,8 @@ The Flutter client still ships the Playdate-first local MVP (feed cards, create 
 - **Framework:** Flutter
 - **State:** Riverpod (feature providers + DI)
 - **UI:** Material 3 + shared `core/widgets`
+- **Typography:** Bundled Pretendard (Korean-capable; no runtime font CDN)
+- **Web:** HTML loading overlay until first Flutter frame (GitHub Pages `/MOMO/` supported)
 - **Data:** Mock data sources only (swap-ready for Supabase)
 
 ## Run

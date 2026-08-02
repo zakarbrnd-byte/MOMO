@@ -276,6 +276,8 @@ Prefer [Result](lib/core/result/result.dart) over throwing for expected business
 | `dto/` | JSON ⇄ domain |
 | `core/result/` | `Result` success/failure |
 | `core/async/` | `MutationNotifier`, `AsyncOpState`, request-flow notes |
+| `core/theme/` | Colors, spacing, Pretendard typography (`AppFonts`) |
+| `web/` | `index.html` loading overlay + custom `flutter_bootstrap.js` |
 
 ## Folder structure (data-related)
 

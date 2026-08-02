@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:momo/core/theme/app_colors.dart';
+import 'package:momo/core/theme/app_fonts.dart';
 import 'package:momo/core/theme/app_spacing.dart';
 import 'package:momo/core/theme/app_text_styles.dart';
 import 'package:momo/core/theme/app_theme.dart';
@@ -14,6 +15,10 @@ void main() {
     expect(theme.colorScheme.primary, AppColors.primary);
     expect(theme.colorScheme.secondary, AppColors.secondary);
     expect(theme.colorScheme.error, AppColors.error);
+    expect(theme.textTheme.bodyLarge?.fontFamily, AppFonts.family);
+    expect(theme.textTheme.headlineLarge?.fontFamily, AppFonts.family);
+    expect(theme.textTheme.labelLarge?.fontFamily, AppFonts.family);
+    expect(theme.appBarTheme.titleTextStyle?.fontFamily, AppFonts.family);
     expect(
       theme.textTheme.headlineLarge?.fontSize,
       AppTextStyles.headline.fontSize,
@@ -30,6 +35,16 @@ void main() {
       AppTextStyles.brandLogo.fontSize,
     );
     expect(theme.navigationBarTheme.indicatorColor, AppColors.lightPink);
+  });
+
+  test('AppTextStyles use bundled Pretendard family', () {
+    expect(AppFonts.family, 'Pretendard');
+    expect(AppTextStyles.body.fontFamily, AppFonts.family);
+    expect(AppTextStyles.cardTitle.fontFamily, AppFonts.family);
+    expect(AppTextStyles.brandLogo.fontFamily, AppFonts.family);
+    expect(AppTextStyles.heroTitle.fontFamily, AppFonts.family);
+    expect(AppTextStyles.sectionTitle.fontFamily, AppFonts.family);
+    expect(AppTextStyles.caption.fontFamilyFallback, AppFonts.fallback);
   });
 
   test('AppColors expose modern friendly pink palette', () {
