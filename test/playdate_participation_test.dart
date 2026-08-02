@@ -86,18 +86,12 @@ void main() {
       );
 
       expect(playdate.joinStateFor(currentUser.id), PlaydateJoinState.join);
-      expect(
-        playdate.joinStateFor('mom_a').actionLabel,
-        'Leave Playdate',
-      );
+      expect(playdate.joinStateFor('mom_a').actionLabel, 'Leave Playdate');
       expect(
         playdate.joinStateFor(currentUser.id).actionLabel,
         'Join Playdate',
       );
-      expect(
-        playdate.joinStateFor('host_1').actionLabel,
-        'My Playdate',
-      );
+      expect(playdate.joinStateFor('host_1').actionLabel, 'My Playdate');
     });
   });
 

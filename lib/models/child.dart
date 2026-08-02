@@ -1,10 +1,6 @@
 /// A child linked to a [User] profile (backend-ready; MVP may leave empty).
 class Child {
-  const Child({
-    this.id,
-    this.displayName,
-    this.ageLabel,
-  });
+  const Child({this.id, this.displayName, this.ageLabel});
 
   final String? id;
   final String? displayName;
@@ -22,8 +18,9 @@ class Child {
       displayName: identical(displayName, _unset)
           ? this.displayName
           : displayName as String?,
-      ageLabel:
-          identical(ageLabel, _unset) ? this.ageLabel : ageLabel as String?,
+      ageLabel: identical(ageLabel, _unset)
+          ? this.ageLabel
+          : ageLabel as String?,
     );
   }
 }

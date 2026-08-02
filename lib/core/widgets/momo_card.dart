@@ -61,16 +61,14 @@ class MomoCard extends StatelessWidget {
       ],
     );
 
-    final content = Padding(
-      padding: bodyPadding,
-      child: column,
-    );
+    final content = Padding(padding: bodyPadding, child: column);
 
     return Card(
       margin: margin ?? EdgeInsets.zero,
       color: backgroundColor ?? AppColors.card,
-      elevation: elevation ?? 0,
-      shadowColor: Colors.transparent,
+      elevation: elevation ?? 2,
+      shadowColor: AppColors.cardShadow,
+      surfaceTintColor: Colors.transparent,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius),

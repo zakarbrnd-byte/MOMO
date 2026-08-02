@@ -14,10 +14,7 @@ void main() {
       home: MediaQuery(
         data: MediaQueryData(size: size),
         child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(24),
-            child: child,
-          ),
+          body: Padding(padding: const EdgeInsets.all(24), child: child),
         ),
       ),
     );
@@ -43,18 +40,15 @@ void main() {
   });
 
   testWidgets('omits separator when createdAt is null', (tester) async {
-    await tester.pumpWidget(
-      wrap(
-        const CardAuthorMetadata(authorName: '박민지'),
-      ),
-    );
+    await tester.pumpWidget(wrap(const CardAuthorMetadata(authorName: '박민지')));
 
     expect(find.text('박민지'), findsOneWidget);
     expect(find.textContaining('·'), findsNothing);
   });
 
-  testWidgets('long author truncates while keeping timestamp visible',
-      (tester) async {
+  testWidgets('long author truncates while keeping timestamp visible', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrap(
         SizedBox(

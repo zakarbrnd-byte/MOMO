@@ -142,5 +142,5 @@ class PlaydateNotifier extends AsyncNotifier<List<Playdate>> {
 
 final playdateProvider =
     AsyncNotifierProvider<PlaydateNotifier, List<Playdate>>(
-  PlaydateNotifier.new,
-);
+      PlaydateNotifier.new,
+    );

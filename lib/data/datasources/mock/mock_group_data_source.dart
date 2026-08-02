@@ -14,10 +14,10 @@ class MockGroupDataSource implements GroupDataSource {
     List<GroupMember>? members,
     List<EventAnnouncement>? events,
     List<Rsvp>? rsvps,
-  })  : _groups = List<Group>.from(groups ?? mockGroups),
-        _members = List<GroupMember>.from(members ?? mockGroupMembers),
-        _events = List<EventAnnouncement>.from(events ?? mockEvents),
-        _rsvps = List<Rsvp>.from(rsvps ?? mockRsvps);
+  }) : _groups = List<Group>.from(groups ?? mockGroups),
+       _members = List<GroupMember>.from(members ?? mockGroupMembers),
+       _events = List<EventAnnouncement>.from(events ?? mockEvents),
+       _rsvps = List<Rsvp>.from(rsvps ?? mockRsvps);
 
   final List<Group> _groups;
   final List<GroupMember> _members;
@@ -75,19 +75,13 @@ class MockGroupDataSource implements GroupDataSource {
       ),
     );
     _replaceGroup(
-      group.copyWith(
-        memberCount: group.memberCount + 1,
-        recentActivityAt: now,
-      ),
+      group.copyWith(memberCount: group.memberCount + 1, recentActivityAt: now),
     );
     return SynchronousFuture(null);
   }
 
   @override
-  Future<void> leaveGroup({
-    required String groupId,
-    required String userId,
-  }) {
+  Future<void> leaveGroup({required String groupId, required String userId}) {
     final group = _groupById(groupId);
     if (group == null) {
       throw StateError('Group not found: $groupId');
@@ -100,9 +94,7 @@ class MockGroupDataSource implements GroupDataSource {
       throw StateError('Owner cannot leave the group');
     }
 
-    _members.removeWhere(
-      (m) => m.groupId == groupId && m.userId == userId,
-    );
+    _members.removeWhere((m) => m.groupId == groupId && m.userId == userId);
     final now = DateTime.now();
     _replaceGroup(
       group.copyWith(
@@ -142,9 +134,7 @@ class MockGroupDataSource implements GroupDataSource {
     final index = _rsvps.indexWhere(
       (item) => item.eventId == rsvp.eventId && item.userId == rsvp.userId,
     );
-    final updated = rsvp.copyWith(
-      updatedAt: rsvp.updatedAt ?? DateTime.now(),
-    );
+    final updated = rsvp.copyWith(updatedAt: rsvp.updatedAt ?? DateTime.now());
     if (index >= 0) {
       _rsvps[index] = updated;
     } else {

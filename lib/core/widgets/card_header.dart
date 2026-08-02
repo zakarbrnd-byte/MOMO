@@ -14,6 +14,7 @@ class CardHeader extends StatelessWidget {
     required this.authorName,
     this.createdAt,
     this.now,
+    this.trailing,
   });
 
   /// Left-aligned chip/badge (e.g. [CategoryChip] or Playdate badge).
@@ -25,15 +26,15 @@ class CardHeader extends StatelessWidget {
   /// Optional clock override (forwarded to [CardAuthorMetadata] for tests).
   final DateTime? now;
 
+  /// Optional end-aligned control (e.g. bookmark affordance).
+  final Widget? trailing;
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Flexible(
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: categoryBadge,
-          ),
+          child: Align(alignment: Alignment.centerLeft, child: categoryBadge),
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
@@ -43,6 +44,10 @@ class CardHeader extends StatelessWidget {
             now: now,
           ),
         ),
+        if (trailing != null) ...[
+          const SizedBox(width: AppSpacing.xs),
+          trailing!,
+        ],
       ],
     );
   }

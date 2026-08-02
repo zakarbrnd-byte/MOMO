@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/momo_empty_state.dart';
@@ -101,33 +102,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onClear: _clearSearch,
                 autofocus: _searchExpanded && query.isEmpty,
               )
-            : const Text('MOMO'),
+            : const Text('MOMO', style: AppTextStyles.brandLogo),
         actions: [
-          IconButton(
+          _HeaderCircleIconButton(
             tooltip: filters.activeCount > 0
                 ? '필터 ${filters.activeCount}개 적용됨'
                 : '필터',
             onPressed: () => showGroupFilterSheet(context, ref),
-            icon: filters.activeCount > 0
-                ? Badge(
-                    label: Text(_filterBadgeLabel(filters.activeCount)),
-                    child: const Icon(Icons.tune_rounded),
-                  )
-                : const Icon(Icons.tune_rounded),
+            icon: Icons.tune_rounded,
+            badgeLabel: filters.activeCount > 0
+                ? _filterBadgeLabel(filters.activeCount)
+                : null,
           ),
           if (!showSearch)
-            IconButton(
+            _HeaderCircleIconButton(
               tooltip: '검색',
               onPressed: _openSearch,
-              icon: const Icon(Icons.search_rounded),
+              icon: Icons.search_rounded,
             ),
+          const SizedBox(width: AppSpacing.sm),
         ],
       ),
       body: discoveryAsync.when(
-        loading: () => const MomoLoading(
-          title: 'Loading...',
-          message: 'Please wait.',
-        ),
+        loading: () =>
+            const MomoLoading(title: 'Loading...', message: 'Please wait.'),
         error: (error, _) => MomoError(
           title: '모임을 불러오지 못했습니다.',
           message: '다시 시도해 주세요.',
@@ -147,6 +145,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (!showSearch && filters.isEmpty && !catalogEmpty) ...[
+                  const _HomeHero(),
+                  const SizedBox(height: AppSpacing.xl),
+                ],
                 if (!filters.isEmpty) ...[
                   _ActiveFilterChips(
                     filters: filters,
@@ -224,11 +226,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     },
                     orElse: () => const SizedBox.shrink(),
                   ),
-                  ..._browseSections(
-                    context,
-                    discovery,
-                    onlyAllGroups: true,
-                  ),
+                  ..._browseSections(context, discovery, onlyAllGroups: true),
                 ],
               ],
             ),
@@ -262,70 +260,165 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     if (!onlyAllGroups) {
-      addSection(
-        '추천 모임',
-        [
-          for (final item in discovery.recommended)
-            _groupCard(context, item.group, item.visibleReasons),
-        ],
-      );
-      addSection(
-        '내 주변 모임',
-        [
-          for (final item in discovery.nearby)
-            _groupCard(
-              context,
-              item.group,
-              item.visibleReasons.isNotEmpty
-                  ? item.visibleReasons
-                  : const ['같은 지역'],
-            ),
-        ],
-      );
-      addSection(
-        '아이 연령이 비슷한 모임',
-        [
-          for (final item in discovery.similarAge)
-            _groupCard(context, item.group, item.visibleReasons),
-        ],
-      );
-      addSection(
-        '새로운 모임',
-        [
-          for (final group in discovery.newest)
-            _groupCard(context, group, const []),
-        ],
-      );
+      addSection('✨ 추천 모임', [
+        for (final item in discovery.recommended)
+          _groupCard(context, item.group, item.visibleReasons),
+      ]);
+      addSection('내 주변 모임', [
+        for (final item in discovery.nearby)
+          _groupCard(
+            context,
+            item.group,
+            item.visibleReasons.isNotEmpty
+                ? item.visibleReasons
+                : const ['같은 지역'],
+          ),
+      ]);
+      addSection('아이 연령이 비슷한 모임', [
+        for (final item in discovery.similarAge)
+          _groupCard(context, item.group, item.visibleReasons),
+      ]);
+      addSection('새로운 모임', [
+        for (final group in discovery.newest)
+          _groupCard(context, group, const []),
+      ]);
     }
 
     if (includeAllGroups || onlyAllGroups) {
-      addSection(
-        '전체 모임',
-        [
-          for (final group in discovery.allGroups)
-            _groupCard(context, group, const []),
-        ],
-      );
+      addSection('전체 모임', [
+        for (final group in discovery.allGroups)
+          _groupCard(context, group, const []),
+      ]);
     }
 
     return widgets;
   }
 
-  Widget _groupCard(
-    BuildContext context,
-    Group group,
-    List<String> reasons,
-  ) {
+  Widget _groupCard(BuildContext context, Group group, List<String> reasons) {
     return GroupCard(
       group: group,
       recommendationReasons: reasons,
       variant: GroupCardVariant.discovery,
       onTap: () {
-        AppNavigation.pushPage(
-          context,
-          GroupDetailScreen(groupId: group.id),
-        );
+        AppNavigation.pushPage(context, GroupDetailScreen(groupId: group.id));
       },
+    );
+  }
+}
+
+/// Circular light-pink header action button (Filter / Search).
+class _HeaderCircleIconButton extends StatelessWidget {
+  const _HeaderCircleIconButton({
+    required this.tooltip,
+    required this.onPressed,
+    required this.icon,
+    this.badgeLabel,
+  });
+
+  final String tooltip;
+  final VoidCallback onPressed;
+  final IconData icon;
+  final String? badgeLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final button = Tooltip(
+      message: tooltip,
+      child: Material(
+        color: AppColors.lightPink,
+        shape: const CircleBorder(side: BorderSide(color: AppColors.border)),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onPressed,
+          child: SizedBox(
+            width: 44,
+            height: 44,
+            child: Icon(icon, color: AppColors.primary, size: 22),
+          ),
+        ),
+      ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+      child: Semantics(
+        button: true,
+        label: tooltip,
+        child: badgeLabel == null
+            ? button
+            : Badge(
+                label: Text(badgeLabel!),
+                backgroundColor: AppColors.primary,
+                textColor: AppColors.onPrimary,
+                child: button,
+              ),
+      ),
+    );
+  }
+}
+
+/// Friendly hero under the Home header.
+class _HomeHero extends StatelessWidget {
+  const _HomeHero();
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      header: true,
+      label: '우리 동네 엄마들의 모임을 만나보세요',
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.softBlush,
+          borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.lg,
+            AppSpacing.md,
+            AppSpacing.lg,
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final narrow = constraints.maxWidth < 340;
+              const headline = Text(
+                '우리 동네 엄마들의\n모임을 만나보세요!',
+                style: AppTextStyles.heroTitle,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              );
+              final art = Image.asset(
+                'assets/images/hero_moms.png',
+                height: narrow ? 88 : 112,
+                fit: BoxFit.contain,
+                alignment: Alignment.centerRight,
+                semanticLabel: '엄마들의 모임 일러스트',
+              );
+
+              if (narrow) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    headline,
+                    const SizedBox(height: AppSpacing.md),
+                    Align(alignment: Alignment.centerRight, child: art),
+                  ],
+                );
+              }
+
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Expanded(flex: 5, child: headline),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(flex: 4, child: art),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }
@@ -460,10 +553,7 @@ class _ActiveFilterChips extends StatelessWidget {
           onDeleted: onClearMembership,
           deleteButtonTooltipMessage: '필터 제거',
         ),
-      ActionChip(
-        label: const Text('전체 초기화'),
-        onPressed: onClearAll,
-      ),
+      ActionChip(label: const Text('전체 초기화'), onPressed: onClearAll),
     ];
 
     return SingleChildScrollView(
@@ -489,7 +579,7 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: AppTextStyles.title,
+      style: AppTextStyles.sectionTitle,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
@@ -517,15 +607,9 @@ class _SearchResultsBody extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            '검색 결과가 없습니다.',
-            style: AppTextStyles.cardTitle,
-          ),
+          const Text('검색 결과가 없습니다.', style: AppTextStyles.cardTitle),
           const SizedBox(height: AppSpacing.sm),
-          const Text(
-            '다른 검색어나 필터를 사용해보세요.',
-            style: AppTextStyles.bodySmall,
-          ),
+          const Text('다른 검색어나 필터를 사용해보세요.', style: AppTextStyles.bodySmall),
           const SizedBox(height: AppSpacing.lg),
           if (query.trim().isNotEmpty)
             OutlinedButton(
@@ -548,7 +632,7 @@ class _SearchResultsBody extends StatelessWidget {
       children: [
         Text(
           '검색 결과 ${discovery.resultCount}개',
-          style: AppTextStyles.title,
+          style: AppTextStyles.sectionTitle,
         ),
         const SizedBox(height: AppSpacing.md),
         for (var i = 0; i < discovery.filteredGroups.length; i++) ...[
@@ -559,9 +643,7 @@ class _SearchResultsBody extends StatelessWidget {
             onTap: () {
               AppNavigation.pushPage(
                 context,
-                GroupDetailScreen(
-                  groupId: discovery.filteredGroups[i].id,
-                ),
+                GroupDetailScreen(groupId: discovery.filteredGroups[i].id),
               );
             },
           ),
@@ -581,20 +663,11 @@ class _FilterEmptyBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          '조건에 맞는 모임이 없습니다.',
-          style: AppTextStyles.cardTitle,
-        ),
+        const Text('조건에 맞는 모임이 없습니다.', style: AppTextStyles.cardTitle),
         const SizedBox(height: AppSpacing.sm),
-        const Text(
-          '필터를 조정해보세요.',
-          style: AppTextStyles.bodySmall,
-        ),
+        const Text('필터를 조정해보세요.', style: AppTextStyles.bodySmall),
         const SizedBox(height: AppSpacing.lg),
-        OutlinedButton(
-          onPressed: onClearFilters,
-          child: const Text('필터 초기화'),
-        ),
+        OutlinedButton(onPressed: onClearFilters, child: const Text('필터 초기화')),
       ],
     );
   }
@@ -618,10 +691,7 @@ class _CommunityPostsSection extends StatelessWidget {
           PostCard(
             post: posts[i],
             onTap: () {
-              AppNavigation.pushPage(
-                context,
-                PostDetailScreen(post: posts[i]),
-              );
+              AppNavigation.pushPage(context, PostDetailScreen(post: posts[i]));
             },
           ),
         ],

@@ -50,8 +50,9 @@ class GroupDto {
       coverEmoji: JsonConverters.nullableStringFromJson(json['coverEmoji']),
       isFeatured: json['isFeatured'] == true,
       createdAt: JsonConverters.dateTimeFromJson(json['createdAt']),
-      recentActivityAt:
-          JsonConverters.dateTimeFromJson(json['recentActivityAt']),
+      recentActivityAt: JsonConverters.dateTimeFromJson(
+        json['recentActivityAt'],
+      ),
     );
   }
 
@@ -212,7 +213,8 @@ class EventAnnouncementDto {
       creatorName: JsonConverters.stringFromJson(json['creatorName']),
       title: JsonConverters.stringFromJson(json['title']),
       description: JsonConverters.stringFromJson(json['description']),
-      dateTime: JsonConverters.dateTimeFromJson(json['dateTime']) ??
+      dateTime:
+          JsonConverters.dateTimeFromJson(json['dateTime']) ??
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
       location: JsonConverters.stringFromJson(json['location']),
       childAgeRange: JsonConverters.stringFromJson(json['childAgeRange']),

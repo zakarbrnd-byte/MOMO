@@ -29,11 +29,11 @@ class _MainShellState extends ConsumerState<MainShell> {
   final _profileNavKey = GlobalKey<NavigatorState>();
 
   List<GlobalKey<NavigatorState>> get _navKeys => [
-        _homeNavKey,
-        _createNavKey,
-        _groupsNavKey,
-        _profileNavKey,
-      ];
+    _homeNavKey,
+    _createNavKey,
+    _groupsNavKey,
+    _profileNavKey,
+  ];
 
   void _onTabSelected(int selected) {
     final current = ref.read(mainTabProvider);
@@ -121,6 +121,12 @@ class _MainShellState extends ConsumerState<MainShell> {
           selectedIndex: index,
           destinations: destinations,
           onDestinationSelected: _onTabSelected,
+          backgroundColor: AppColors.surface,
+          indicatorColor: AppColors.lightPink,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         ),
       ),
     );
@@ -128,10 +134,7 @@ class _MainShellState extends ConsumerState<MainShell> {
 }
 
 class _TabNavigator extends StatelessWidget {
-  const _TabNavigator({
-    required this.navigatorKey,
-    required this.root,
-  });
+  const _TabNavigator({required this.navigatorKey, required this.root});
 
   final GlobalKey<NavigatorState> navigatorKey;
   final Widget root;

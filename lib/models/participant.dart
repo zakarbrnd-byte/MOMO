@@ -31,8 +31,9 @@ class Participant {
     return Participant(
       userId: userId ?? this.userId,
       playdateId: playdateId ?? this.playdateId,
-      joinedAt:
-          identical(joinedAt, _unset) ? this.joinedAt : joinedAt as DateTime?,
+      joinedAt: identical(joinedAt, _unset)
+          ? this.joinedAt
+          : joinedAt as DateTime?,
       status: status ?? this.status,
     );
   }

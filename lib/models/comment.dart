@@ -61,14 +61,14 @@ class Comment {
 
   @override
   int get hashCode => Object.hash(
-        id,
-        postId,
-        authorId,
-        authorName,
-        body,
-        createdAt,
-        parentCommentId,
-      );
+    id,
+    postId,
+    authorId,
+    authorName,
+    body,
+    createdAt,
+    parentCommentId,
+  );
 }
 
 const _unset = Object();

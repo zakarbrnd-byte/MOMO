@@ -151,12 +151,7 @@ class Playdate {
 }
 
 /// What the primary participation control should show for a user.
-enum PlaydateJoinState {
-  owner,
-  join,
-  leave,
-  full,
-}
+enum PlaydateJoinState { owner, join, leave, full }
 
 extension PlaydateJoinStateX on PlaydateJoinState {
   String get actionLabel {

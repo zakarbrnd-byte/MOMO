@@ -8,12 +8,7 @@ import '../theme/app_spacing.dart';
 /// Use [inline] for compact rows (buttons, list tiles). Full-screen / page
 /// loading is the default (centered).
 class MomoLoading extends StatelessWidget {
-  const MomoLoading({
-    super.key,
-    this.title,
-    this.message,
-    this.inline = false,
-  });
+  const MomoLoading({super.key, this.title, this.message, this.inline = false});
 
   /// Optional primary line (e.g. "Loading...").
   final String? title;
@@ -59,9 +54,7 @@ class _PageLoading extends StatelessWidget {
               ),
             ],
             if (message != null) ...[
-              SizedBox(
-                height: title == null ? AppSpacing.xl : AppSpacing.sm,
-              ),
+              SizedBox(height: title == null ? AppSpacing.xl : AppSpacing.sm),
               Text(
                 message!,
                 style: textTheme.bodyMedium?.copyWith(

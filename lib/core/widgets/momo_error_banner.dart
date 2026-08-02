@@ -11,9 +11,9 @@ abstract final class MomoErrorBanner {
     ScaffoldMessengerState? messenger,
   }) {
     final scaffoldMessenger = messenger ?? ScaffoldMessenger.of(context);
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: AppColors.onPrimary,
-        );
+    final textStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(color: AppColors.onPrimary);
 
     scaffoldMessenger
       ..clearSnackBars()
@@ -28,9 +28,7 @@ abstract final class MomoErrorBanner {
                 size: 22,
               ),
               const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Text(message, style: textStyle),
-              ),
+              Expanded(child: Text(message, style: textStyle)),
             ],
           ),
         ),

@@ -22,8 +22,11 @@ abstract final class RelativeTimeKo {
     }
 
     final currentDay = DateTime(current.year, current.month, current.day);
-    final timestampDay =
-        DateTime(timestamp.year, timestamp.month, timestamp.day);
+    final timestampDay = DateTime(
+      timestamp.year,
+      timestamp.month,
+      timestamp.day,
+    );
     final dayDiff = currentDay.difference(timestampDay).inDays;
 
     if (dayDiff == 1) {

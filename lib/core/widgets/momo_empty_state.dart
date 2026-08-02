@@ -41,11 +41,7 @@ class MomoEmptyState extends StatelessWidget {
             Center(child: illustration),
             const SizedBox(height: AppSpacing.lg),
           ],
-          Text(
-            title,
-            style: textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
+          Text(title, style: textTheme.titleLarge, textAlign: TextAlign.center),
           const SizedBox(height: AppSpacing.sm),
           Text(
             message,
@@ -54,10 +50,7 @@ class MomoEmptyState extends StatelessWidget {
           ),
           if (_hasAction) ...[
             const SizedBox(height: AppSpacing.xl),
-            MomoButton(
-              label: buttonText!,
-              onPressed: onPressed,
-            ),
+            MomoButton(label: buttonText!, onPressed: onPressed),
           ],
         ],
       ),

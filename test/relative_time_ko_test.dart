@@ -19,10 +19,7 @@ void main() {
         '방금 전',
       );
       expect(
-        RelativeTimeKo.format(
-          now.add(const Duration(minutes: 5)),
-          now: now,
-        ),
+        RelativeTimeKo.format(now.add(const Duration(minutes: 5)), now: now),
         '방금 전',
       );
     });
@@ -36,37 +33,25 @@ void main() {
         '5분 전',
       );
       expect(
-        RelativeTimeKo.format(
-          now.subtract(const Duration(hours: 2)),
-          now: now,
-        ),
+        RelativeTimeKo.format(now.subtract(const Duration(hours: 2)), now: now),
         '2시간 전',
       );
     });
 
     test('yesterday and several days', () {
       expect(
-        RelativeTimeKo.format(
-          DateTime.utc(2026, 7, 27, 10, 0),
-          now: now,
-        ),
+        RelativeTimeKo.format(DateTime.utc(2026, 7, 27, 10, 0), now: now),
         '어제',
       );
       expect(
-        RelativeTimeKo.format(
-          now.subtract(const Duration(days: 3)),
-          now: now,
-        ),
+        RelativeTimeKo.format(now.subtract(const Duration(days: 3)), now: now),
         '3일 전',
       );
     });
 
     test('older calendar date', () {
       expect(
-        RelativeTimeKo.format(
-          DateTime.utc(2026, 7, 19, 15, 0),
-          now: now,
-        ),
+        RelativeTimeKo.format(DateTime.utc(2026, 7, 19, 15, 0), now: now),
         '7월 19일',
       );
     });
@@ -74,10 +59,7 @@ void main() {
 
   group('RelativeTimeKo.authorWithTime', () {
     test('omits separator when timestamp is null', () {
-      expect(
-        RelativeTimeKo.authorWithTime('최유나', null, now: now),
-        '최유나',
-      );
+      expect(RelativeTimeKo.authorWithTime('최유나', null, now: now), '최유나');
       expect(
         RelativeTimeKo.authorWithTime('최유나', null, now: now).contains('·'),
         isFalse,

@@ -62,7 +62,9 @@ class _CreateGroupScreenState extends ConsumerState<CreateGroupScreen> {
         .toList();
 
     await ref.read(createGroupMutationProvider.notifier).run(() async {
-      await ref.read(groupProvider.notifier).createGroup(
+      await ref
+          .read(groupProvider.notifier)
+          .createGroup(
             name: name,
             description: description,
             category: category.isEmpty ? '커뮤니티' : category,

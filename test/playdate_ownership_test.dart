@@ -31,9 +31,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(
-          home: PlaydateDetailScreen(playdate: playdate),
-        ),
+        child: MaterialApp(home: PlaydateDetailScreen(playdate: playdate)),
       ),
     );
     await tester.pumpAndSettle();
@@ -45,7 +43,9 @@ void main() {
     addTearDown(container.dispose);
     await container.read(playdateProvider.future);
 
-    container.read(playdateProvider.notifier).createPlaydate(
+    container
+        .read(playdateProvider.notifier)
+        .createPlaydate(
           title: 'Owned Park Day',
           date: 'Sat',
           time: '',
@@ -83,17 +83,16 @@ void main() {
     expect(find.text('Cancel Playdate'), findsNothing);
   });
 
-  testWidgets('Owner cancel removes playdate from provider list',
-      (tester) async {
+  testWidgets('Owner cancel removes playdate from provider list', (
+    tester,
+  ) async {
     final container = await pumpDetail(tester, 'pd5');
 
     await tester.tap(find.widgetWithText(FilledButton, 'Cancel Playdate'));
     await tester.pumpAndSettle();
 
     expect(find.text('Cancel this Playdate?'), findsOneWidget);
-    await tester.tap(
-      find.widgetWithText(FilledButton, 'Cancel Playdate').last,
-    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Cancel Playdate').last);
     await tester.pumpAndSettle();
 
     expect(

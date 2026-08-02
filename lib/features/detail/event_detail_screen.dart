@@ -38,10 +38,8 @@ class EventDetailScreen extends ConsumerWidget {
       body: eventAsync.when(
         skipLoadingOnReload: true,
         skipLoadingOnRefresh: true,
-        loading: () => const MomoLoading(
-          title: 'Loading...',
-          message: 'Please wait.',
-        ),
+        loading: () =>
+            const MomoLoading(title: 'Loading...', message: 'Please wait.'),
         error: (error, _) => MomoError(
           title: 'Something went wrong',
           message: '이벤트를 불러오지 못했습니다.',
@@ -55,18 +53,17 @@ class EventDetailScreen extends ConsumerWidget {
           return rsvpsAsync.when(
             skipLoadingOnReload: true,
             skipLoadingOnRefresh: true,
-            loading: () => const MomoLoading(
-              title: 'Loading...',
-              message: 'Please wait.',
-            ),
+            loading: () =>
+                const MomoLoading(title: 'Loading...', message: 'Please wait.'),
             error: (error, _) => MomoError(
               title: 'Something went wrong',
               message: '참석 상태를 불러오지 못했습니다.',
               onRetry: () => ref.invalidate(eventRsvpsProvider(eventId)),
             ),
             data: (rsvps) {
-              final attending =
-                  rsvps.where((r) => r.status == RsvpStatus.attending).toList();
+              final attending = rsvps
+                  .where((r) => r.status == RsvpStatus.attending)
+                  .toList();
               final notAttending = rsvps
                   .where((r) => r.status == RsvpStatus.notAttending)
                   .toList();
@@ -108,11 +105,11 @@ class EventDetailScreen extends ConsumerWidget {
                           onPressed: mutation.isLoading
                               ? null
                               : () => _setRsvp(
-                                    context,
-                                    ref,
-                                    event.id,
-                                    RsvpStatus.attending,
-                                  ),
+                                  context,
+                                  ref,
+                                  event.id,
+                                  RsvpStatus.attending,
+                                ),
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
@@ -121,11 +118,11 @@ class EventDetailScreen extends ConsumerWidget {
                           onPressed: mutation.isLoading
                               ? null
                               : () => _setRsvp(
-                                    context,
-                                    ref,
-                                    event.id,
-                                    RsvpStatus.notAttending,
-                                  ),
+                                  context,
+                                  ref,
+                                  event.id,
+                                  RsvpStatus.notAttending,
+                                ),
                           child: mutation.isLoading
                               ? const SizedBox(
                                   width: 18,
@@ -150,10 +147,7 @@ class EventDetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   if (attending.isEmpty)
-                    const Text(
-                      '아직 참석자가 없습니다.',
-                      style: AppTextStyles.caption,
-                    )
+                    const Text('아직 참석자가 없습니다.', style: AppTextStyles.caption)
                   else
                     ...attending.map(
                       (r) => Padding(
@@ -171,10 +165,7 @@ class EventDetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   if (notAttending.isEmpty)
-                    const Text(
-                      '아직 불참 응답이 없습니다.',
-                      style: AppTextStyles.caption,
-                    )
+                    const Text('아직 불참 응답이 없습니다.', style: AppTextStyles.caption)
                   else
                     ...notAttending.map(
                       (r) => Padding(
@@ -201,17 +192,13 @@ class EventDetailScreen extends ConsumerWidget {
     RsvpStatus status,
   ) async {
     final ok = await ref.read(rsvpMutationProvider.notifier).run(() async {
-      await ref.read(groupProvider.notifier).setRsvp(
-            eventId: eventId,
-            status: status,
-          );
+      await ref
+          .read(groupProvider.notifier)
+          .setRsvp(eventId: eventId, status: status);
     });
     if (!context.mounted) return;
     if (!ok) {
-      MomoErrorBanner.show(
-        context,
-        '참석 상태를 업데이트하지 못했습니다. 다시 시도해주세요.',
-      );
+      MomoErrorBanner.show(context, '참석 상태를 업데이트하지 못했습니다. 다시 시도해주세요.');
     }
   }
 }

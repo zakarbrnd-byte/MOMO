@@ -24,10 +24,8 @@ class MyGroupsScreen extends ConsumerWidget {
       body: groupsAsync.when(
         skipLoadingOnReload: true,
         skipLoadingOnRefresh: true,
-        loading: () => const MomoLoading(
-          title: 'Loading...',
-          message: 'Please wait.',
-        ),
+        loading: () =>
+            const MomoLoading(title: 'Loading...', message: 'Please wait.'),
         error: (error, _) => MomoError(
           title: 'Something went wrong',
           message: '모임을 불러오지 못했습니다.',
@@ -37,10 +35,8 @@ class MyGroupsScreen extends ConsumerWidget {
           return joinedAsync.when(
             skipLoadingOnReload: true,
             skipLoadingOnRefresh: true,
-            loading: () => const MomoLoading(
-              title: 'Loading...',
-              message: 'Please wait.',
-            ),
+            loading: () =>
+                const MomoLoading(title: 'Loading...', message: 'Please wait.'),
             error: (error, _) => MomoError(
               title: 'Something went wrong',
               message: '가입한 모임을 불러오지 못했습니다.',

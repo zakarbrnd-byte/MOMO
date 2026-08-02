@@ -7,33 +7,59 @@ import 'app_colors.dart';
 /// Prefer these tokens (or [ThemeData.textTheme] built from them) over
 /// inline `TextStyle(fontSize: …)`.
 abstract final class AppTextStyles {
+  /// Playful brand wordmark (Home AppBar "MOMO").
+  static const TextStyle brandLogo = TextStyle(
+    fontSize: 40,
+    fontWeight: FontWeight.w800,
+    color: AppColors.primary,
+    letterSpacing: 1.2,
+    height: 1.1,
+  );
+
   static const TextStyle displayLarge = TextStyle(
-    fontSize: 36,
+    fontSize: 40,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
     letterSpacing: -1,
     height: 1.2,
   );
 
-  /// Large screen / AppBar title.
+  /// Hero headline under the Home header.
+  static const TextStyle heroTitle = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+    letterSpacing: -0.4,
+    height: 1.25,
+  );
+
+  /// Large screen / AppBar title (non-brand).
   static const TextStyle headline = TextStyle(
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
     letterSpacing: -0.5,
     height: 1.25,
   );
 
+  /// Energetic section headers (e.g. ✨ 추천 모임).
+  static const TextStyle sectionTitle = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+    height: 1.3,
+  );
+
   static const TextStyle headlineMedium = TextStyle(
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
     height: 1.3,
   );
 
   static const TextStyle title = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
     height: 1.3,
   );
@@ -45,25 +71,25 @@ abstract final class AppTextStyles {
     height: 1.35,
   );
 
-  /// Shared Home feed card title (Playdate + Post).
+  /// Shared Home feed card title (Group / Post / Playdate).
   static const TextStyle cardTitle = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
+    fontSize: 22,
+    fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
-    height: 1.35,
+    height: 1.3,
   );
 
   /// Primary reading text.
   static const TextStyle body = TextStyle(
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: FontWeight.w400,
     color: AppColors.textPrimary,
     height: 1.45,
   );
 
-  /// Emphasized body (16 / medium).
+  /// Emphasized body (15 / medium).
   static const TextStyle bodyMedium = TextStyle(
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: FontWeight.w500,
     color: AppColors.textPrimary,
     height: 1.45,
@@ -77,8 +103,16 @@ abstract final class AppTextStyles {
     height: 1.4,
   );
 
+  /// Card metadata (location, ages, members).
+  static const TextStyle metadata = TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    color: AppColors.textSecondary,
+    height: 1.35,
+  );
+
   static const TextStyle caption = TextStyle(
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
     height: 1.3,

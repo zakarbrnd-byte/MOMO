@@ -22,10 +22,7 @@ void main() {
 
   group('GroupDiscoveryService search', () {
     test('matches group name', () {
-      expect(
-        GroupDiscoveryService.groupMatchesSearch(groupLa3, '3살'),
-        isTrue,
-      );
+      expect(GroupDiscoveryService.groupMatchesSearch(groupLa3, '3살'), isTrue);
     });
 
     test('matches description', () {
@@ -57,10 +54,7 @@ void main() {
     });
 
     test('matches interest tag', () {
-      expect(
-        GroupDiscoveryService.groupMatchesSearch(groupLa3, '도서관'),
-        isTrue,
-      );
+      expect(GroupDiscoveryService.groupMatchesSearch(groupLa3, '도서관'), isTrue);
     });
 
     test('is case-insensitive for English', () {
@@ -78,10 +72,7 @@ void main() {
     });
 
     test('normalizeSearchText collapses whitespace', () {
-      expect(
-        GroupDiscoveryService.normalizeSearchText('  LA   3살  '),
-        'LA 3살',
-      );
+      expect(GroupDiscoveryService.normalizeSearchText('  LA   3살  '), 'LA 3살');
       expect(GroupDiscoveryService.isActiveSearch('   '), isFalse);
     });
   });
@@ -89,10 +80,7 @@ void main() {
   group('GroupDiscoveryService filters', () {
     test('location filters use OR within category', () {
       final filters = GroupDiscoveryFilters(
-        locations: {
-          groupLa3.location,
-          groupOcWork.location,
-        },
+        locations: {groupLa3.location, groupOcWork.location},
       );
       expect(
         GroupDiscoveryService.groupMatchesFilters(
@@ -137,9 +125,7 @@ void main() {
     });
 
     test('interest filters match at least one selected tag', () {
-      const filters = GroupDiscoveryFilters(
-        interests: {'도서관', '수영'},
-      );
+      const filters = GroupDiscoveryFilters(interests: {'도서관', '수영'});
       expect(
         GroupDiscoveryService.groupMatchesFilters(
           group: groupLa3,
@@ -223,8 +209,10 @@ void main() {
         childAgeRanges: ['', ' 3세 ', '3세'],
         interestTags: ['도서관', ' 도서관 ', ''],
       );
-      final options =
-          GroupDiscoveryService.extractFilterOptions([messy, groupOcWork]);
+      final options = GroupDiscoveryService.extractFilterOptions([
+        messy,
+        groupOcWork,
+      ]);
       expect(options.locations, isNot(contains('')));
       expect(options.locations, contains(groupOcWork.location));
       expect(options.ageRanges, contains('3세'));
@@ -250,10 +238,7 @@ void main() {
       expect(a.score, greaterThanOrEqualTo(40 + 30));
       expect(a.reasons, contains('내 지역과 가까워요'));
       expect(a.reasons, contains('아이 연령이 비슷해요'));
-      expect(
-        a.reasons.any((r) => r.contains('관심사')),
-        isTrue,
-      );
+      expect(a.reasons.any((r) => r.contains('관심사')), isTrue);
     });
 
     test('joined groups are excluded from primary recommendations', () {
@@ -264,10 +249,7 @@ void main() {
         query: '',
         filters: GroupDiscoveryFilters.empty,
       );
-      expect(
-        view.recommended.any((r) => r.group.id == 'grp_la3'),
-        isFalse,
-      );
+      expect(view.recommended.any((r) => r.group.id == 'grp_la3'), isFalse);
       expect(view.recommended, isNotEmpty);
       for (final item in view.recommended) {
         expect(item.reasons, isNotEmpty);
@@ -370,17 +352,12 @@ void main() {
       final filtered = container.read(filteredGroupsProvider).requireValue;
       expect(filtered, isNotEmpty);
       for (final group in filtered) {
-        expect(
-          GroupDiscoveryService.groupMatchesSearch(group, '도서관'),
-          isTrue,
-        );
+        expect(GroupDiscoveryService.groupMatchesSearch(group, '도서관'), isTrue);
       }
 
-      container.read(groupDiscoveryFiltersProvider.notifier).setFilters(
-            GroupDiscoveryFilters(
-              locations: {groupBook.location},
-            ),
-          );
+      container
+          .read(groupDiscoveryFiltersProvider.notifier)
+          .setFilters(GroupDiscoveryFilters(locations: {groupBook.location}));
       final filtered2 = container.read(filteredGroupsProvider).requireValue;
       for (final group in filtered2) {
         expect(group.location, groupBook.location);
@@ -394,15 +371,19 @@ void main() {
       await container.read(groupProvider.future);
       await container.read(currentUserGroupIdsProvider.future);
 
-      final before =
-          container.read(homeDiscoveryProvider).requireValue.recommended;
+      final before = container
+          .read(homeDiscoveryProvider)
+          .requireValue
+          .recommended;
       final beforeIds = before.map((e) => e.group.id).toSet();
 
       await container.read(groupProvider.notifier).joinGroup('grp_book');
       await container.read(currentUserGroupIdsProvider.future);
 
-      final after =
-          container.read(homeDiscoveryProvider).requireValue.recommended;
+      final after = container
+          .read(homeDiscoveryProvider)
+          .requireValue
+          .recommended;
       expect(after.any((e) => e.group.id == 'grp_book'), isFalse);
       if (beforeIds.contains('grp_book')) {
         expect(after.length, lessThanOrEqualTo(before.length));
@@ -422,9 +403,7 @@ void main() {
 
     test('group loading error surfaces on homeDiscoveryProvider', () async {
       final container = ProviderContainer(
-        overrides: [
-          groupProvider.overrideWith(_ErrorGroups.new),
-        ],
+        overrides: [groupProvider.overrideWith(_ErrorGroups.new)],
       );
       addTearDown(container.dispose);
 

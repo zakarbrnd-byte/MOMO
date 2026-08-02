@@ -21,16 +21,16 @@ final commentsByPostProvider = FutureProvider.family<List<Comment>, String>((
 /// One-level threads derived from [commentsByPostProvider].
 final commentThreadsByPostProvider =
     Provider.family<AsyncValue<List<CommentThread>>, String>((ref, postId) {
-  return ref
-      .watch(commentsByPostProvider(postId))
-      .whenData(CommentRules.buildCommentThreads);
-});
+      return ref
+          .watch(commentsByPostProvider(postId))
+          .whenData(CommentRules.buildCommentThreads);
+    });
 
 /// Comment create / reply mutation lifecycle (per Post Detail screen).
 final createCommentMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
-  MutationNotifier.new,
-);
+      MutationNotifier.new,
+    );
 
 /// Creates a comment or reply, syncs [Post.commentCount], invalidates readers.
 ///
@@ -49,18 +49,18 @@ Future<bool> submitPostComment(
   final succeeded = await ref
       .read(createCommentMutationProvider.notifier)
       .runResult(() async {
-    final result = await repo.createComment(
-      postId: postId,
-      authorId: user.id,
-      authorName: user.displayName,
-      body: body,
-      parentCommentId: replyTargetId,
-    );
-    return result.when(
-      success: (_) => const Success(true),
-      failure: (message) => Failure<bool>(message),
-    );
-  });
+        final result = await repo.createComment(
+          postId: postId,
+          authorId: user.id,
+          authorName: user.displayName,
+          body: body,
+          parentCommentId: replyTargetId,
+        );
+        return result.when(
+          success: (_) => const Success(true),
+          failure: (message) => Failure<bool>(message),
+        );
+      });
 
   if (!succeeded) return false;
 

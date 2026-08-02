@@ -62,9 +62,7 @@ class PlaydateRepositoryImpl implements PlaydateRepository {
   Future<Result<bool>> delete(String playdateId, String requestingUserId) {
     return _findById(playdateId).then((playdate) {
       if (playdate == null) {
-        return SynchronousFuture(
-          const Failure('Playdate not found.'),
-        );
+        return SynchronousFuture(const Failure('Playdate not found.'));
       }
       if (!playdate.isOwner(requestingUserId)) {
         return SynchronousFuture(
@@ -83,9 +81,7 @@ class PlaydateRepositoryImpl implements PlaydateRepository {
   Future<Result<bool>> join(String playdateId, String userId) {
     return _findById(playdateId).then((playdate) {
       if (playdate == null) {
-        return SynchronousFuture(
-          const Failure('Playdate not found.'),
-        );
+        return SynchronousFuture(const Failure('Playdate not found.'));
       }
       if (playdate.isOwner(userId)) {
         return SynchronousFuture(
@@ -98,9 +94,7 @@ class PlaydateRepositoryImpl implements PlaydateRepository {
         );
       }
       if (playdate.isFull) {
-        return SynchronousFuture(
-          const Failure('This playdate is full.'),
-        );
+        return SynchronousFuture(const Failure('This playdate is full.'));
       }
       return _dataSource.joinPlaydate(playdateId, userId).then((ok) {
         return ok
@@ -114,9 +108,7 @@ class PlaydateRepositoryImpl implements PlaydateRepository {
   Future<Result<bool>> leave(String playdateId, String userId) {
     return _findById(playdateId).then((playdate) {
       if (playdate == null) {
-        return SynchronousFuture(
-          const Failure('Playdate not found.'),
-        );
+        return SynchronousFuture(const Failure('Playdate not found.'));
       }
       if (playdate.isOwner(userId)) {
         return SynchronousFuture(

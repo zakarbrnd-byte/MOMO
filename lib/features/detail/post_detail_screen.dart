@@ -108,8 +108,9 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     }
 
     // Prefer product copy over raw exception / backend simulation text.
-    final message =
-        isReply ? '답글을 등록하지 못했습니다. 다시 시도해주세요.' : '댓글을 등록하지 못했습니다. 다시 시도해주세요.';
+    final message = isReply
+        ? '답글을 등록하지 못했습니다. 다시 시도해주세요.'
+        : '댓글을 등록하지 못했습니다. 다시 시도해주세요.';
     MomoErrorBanner.show(context, message);
   }
 
@@ -117,13 +118,15 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   Widget build(BuildContext context) {
     final post = _livePost;
     final textTheme = Theme.of(context).textTheme;
-    final title =
-        post.title.trim().isEmpty ? 'Untitled post' : post.title.trim();
+    final title = post.title.trim().isEmpty
+        ? 'Untitled post'
+        : post.title.trim();
     final content = post.content.trim().isEmpty
         ? 'No content provided.'
         : post.content.trim();
-    final author =
-        post.authorName.trim().isEmpty ? 'A MOMO mom' : post.authorName.trim();
+    final author = post.authorName.trim().isEmpty
+        ? 'A MOMO mom'
+        : post.authorName.trim();
     final hasContent = post.content.trim().isNotEmpty;
     final commentsAsync = ref.watch(commentsByPostProvider(post.id));
     final threadsAsync = ref.watch(commentThreadsByPostProvider(post.id));
@@ -290,8 +293,9 @@ class _CommentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final time = RelativeTimeKo.format(comment.createdAt, now: now);
-    final meta =
-        time == null ? comment.authorName : '${comment.authorName} · $time';
+    final meta = time == null
+        ? comment.authorName
+        : '${comment.authorName} · $time';
 
     return Padding(
       padding: EdgeInsets.only(

@@ -31,10 +31,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: overrides,
-        child: const MomoApp(),
-      ),
+      ProviderScope(overrides: overrides, child: const MomoApp()),
     );
     await tester.pumpAndSettle();
   }
@@ -61,9 +58,7 @@ void main() {
   testWidgets('Empty groups shows empty state CTA', (tester) async {
     await pumpApp(
       tester,
-      overrides: [
-        groupProvider.overrideWith(_EmptyGroups.new),
-      ],
+      overrides: [groupProvider.overrideWith(_EmptyGroups.new)],
     );
 
     expect(find.byType(EmptyState), findsOneWidget);
@@ -81,9 +76,7 @@ void main() {
   testWidgets('Empty posts shows empty state CTA', (tester) async {
     await pumpApp(
       tester,
-      overrides: [
-        postProvider.overrideWith(_EmptyPosts.new),
-      ],
+      overrides: [postProvider.overrideWith(_EmptyPosts.new)],
     );
 
     await tester.scrollUntilVisible(

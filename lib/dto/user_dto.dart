@@ -34,9 +34,7 @@ class UserDto {
         if (item is Map<String, dynamic>) {
           children.add(ChildDto.fromJson(item));
         } else if (item is Map) {
-          children.add(
-            ChildDto.fromJson(Map<String, dynamic>.from(item)),
-          );
+          children.add(ChildDto.fromJson(Map<String, dynamic>.from(item)));
         }
       }
     }
@@ -44,8 +42,9 @@ class UserDto {
     return UserDto(
       id: JsonConverters.stringFromJson(json['id']),
       displayName: JsonConverters.stringFromJson(json['displayName']),
-      profileImageUrl:
-          JsonConverters.nullableStringFromJson(json['profileImageUrl']),
+      profileImageUrl: JsonConverters.nullableStringFromJson(
+        json['profileImageUrl'],
+      ),
       location: JsonConverters.nullableStringFromJson(json['location']),
       children: children,
       interestTags: JsonConverters.stringListFromJson(json['interestTags']),
@@ -88,9 +87,7 @@ class UserDto {
       displayName: user.displayName,
       profileImageUrl: user.profileImageUrl,
       location: user.location,
-      children: [
-        for (final child in user.children) ChildDto.fromDomain(child),
-      ],
+      children: [for (final child in user.children) ChildDto.fromDomain(child)],
       interestTags: user.interestTags,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

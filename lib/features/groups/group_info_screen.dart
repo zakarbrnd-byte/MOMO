@@ -37,10 +37,8 @@ class GroupInfoScreen extends ConsumerWidget {
       body: groupAsync.when(
         skipLoadingOnReload: true,
         skipLoadingOnRefresh: true,
-        loading: () => const MomoLoading(
-          title: 'Loading...',
-          message: 'Please wait.',
-        ),
+        loading: () =>
+            const MomoLoading(title: 'Loading...', message: 'Please wait.'),
         error: (error, _) => MomoError(
           title: 'Something went wrong',
           message: '모임 정보를 불러오지 못했습니다.',
@@ -171,11 +169,7 @@ class GroupInfoScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _join(
-    BuildContext context,
-    WidgetRef ref,
-    Group group,
-  ) async {
+  Future<void> _join(BuildContext context, WidgetRef ref, Group group) async {
     final joined = ref.read(currentUserGroupIdsProvider).valueOrNull ?? {};
     if (joined.contains(group.id)) return;
 
@@ -194,34 +188,25 @@ class GroupInfoScreen extends ConsumerWidget {
         },
       );
     } else {
-      MomoErrorBanner.show(
-        context,
-        '모임에 가입하지 못했습니다. 다시 시도해주세요.',
-      );
+      MomoErrorBanner.show(context, '모임에 가입하지 못했습니다. 다시 시도해주세요.');
     }
   }
 
-  Future<void> _leave(
-    BuildContext context,
-    WidgetRef ref,
-    Group group,
-  ) async {
+  Future<void> _leave(BuildContext context, WidgetRef ref, Group group) async {
     final joined = ref.read(currentUserGroupIdsProvider).valueOrNull ?? {};
     if (!joined.contains(group.id)) return;
 
-    final ok =
-        await ref.read(leaveGroupMutationProvider.notifier).run(() async {
-      await ref.read(groupProvider.notifier).leaveGroup(group.id);
-    });
+    final ok = await ref.read(leaveGroupMutationProvider.notifier).run(
+      () async {
+        await ref.read(groupProvider.notifier).leaveGroup(group.id);
+      },
+    );
 
     if (!context.mounted) return;
     if (ok) {
       MomoSuccessBanner.show(context, '모임에서 나왔습니다.');
     } else {
-      MomoErrorBanner.show(
-        context,
-        '모임에서 나가지 못했습니다. 다시 시도해주세요.',
-      );
+      MomoErrorBanner.show(context, '모임에서 나가지 못했습니다. 다시 시도해주세요.');
     }
   }
 }

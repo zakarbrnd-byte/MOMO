@@ -18,9 +18,7 @@ class GroupRepositoryImpl implements GroupRepository {
   @override
   Future<List<Group>> load() {
     return _dataSource.getGroups().then((items) {
-      return [
-        for (final item in items) GroupDto.fromDomain(item).toDomain(),
-      ];
+      return [for (final item in items) GroupDto.fromDomain(item).toDomain()];
     });
   }
 
@@ -94,9 +92,7 @@ class GroupRepositoryImpl implements GroupRepository {
   @override
   Future<List<Rsvp>> loadRsvps(String eventId) {
     return _dataSource.getRsvpsByEvent(eventId).then((items) {
-      return [
-        for (final item in items) RsvpDto.fromDomain(item).toDomain(),
-      ];
+      return [for (final item in items) RsvpDto.fromDomain(item).toDomain()];
     });
   }
 

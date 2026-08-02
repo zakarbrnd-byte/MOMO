@@ -10,7 +10,7 @@ import 'mock_profile_data_source.dart';
 /// Owns mock collections — repositories must not hold seed lists.
 class MockPlaydateDataSource implements PlaydateDataSource {
   MockPlaydateDataSource({List<Playdate>? seed})
-      : _items = List<Playdate>.from(seed ?? mockPlaydates);
+    : _items = List<Playdate>.from(seed ?? mockPlaydates);
 
   final List<Playdate> _items;
 

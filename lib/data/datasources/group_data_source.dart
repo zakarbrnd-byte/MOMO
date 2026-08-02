@@ -20,10 +20,7 @@ abstract class GroupDataSource {
     required String userName,
   });
 
-  Future<void> leaveGroup({
-    required String groupId,
-    required String userId,
-  });
+  Future<void> leaveGroup({required String groupId, required String userId});
 
   Future<List<EventAnnouncement>> getEventsByGroup(String groupId);
 

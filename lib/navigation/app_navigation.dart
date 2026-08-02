@@ -33,17 +33,13 @@ abstract final class AppNavigation {
     final messenger = ScaffoldMessenger.of(context);
     popToTabRoot(context);
     selectTab(ref, MainTabs.home);
-    MomoSuccessBanner.show(
-      context,
-      successMessage,
-      messenger: messenger,
-    );
+    MomoSuccessBanner.show(context, successMessage, messenger: messenger);
   }
 
   /// Push a page on the current tab navigator.
   static Future<T?> pushPage<T>(BuildContext context, Widget page) {
-    return Navigator.of(context).push<T>(
-      MaterialPageRoute(builder: (_) => page),
-    );
+    return Navigator.of(
+      context,
+    ).push<T>(MaterialPageRoute(builder: (_) => page));
   }
 }

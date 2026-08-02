@@ -7,13 +7,13 @@ import '../comment_data_source.dart';
 /// In-memory comment store seeded from [mockComments].
 class MockCommentDataSource implements CommentDataSource {
   MockCommentDataSource({List<CommentDto>? seed})
-      : _items = List<CommentDto>.from(
-          seed ??
-              [
-                for (final comment in mockComments)
-                  CommentDto.fromDomain(comment),
-              ],
-        );
+    : _items = List<CommentDto>.from(
+        seed ??
+            [
+              for (final comment in mockComments)
+                CommentDto.fromDomain(comment),
+            ],
+      );
 
   final List<CommentDto> _items;
   var _sequence = 0;

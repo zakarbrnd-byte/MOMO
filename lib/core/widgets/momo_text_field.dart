@@ -38,9 +38,9 @@ class MomoTextField extends StatelessWidget {
     this.obscureText = false,
     this.autocorrect = true,
   }) : assert(
-          controller == null || initialValue == null,
-          'Cannot provide both a controller and an initialValue.',
-        );
+         controller == null || initialValue == null,
+         'Cannot provide both a controller and an initialValue.',
+       );
 
   final TextEditingController? controller;
   final String? initialValue;
@@ -89,19 +89,21 @@ class MomoTextField extends StatelessWidget {
       obscureText: obscureText,
       autocorrect: autocorrect,
       textCapitalization: textCapitalization,
-      textInputAction: textInputAction ??
+      textInputAction:
+          textInputAction ??
           (isMultiline ? TextInputAction.newline : TextInputAction.next),
       onTap: enabled ? onTap : null,
       onChanged: onChanged,
       onEditingComplete: onEditingComplete,
       onFieldSubmitted: onFieldSubmitted,
       validator: validator,
-      keyboardType: keyboardType ??
+      keyboardType:
+          keyboardType ??
           (isMultiline ? TextInputType.multiline : TextInputType.text),
       inputFormatters: inputFormatters,
       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: enabled ? AppColors.textPrimary : AppColors.textDisabled,
-          ),
+        color: enabled ? AppColors.textPrimary : AppColors.textDisabled,
+      ),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,

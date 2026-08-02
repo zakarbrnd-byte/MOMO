@@ -23,17 +23,15 @@ void main() {
     addTearDown(container.dispose);
 
     await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: const MomoApp(),
-      ),
+      UncontrolledProviderScope(container: container, child: const MomoApp()),
     );
     await tester.pumpAndSettle();
     return container;
   }
 
-  testWidgets('Home shows compact Filter and Search AppBar actions',
-      (tester) async {
+  testWidgets('Home shows compact Filter and Search AppBar actions', (
+    tester,
+  ) async {
     await pumpHome(tester);
 
     expect(find.text('MOMO'), findsOneWidget);
@@ -41,8 +39,10 @@ void main() {
     expect(find.byIcon(Icons.search_rounded), findsOneWidget);
     expect(find.text('모임 이름, 지역, 관심사 검색'), findsNothing);
     expect(find.text('필터'), findsNothing);
-    expect(find.text('추천 모임'), findsOneWidget);
+    expect(find.text('✨ 추천 모임'), findsOneWidget);
     expect(find.text('전체 모임'), findsOneWidget);
+    expect(find.textContaining('우리 동네 엄마들의'), findsOneWidget);
+    expect(find.byIcon(Icons.bookmark_border_rounded), findsWidgets);
   });
 
   testWidgets('Search query shows results mode', (tester) async {
@@ -54,7 +54,7 @@ void main() {
 
     expect(container.read(groupSearchQueryProvider), '도서관');
     expect(find.textContaining('검색 결과'), findsOneWidget);
-    expect(find.text('추천 모임'), findsNothing);
+    expect(find.text('✨ 추천 모임'), findsNothing);
   });
 
   testWidgets('Search no-results state appears', (tester) async {
@@ -68,8 +68,9 @@ void main() {
     expect(find.text('검색어 지우기'), findsOneWidget);
   });
 
-  testWidgets('Filter bottom sheet opens and applying updates results',
-      (tester) async {
+  testWidgets('Filter bottom sheet opens and applying updates results', (
+    tester,
+  ) async {
     final container = await pumpHome(tester);
 
     await tester.tap(find.byIcon(Icons.tune_rounded));
@@ -103,7 +104,9 @@ void main() {
   testWidgets('Clear filter chip removes one filter', (tester) async {
     final container = await pumpHome(tester);
 
-    container.read(groupDiscoveryFiltersProvider.notifier).setFilters(
+    container
+        .read(groupDiscoveryFiltersProvider.notifier)
+        .setFilters(
           const GroupDiscoveryFilters(
             interests: {'도서관'},
             locations: {'Koreatown, Los Angeles'},
@@ -123,11 +126,10 @@ void main() {
   testWidgets('Clear all removes all filters', (tester) async {
     final container = await pumpHome(tester);
 
-    container.read(groupDiscoveryFiltersProvider.notifier).setFilters(
-          const GroupDiscoveryFilters(
-            interests: {'도서관'},
-            ageRanges: {'2–4세'},
-          ),
+    container
+        .read(groupDiscoveryFiltersProvider.notifier)
+        .setFilters(
+          const GroupDiscoveryFilters(interests: {'도서관'}, ageRanges: {'2–4세'}),
         );
     await tester.pumpAndSettle();
 
@@ -139,10 +141,11 @@ void main() {
     expect(container.read(groupDiscoveryFiltersProvider).isEmpty, isTrue);
   });
 
-  testWidgets('Recommendation section titles appear at most once',
-      (tester) async {
+  testWidgets('Recommendation section titles appear at most once', (
+    tester,
+  ) async {
     await pumpHome(tester);
-    expect(find.text('추천 모임'), findsOneWidget);
+    expect(find.text('✨ 추천 모임'), findsOneWidget);
     expect(find.text('전체 모임'), findsOneWidget);
   });
 

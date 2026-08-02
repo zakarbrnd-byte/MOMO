@@ -71,10 +71,9 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
   }
 
   String _formatTime(TimeOfDay time) {
-    return MaterialLocalizations.of(context).formatTimeOfDay(
-      time,
-      alwaysUse24HourFormat: false,
-    );
+    return MaterialLocalizations.of(
+      context,
+    ).formatTimeOfDay(time, alwaysUse24HourFormat: false);
   }
 
   bool get _isBusy => ref.read(createPlaydateMutationProvider).isLoading;
@@ -132,20 +131,21 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
       if (!_formKey.currentState!.validate()) return;
     }
 
-    final succeeded =
-        await ref.read(createPlaydateMutationProvider.notifier).run(
-      () {
-        ref.read(playdateProvider.notifier).createPlaydate(
-              title: _titleController.text,
-              date: _dateController.text,
-              time: _timeController.text,
-              location: _locationController.text,
-              childAge: _childAgeController.text,
-              description: _descriptionController.text,
-              maxParticipants: _parseCapacity(),
-            );
-      },
-    );
+    final succeeded = await ref
+        .read(createPlaydateMutationProvider.notifier)
+        .run(() {
+          ref
+              .read(playdateProvider.notifier)
+              .createPlaydate(
+                title: _titleController.text,
+                date: _dateController.text,
+                time: _timeController.text,
+                location: _locationController.text,
+                childAge: _childAgeController.text,
+                description: _descriptionController.text,
+                maxParticipants: _parseCapacity(),
+              );
+        });
 
     if (!succeeded || !mounted) return;
 
@@ -168,148 +168,148 @@ class _CreatePlaydateScreenState extends ConsumerState<CreatePlaydateScreen> {
       appBar: AppBar(title: const Text('Create Playdate')),
       body: switch (mutation) {
         AsyncOpLoading() => const MomoLoading(
-            title: 'Loading...',
-            message: 'Please wait.',
-          ),
+          title: 'Loading...',
+          message: 'Please wait.',
+        ),
         AsyncOpError(:final message) => MomoError(
-            title: 'Could not create playdate',
-            message: message,
-            onRetry: () => _save(fromRetry: true),
-          ),
+          title: 'Could not create playdate',
+          message: message,
+          onRetry: () => _save(fromRetry: true),
+        ),
         _ => Form(
-            key: _formKey,
-            autovalidateMode: _autoValidateMode,
-            child: MomoFormBody(
-              children: [
-                MomoTextField(
-                  controller: _titleController,
-                  focusNode: _titleFocus,
-                  label: 'Title',
-                  hint: 'e.g. Saturday Park Playdate',
-                  enabled: fieldsEnabled,
-                  textInputAction: TextInputAction.next,
-                  maxLength: FormValidators.shortTitleMax,
-                  onFieldSubmitted: (_) => _locationFocus.requestFocus(),
-                  validator: FormValidators.combine([
-                    (value) => FormValidators.requiredTrimmed(
-                          value,
-                          FormValidators.titleRequired,
-                        ),
-                    (value) => FormValidators.maxLength(
-                          value,
-                          FormValidators.shortTitleMax,
-                          fieldLabel: 'Title',
-                        ),
-                  ]),
-                ),
-                MomoTextField(
-                  key: const Key('playdate_date_field'),
-                  controller: _dateController,
-                  label: 'Date',
-                  hint: 'Select Date',
-                  enabled: fieldsEnabled,
-                  readOnly: true,
-                  onTap: _pickDate,
-                  textInputAction: TextInputAction.next,
-                  suffixIcon: const Icon(
-                    Icons.calendar_today_outlined,
-                    color: AppColors.textSecondary,
-                  ),
-                  validator: (value) {
-                    if (_selectedDate == null ||
-                        value == null ||
-                        value.trim().isEmpty) {
-                      return FormValidators.dateRequired;
-                    }
-                    return null;
-                  },
-                ),
-                MomoTextField(
-                  key: const Key('playdate_time_field'),
-                  controller: _timeController,
-                  label: 'Time (Optional)',
-                  hint: 'Select Time',
-                  helperText: 'Example: 10:30 AM',
-                  enabled: fieldsEnabled,
-                  readOnly: true,
-                  onTap: _pickTime,
-                  textInputAction: TextInputAction.next,
-                  suffixIcon: const Icon(
-                    Icons.access_time,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                MomoTextField(
-                  controller: _locationController,
-                  focusNode: _locationFocus,
-                  label: 'Location',
-                  hint: 'e.g. Irvine Park',
-                  enabled: fieldsEnabled,
-                  textInputAction: TextInputAction.next,
-                  maxLength: FormValidators.shortTitleMax,
-                  onFieldSubmitted: (_) => _childAgeFocus.requestFocus(),
-                  validator: FormValidators.combine([
-                    (value) => FormValidators.requiredTrimmed(
-                          value,
-                          FormValidators.locationRequired,
-                        ),
-                    (value) => FormValidators.maxLength(
-                          value,
-                          FormValidators.shortTitleMax,
-                          fieldLabel: 'Location',
-                        ),
-                  ]),
-                ),
-                MomoTextField(
-                  controller: _childAgeController,
-                  focusNode: _childAgeFocus,
-                  label: 'Child Age (Optional)',
-                  hint: 'Example: 2-4 years old',
-                  enabled: fieldsEnabled,
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) => _capacityFocus.requestFocus(),
-                ),
-                MomoTextField(
-                  key: const Key('playdate_capacity_field'),
-                  controller: _capacityController,
-                  focusNode: _capacityFocus,
-                  label: 'Maximum Participants (Optional)',
-                  hint: 'Example: 5',
-                  helperText: 'Leave empty for unlimited spots',
-                  enabled: fieldsEnabled,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  onFieldSubmitted: (_) => _descriptionFocus.requestFocus(),
-                  validator: FormValidators.optionalPositiveInt,
-                ),
-                MomoTextField(
-                  controller: _descriptionController,
-                  focusNode: _descriptionFocus,
-                  label: 'Description (Optional)',
-                  hint: 'Share a few details for other moms',
-                  maxLines: 4,
-                  minLines: 3,
-                  maxLength: FormValidators.mediumTextMax,
-                  enabled: fieldsEnabled,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _save(),
-                  validator: (value) => FormValidators.maxLength(
+          key: _formKey,
+          autovalidateMode: _autoValidateMode,
+          child: MomoFormBody(
+            children: [
+              MomoTextField(
+                controller: _titleController,
+                focusNode: _titleFocus,
+                label: 'Title',
+                hint: 'e.g. Saturday Park Playdate',
+                enabled: fieldsEnabled,
+                textInputAction: TextInputAction.next,
+                maxLength: FormValidators.shortTitleMax,
+                onFieldSubmitted: (_) => _locationFocus.requestFocus(),
+                validator: FormValidators.combine([
+                  (value) => FormValidators.requiredTrimmed(
                     value,
-                    FormValidators.mediumTextMax,
-                    fieldLabel: 'Description',
+                    FormValidators.titleRequired,
                   ),
+                  (value) => FormValidators.maxLength(
+                    value,
+                    FormValidators.shortTitleMax,
+                    fieldLabel: 'Title',
+                  ),
+                ]),
+              ),
+              MomoTextField(
+                key: const Key('playdate_date_field'),
+                controller: _dateController,
+                label: 'Date',
+                hint: 'Select Date',
+                enabled: fieldsEnabled,
+                readOnly: true,
+                onTap: _pickDate,
+                textInputAction: TextInputAction.next,
+                suffixIcon: const Icon(
+                  Icons.calendar_today_outlined,
+                  color: AppColors.textSecondary,
                 ),
-                const MomoFormSubmitGap(),
-                MomoButton(
-                  label: 'Create Playdate',
-                  isLoading: isBusy,
-                  enabled: fieldsEnabled,
-                  onPressed: _save,
+                validator: (value) {
+                  if (_selectedDate == null ||
+                      value == null ||
+                      value.trim().isEmpty) {
+                    return FormValidators.dateRequired;
+                  }
+                  return null;
+                },
+              ),
+              MomoTextField(
+                key: const Key('playdate_time_field'),
+                controller: _timeController,
+                label: 'Time (Optional)',
+                hint: 'Select Time',
+                helperText: 'Example: 10:30 AM',
+                enabled: fieldsEnabled,
+                readOnly: true,
+                onTap: _pickTime,
+                textInputAction: TextInputAction.next,
+                suffixIcon: const Icon(
+                  Icons.access_time,
+                  color: AppColors.textSecondary,
                 ),
-              ],
-            ),
+              ),
+              MomoTextField(
+                controller: _locationController,
+                focusNode: _locationFocus,
+                label: 'Location',
+                hint: 'e.g. Irvine Park',
+                enabled: fieldsEnabled,
+                textInputAction: TextInputAction.next,
+                maxLength: FormValidators.shortTitleMax,
+                onFieldSubmitted: (_) => _childAgeFocus.requestFocus(),
+                validator: FormValidators.combine([
+                  (value) => FormValidators.requiredTrimmed(
+                    value,
+                    FormValidators.locationRequired,
+                  ),
+                  (value) => FormValidators.maxLength(
+                    value,
+                    FormValidators.shortTitleMax,
+                    fieldLabel: 'Location',
+                  ),
+                ]),
+              ),
+              MomoTextField(
+                controller: _childAgeController,
+                focusNode: _childAgeFocus,
+                label: 'Child Age (Optional)',
+                hint: 'Example: 2-4 years old',
+                enabled: fieldsEnabled,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) => _capacityFocus.requestFocus(),
+              ),
+              MomoTextField(
+                key: const Key('playdate_capacity_field'),
+                controller: _capacityController,
+                focusNode: _capacityFocus,
+                label: 'Maximum Participants (Optional)',
+                hint: 'Example: 5',
+                helperText: 'Leave empty for unlimited spots',
+                enabled: fieldsEnabled,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                onFieldSubmitted: (_) => _descriptionFocus.requestFocus(),
+                validator: FormValidators.optionalPositiveInt,
+              ),
+              MomoTextField(
+                controller: _descriptionController,
+                focusNode: _descriptionFocus,
+                label: 'Description (Optional)',
+                hint: 'Share a few details for other moms',
+                maxLines: 4,
+                minLines: 3,
+                maxLength: FormValidators.mediumTextMax,
+                enabled: fieldsEnabled,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _save(),
+                validator: (value) => FormValidators.maxLength(
+                  value,
+                  FormValidators.mediumTextMax,
+                  fieldLabel: 'Description',
+                ),
+              ),
+              const MomoFormSubmitGap(),
+              MomoButton(
+                label: 'Create Playdate',
+                isLoading: isBusy,
+                enabled: fieldsEnabled,
+                onPressed: _save,
+              ),
+            ],
           ),
+        ),
       },
     );
   }

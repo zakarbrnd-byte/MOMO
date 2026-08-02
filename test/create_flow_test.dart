@@ -22,10 +22,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: const MomoApp(),
-      ),
+      UncontrolledProviderScope(container: container, child: const MomoApp()),
     );
     await tester.pumpAndSettle();
   }
@@ -68,8 +65,9 @@ void main() {
     );
   });
 
-  testWidgets('Create shows event gate when user joined zero groups',
-      (tester) async {
+  testWidgets('Create shows event gate when user joined zero groups', (
+    tester,
+  ) async {
     final container = newContainer();
     await pumpApp(tester, container);
 
@@ -82,10 +80,7 @@ void main() {
     await tester.tap(find.byIcon(Icons.add_circle_outline));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('이벤트 공지를 만들려면 먼저 모임에 가입해야 합니다.'),
-      findsOneWidget,
-    );
+    expect(find.text('이벤트 공지를 만들려면 먼저 모임에 가입해야 합니다.'), findsOneWidget);
     expect(find.text('모임 찾아보기'), findsOneWidget);
 
     await tester.scrollUntilVisible(
@@ -99,8 +94,9 @@ void main() {
     expect(container.read(mainTabProvider), MainTabs.home);
   });
 
-  testWidgets('Create Group blocks submit without required fields',
-      (tester) async {
+  testWidgets('Create Group blocks submit without required fields', (
+    tester,
+  ) async {
     final container = newContainer();
     await pumpApp(tester, container);
 

@@ -67,10 +67,7 @@ class PlaydateCard extends ConsumerWidget {
           _MetaRow(icon: Icons.place_outlined, label: playdate.location),
           if (playdate.childAge.trim().isNotEmpty) ...[
             const SizedBox(height: AppSpacing.cardContentGap),
-            _MetaRow(
-              icon: Icons.child_care_outlined,
-              label: playdate.childAge,
-            ),
+            _MetaRow(icon: Icons.child_care_outlined, label: playdate.childAge),
           ],
           const SizedBox(height: AppSpacing.cardContentGap),
           _MetaRow(
@@ -94,9 +91,9 @@ class _PlaydateBadge extends StatelessWidget {
       ),
       child: Text(
         'Playdate',
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: AppColors.primary,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.labelLarge?.copyWith(color: AppColors.primary),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -117,10 +114,7 @@ class _MetaRow extends StatelessWidget {
         Icon(icon, size: 16, color: AppColors.textSecondary),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ],
     );

@@ -50,9 +50,7 @@ abstract final class JsonConverters {
   static List<String> stringListFromJson(Object? value) {
     if (value == null) return const [];
     if (value is! List) return const [];
-    return [
-      for (final item in value) stringFromJson(item),
-    ];
+    return [for (final item in value) stringFromJson(item)];
   }
 
   /// Reads a known enum by name; unknown / missing → [fallback].

@@ -19,18 +19,21 @@ class PlaydateDetailScreen extends ConsumerWidget {
     final playdates = ref.watch(playdateProvider).valueOrNull;
     final latest =
         playdates?.where((item) => item.id == playdate.id).firstOrNull ??
-            playdate;
+        playdate;
 
     final textTheme = Theme.of(context).textTheme;
-    final title =
-        latest.title.trim().isEmpty ? 'Untitled playdate' : latest.title.trim();
+    final title = latest.title.trim().isEmpty
+        ? 'Untitled playdate'
+        : latest.title.trim();
     final location = latest.location.trim().isEmpty
         ? 'Location not specified'
         : latest.location.trim();
-    final date =
-        latest.date.trim().isEmpty ? 'Date not specified' : latest.date.trim();
-    final host =
-        latest.hostName.trim().isEmpty ? 'A MOMO mom' : latest.hostName.trim();
+    final date = latest.date.trim().isEmpty
+        ? 'Date not specified'
+        : latest.date.trim();
+    final host = latest.hostName.trim().isEmpty
+        ? 'A MOMO mom'
+        : latest.hostName.trim();
     final hasTime = latest.time.trim().isNotEmpty;
     final hasChildAge = latest.childAge.trim().isNotEmpty;
     final hasDescription = latest.description.trim().isNotEmpty;
@@ -47,10 +50,7 @@ class PlaydateDetailScreen extends ConsumerWidget {
                 children: [
                   Text(title, style: textTheme.headlineMedium),
                   const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Hosted by $host',
-                    style: textTheme.bodyMedium,
-                  ),
+                  Text('Hosted by $host', style: textTheme.bodyMedium),
                   const SizedBox(height: AppSpacing.xl),
                   MomoCard(
                     padding: AppSpacing.cardDetailPadding,
@@ -162,8 +162,9 @@ class _DetailRow extends StatelessWidget {
                 Text(
                   value,
                   style: textTheme.bodyLarge?.copyWith(
-                    color:
-                        muted ? AppColors.textSecondary : AppColors.textPrimary,
+                    color: muted
+                        ? AppColors.textSecondary
+                        : AppColors.textPrimary,
                   ),
                 ),
               ],

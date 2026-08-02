@@ -34,10 +34,8 @@ void main() {
 
     test('combine stops at first error', () {
       final validator = FormValidators.combine([
-        (value) => FormValidators.requiredTrimmed(
-              value,
-              FormValidators.titleRequired,
-            ),
+        (value) =>
+            FormValidators.requiredTrimmed(value, FormValidators.titleRequired),
         (value) => FormValidators.maxLength(value, 2, fieldLabel: 'Title'),
       ]);
 

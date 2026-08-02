@@ -60,18 +60,15 @@ void main() {
     expect((items[2] as PostFeedItem).post.id, 'p1');
   });
 
-  testWidgets('Home shows seeded mock groups and discovery chrome',
-      (tester) async {
+  testWidgets('Home shows seeded mock groups and discovery chrome', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(400, 900);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MomoApp(),
-      ),
-    );
+    await tester.pumpWidget(const ProviderScope(child: MomoApp()));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('LA 3살'), findsWidgets);
@@ -97,14 +94,13 @@ void main() {
     addTearDown(container.dispose);
 
     await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: const MomoApp(),
-      ),
+      UncontrolledProviderScope(container: container, child: const MomoApp()),
     );
     await tester.pumpAndSettle();
 
-    await container.read(groupProvider.notifier).createGroup(
+    await container
+        .read(groupProvider.notifier)
+        .createGroup(
           name: 'Test Park Moms',
           description: 'Provider smoke test for groups',
           category: '육아',
