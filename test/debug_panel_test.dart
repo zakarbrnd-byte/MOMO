@@ -24,10 +24,7 @@ void main() {
     addTearDown(container.dispose);
 
     await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: const MomoApp(),
-      ),
+      UncontrolledProviderScope(container: container, child: const MomoApp()),
     );
     await tester.pumpAndSettle();
     return container;

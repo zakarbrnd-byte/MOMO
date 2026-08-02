@@ -48,91 +48,88 @@ class PlaydateJoinActionBar extends ConsumerWidget {
                 Text(
                   'Playdate Full',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.primaryDark,
-                      ),
+                    color: AppColors.primaryDark,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ],
               const SizedBox(height: AppSpacing.md),
               switch (joinState) {
                 PlaydateJoinState.owner => Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      OutlinedButton(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Edit Playdate coming soon'),
-                            ),
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.primaryDark,
-                          side: const BorderSide(color: AppColors.primary),
-                          minimumSize: const Size.fromHeight(52),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Edit Playdate coming soon'),
                           ),
-                        ),
-                        child: const Text('Edit Playdate'),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      FilledButton(
-                        onPressed: () => _confirmCancel(context, ref, userId),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primaryDark,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size.fromHeight(52),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        child: const Text('Cancel Playdate'),
-                      ),
-                    ],
-                  ),
-                PlaydateJoinState.leave => OutlinedButton(
-                    onPressed: () {
-                      final left = ref
-                          .read(playdateProvider.notifier)
-                          .leavePlaydate(playdate.id, userId);
-                      if (left && context.mounted) {
-                        MomoSuccessBanner.show(
-                          context,
-                          'You left this playdate.',
                         );
-                      }
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primaryDark,
-                      side: const BorderSide(color: AppColors.primary),
-                      minimumSize: const Size.fromHeight(52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                      },
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.primaryDark,
+                        side: const BorderSide(color: AppColors.primary),
+                        minimumSize: const Size.fromHeight(52),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
+                      child: const Text('Edit Playdate'),
                     ),
-                    child: Text(joinState.actionLabel),
+                    const SizedBox(height: AppSpacing.sm),
+                    FilledButton(
+                      onPressed: () => _confirmCancel(context, ref, userId),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppColors.primaryDark,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size.fromHeight(52),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: const Text('Cancel Playdate'),
+                    ),
+                  ],
+                ),
+                PlaydateJoinState.leave => OutlinedButton(
+                  onPressed: () {
+                    final left = ref
+                        .read(playdateProvider.notifier)
+                        .leavePlaydate(playdate.id, userId);
+                    if (left && context.mounted) {
+                      MomoSuccessBanner.show(
+                        context,
+                        'You left this playdate.',
+                      );
+                    }
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primaryDark,
+                    side: const BorderSide(color: AppColors.primary),
+                    minimumSize: const Size.fromHeight(52),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
+                  child: Text(joinState.actionLabel),
+                ),
                 PlaydateJoinState.join => FilledButton(
-                    onPressed: () {
-                      final joined = ref
-                          .read(playdateProvider.notifier)
-                          .joinPlaydate(playdate.id, userId);
-                      if (joined && context.mounted) {
-                        MomoSuccessBanner.show(
-                          context,
-                          'Joined successfully!',
-                        );
-                      }
-                    },
-                    style: _primaryButtonStyle(),
-                    child: Text(joinState.actionLabel),
-                  ),
+                  onPressed: () {
+                    final joined = ref
+                        .read(playdateProvider.notifier)
+                        .joinPlaydate(playdate.id, userId);
+                    if (joined && context.mounted) {
+                      MomoSuccessBanner.show(context, 'Joined successfully!');
+                    }
+                  },
+                  style: _primaryButtonStyle(),
+                  child: Text(joinState.actionLabel),
+                ),
                 PlaydateJoinState.full => FilledButton(
-                    onPressed: null,
-                    style: _primaryButtonStyle(),
-                    child: Text(joinState.actionLabel),
-                  ),
+                  onPressed: null,
+                  style: _primaryButtonStyle(),
+                  child: Text(joinState.actionLabel),
+                ),
               },
             ],
           ),
@@ -168,8 +165,9 @@ class PlaydateJoinActionBar extends ConsumerWidget {
 
     if (confirmed != true || !context.mounted) return;
 
-    final cancelled =
-        ref.read(playdateProvider.notifier).cancelPlaydate(playdate.id, userId);
+    final cancelled = ref
+        .read(playdateProvider.notifier)
+        .cancelPlaydate(playdate.id, userId);
 
     if (cancelled && context.mounted) {
       MomoSuccessBanner.show(context, 'Playdate cancelled.');
@@ -184,9 +182,7 @@ class PlaydateJoinActionBar extends ConsumerWidget {
       disabledBackgroundColor: AppColors.border,
       disabledForegroundColor: AppColors.textSecondary,
       minimumSize: const Size.fromHeight(52),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     );
   }
 }

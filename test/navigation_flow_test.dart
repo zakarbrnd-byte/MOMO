@@ -22,10 +22,7 @@ void main() {
     addTearDown(container.dispose);
 
     await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: const MomoApp(),
-      ),
+      UncontrolledProviderScope(container: container, child: const MomoApp()),
     );
     await tester.pumpAndSettle();
     return container;
@@ -118,8 +115,9 @@ void main() {
     expect(find.text('MOMO'), findsOneWidget);
   });
 
-  testWidgets('Tab switch keeps bottom bar; re-tap Home closes detail',
-      (tester) async {
+  testWidgets('Tab switch keeps bottom bar; re-tap Home closes detail', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
 
     await openLa3(tester);
@@ -154,8 +152,9 @@ void main() {
     expect(find.text('Profile'), findsOneWidget);
   });
 
-  testWidgets('Groups tab badge shows joined count and hides at zero',
-      (tester) async {
+  testWidgets('Groups tab badge shows joined count and hides at zero', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
 
     // Seeded: LA3 + park → badge "2"

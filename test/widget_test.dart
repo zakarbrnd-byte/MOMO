@@ -5,11 +5,7 @@ import 'package:momo/app.dart';
 
 void main() {
   testWidgets('MOMO app shows Home tab', (tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MomoApp(),
-      ),
-    );
+    await tester.pumpWidget(const ProviderScope(child: MomoApp()));
     await tester.pumpAndSettle();
 
     expect(find.text('MOMO'), findsOneWidget);

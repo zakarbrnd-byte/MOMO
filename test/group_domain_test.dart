@@ -35,11 +35,7 @@ void main() {
     });
 
     test('GroupMember role defaults to member', () {
-      const member = GroupMember(
-        groupId: 'g1',
-        userId: 'u1',
-        userName: 'Ann',
-      );
+      const member = GroupMember(groupId: 'g1', userId: 'u1', userName: 'Ann');
       expect(member.role, GroupMemberRole.member);
       expect(
         member.copyWith(role: GroupMemberRole.owner).role,
@@ -66,10 +62,7 @@ void main() {
 
       expect(event.isCancelled, isFalse);
       expect(event.participantLimit, 8);
-      expect(
-        event.copyWith(status: EventStatus.cancelled).isCancelled,
-        isTrue,
-      );
+      expect(event.copyWith(status: EventStatus.cancelled).isCancelled, isTrue);
       expect(event.copyWith(participantLimit: null).participantLimit, isNull);
     });
 

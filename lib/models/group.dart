@@ -81,11 +81,7 @@ class Group {
 const _unset = Object();
 
 /// Membership role inside a [Group].
-enum GroupMemberRole {
-  owner,
-  admin,
-  member,
-}
+enum GroupMemberRole { owner, admin, member }
 
 /// Relationship between a user and a [Group].
 class GroupMember {
@@ -115,8 +111,9 @@ class GroupMember {
       userId: userId ?? this.userId,
       userName: userName ?? this.userName,
       role: role ?? this.role,
-      joinedAt:
-          identical(joinedAt, _unset) ? this.joinedAt : joinedAt as DateTime?,
+      joinedAt: identical(joinedAt, _unset)
+          ? this.joinedAt
+          : joinedAt as DateTime?,
     );
   }
 }

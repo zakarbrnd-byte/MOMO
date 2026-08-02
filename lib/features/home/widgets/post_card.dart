@@ -33,11 +33,8 @@ class PostCard extends StatelessWidget {
     return value.isEmpty ? 'Untitled post' : value;
   }
 
-  String get _authorMeta => RelativeTimeKo.authorWithTime(
-        post.authorName,
-        post.createdAt,
-        now: now,
-      );
+  String get _authorMeta =>
+      RelativeTimeKo.authorWithTime(post.authorName, post.createdAt, now: now);
 
   String get _semanticLabel {
     return '${post.category.labelKo} 게시글, $_title, 작성자 $_authorMeta';

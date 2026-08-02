@@ -57,11 +57,7 @@ class PostNotifier extends AsyncNotifier<List<Post>> {
     String? authorName,
   }) {
     final result = _readSync(
-      _repo.create(
-        title: title,
-        content: content,
-        authorName: authorName,
-      ),
+      _repo.create(title: title, content: content, authorName: authorName),
     );
     if (!_ok(result)) {
       throw Exception(result.errorOrNull ?? 'Could not create post.');
@@ -101,5 +97,6 @@ class PostNotifier extends AsyncNotifier<List<Post>> {
   }
 }
 
-final postProvider =
-    AsyncNotifierProvider<PostNotifier, List<Post>>(PostNotifier.new);
+final postProvider = AsyncNotifierProvider<PostNotifier, List<Post>>(
+  PostNotifier.new,
+);

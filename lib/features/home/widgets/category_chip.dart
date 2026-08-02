@@ -9,11 +9,7 @@ import '../../../models/post_category.dart';
 ///
 /// Display-only — no filter/tap behavior unless [onTap] is provided later.
 class CategoryChip extends StatelessWidget {
-  const CategoryChip({
-    super.key,
-    required this.category,
-    this.onTap,
-  });
+  const CategoryChip({super.key, required this.category, this.onTap});
 
   final PostCategory category;
   final VoidCallback? onTap;
@@ -23,15 +19,18 @@ class CategoryChip extends StatelessWidget {
     final label = category.labelKo;
 
     final chip = Container(
-      padding: AppSpacing.chipPadding,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs + 2,
+      ),
       decoration: BoxDecoration(
-        color: AppColors.primarySoft,
-        borderRadius: BorderRadius.circular(AppSpacing.sm),
+        color: AppColors.lightPink,
+        borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         label,
         style: AppTextStyles.caption.copyWith(
-          color: AppColors.primaryDark,
+          color: AppColors.primary,
           fontWeight: FontWeight.w600,
         ),
         maxLines: 1,
@@ -47,7 +46,7 @@ class CategoryChip extends StatelessWidget {
           ? chip
           : InkWell(
               onTap: onTap,
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
+              borderRadius: BorderRadius.circular(999),
               child: chip,
             ),
     );

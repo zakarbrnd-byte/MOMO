@@ -11,10 +11,7 @@ import 'package:momo/repositories/group_repository.dart';
 import 'package:momo/repositories/repository_providers.dart';
 
 class _DelayedGroupRepository implements GroupRepository {
-  _DelayedGroupRepository({
-    this.failJoin = false,
-    this.failLeave = false,
-  });
+  _DelayedGroupRepository({this.failJoin = false, this.failLeave = false});
 
   final Duration delay = const Duration(milliseconds: 40);
   final bool failJoin;
@@ -26,8 +23,9 @@ class _DelayedGroupRepository implements GroupRepository {
       if (member.userId == currentUserId) member.groupId,
   };
   final List<GroupMember> _members = List<GroupMember>.from(mockGroupMembers);
-  final List<EventAnnouncement> _events =
-      List<EventAnnouncement>.from(mockEvents);
+  final List<EventAnnouncement> _events = List<EventAnnouncement>.from(
+    mockEvents,
+  );
   final List<Rsvp> _rsvps = List<Rsvp>.from(mockRsvps);
 
   Future<T> _later<T>(T value) async {
@@ -73,11 +71,7 @@ class _DelayedGroupRepository implements GroupRepository {
     }
     _joined.add(groupId);
     _members.add(
-      GroupMember(
-        groupId: groupId,
-        userId: userId,
-        userName: userName,
-      ),
+      GroupMember(groupId: groupId, userId: userId, userName: userName),
     );
     final index = _groups.indexWhere((g) => g.id == groupId);
     if (index >= 0) {
@@ -98,9 +92,7 @@ class _DelayedGroupRepository implements GroupRepository {
       return const Failure('Not a member');
     }
     _joined.remove(groupId);
-    _members.removeWhere(
-      (m) => m.groupId == groupId && m.userId == userId,
-    );
+    _members.removeWhere((m) => m.groupId == groupId && m.userId == userId);
     final index = _groups.indexWhere((g) => g.id == groupId);
     if (index >= 0) {
       final group = _groups[index];
@@ -235,9 +227,7 @@ void main() {
   test('initial group load resolves asynchronously', () async {
     final repo = _DelayedGroupRepository();
     final container = ProviderContainer(
-      overrides: [
-        groupRepositoryProvider.overrideWithValue(repo),
-      ],
+      overrides: [groupRepositoryProvider.overrideWithValue(repo)],
     );
     addTearDown(container.dispose);
 
@@ -276,9 +266,7 @@ void main() {
   test('join waits for repository and invalidates membership', () async {
     final repo = _DelayedGroupRepository();
     final container = ProviderContainer(
-      overrides: [
-        groupRepositoryProvider.overrideWithValue(repo),
-      ],
+      overrides: [groupRepositoryProvider.overrideWithValue(repo)],
     );
     addTearDown(container.dispose);
 
@@ -288,8 +276,9 @@ void main() {
     final before = await container.read(currentUserGroupIdsProvider.future);
     expect(before.contains(groupOcWork.id), isFalse);
 
-    final joinFuture =
-        container.read(groupProvider.notifier).joinGroup(groupOcWork.id);
+    final joinFuture = container
+        .read(groupProvider.notifier)
+        .joinGroup(groupOcWork.id);
     expect(before.contains(groupOcWork.id), isFalse);
     await joinFuture;
 
@@ -300,9 +289,7 @@ void main() {
   test('join failure does not update membership', () async {
     final repo = _DelayedGroupRepository(failJoin: true);
     final container = ProviderContainer(
-      overrides: [
-        groupRepositoryProvider.overrideWithValue(repo),
-      ],
+      overrides: [groupRepositoryProvider.overrideWithValue(repo)],
     );
     addTearDown(container.dispose);
 
@@ -318,17 +305,16 @@ void main() {
   test('leave waits for repository; failure preserves membership', () async {
     final okRepo = _DelayedGroupRepository();
     final container = ProviderContainer(
-      overrides: [
-        groupRepositoryProvider.overrideWithValue(okRepo),
-      ],
+      overrides: [groupRepositoryProvider.overrideWithValue(okRepo)],
     );
     addTearDown(container.dispose);
 
     await container.read(groupProvider.future);
     await container.read(groupProvider.notifier).joinGroup(groupOcWork.id);
     expect(
-      (await container.read(currentUserGroupIdsProvider.future))
-          .contains(groupOcWork.id),
+      (await container.read(
+        currentUserGroupIdsProvider.future,
+      )).contains(groupOcWork.id),
       isTrue,
     );
 
@@ -343,8 +329,9 @@ void main() {
     await failContainer.read(groupProvider.future);
     // Seeded membership still present on fresh fail repo.
     expect(
-      (await failContainer.read(currentUserGroupIdsProvider.future))
-          .contains(groupLa3.id),
+      (await failContainer.read(
+        currentUserGroupIdsProvider.future,
+      )).contains(groupLa3.id),
       isTrue,
     );
     await expectLater(
@@ -352,8 +339,9 @@ void main() {
       throwsException,
     );
     expect(
-      (await failContainer.read(currentUserGroupIdsProvider.future))
-          .contains(groupLa3.id),
+      (await failContainer.read(
+        currentUserGroupIdsProvider.future,
+      )).contains(groupLa3.id),
       isTrue,
     );
   });
@@ -361,33 +349,33 @@ void main() {
   test('create group and create event refresh async providers', () async {
     final repo = _DelayedGroupRepository();
     final container = ProviderContainer(
-      overrides: [
-        groupRepositoryProvider.overrideWithValue(repo),
-      ],
+      overrides: [groupRepositoryProvider.overrideWithValue(repo)],
     );
     addTearDown(container.dispose);
 
     await container.read(groupProvider.future);
     final beforeCount = container.read(groupProvider).requireValue.length;
 
-    await container.read(groupProvider.notifier).createGroup(
+    await container
+        .read(groupProvider.notifier)
+        .createGroup(
           name: 'Async Moms',
           description: 'Created after delay',
           category: '육아',
           location: 'Seoul',
         );
 
+    expect(container.read(groupProvider).requireValue.length, beforeCount + 1);
     expect(
-      container.read(groupProvider).requireValue.length,
-      beforeCount + 1,
-    );
-    expect(
-      (await container.read(currentUserGroupIdsProvider.future))
-          .any((id) => id.startsWith('grp_delayed_')),
+      (await container.read(
+        currentUserGroupIdsProvider.future,
+      )).any((id) => id.startsWith('grp_delayed_')),
       isTrue,
     );
 
-    await container.read(groupProvider.notifier).createEvent(
+    await container
+        .read(groupProvider.notifier)
+        .createEvent(
           groupId: groupLa3.id,
           title: 'Delayed Event',
           description: 'After await',
@@ -395,27 +383,26 @@ void main() {
           location: 'Park',
         );
 
-    final events =
-        await container.read(groupEventsProvider(groupLa3.id).future);
+    final events = await container.read(
+      groupEventsProvider(groupLa3.id).future,
+    );
     expect(events.any((e) => e.title == 'Delayed Event'), isTrue);
   });
 
   test('rsvp refreshes event RSVP provider', () async {
     final repo = _DelayedGroupRepository();
     final container = ProviderContainer(
-      overrides: [
-        groupRepositoryProvider.overrideWithValue(repo),
-      ],
+      overrides: [groupRepositoryProvider.overrideWithValue(repo)],
     );
     addTearDown(container.dispose);
 
     await container.read(eventRsvpsProvider(eventLa3Library.id).future);
-    await container.read(groupProvider.notifier).setRsvp(
-          eventId: eventLa3Library.id,
-          status: RsvpStatus.attending,
-        );
-    final rsvps =
-        await container.read(eventRsvpsProvider(eventLa3Library.id).future);
+    await container
+        .read(groupProvider.notifier)
+        .setRsvp(eventId: eventLa3Library.id, status: RsvpStatus.attending);
+    final rsvps = await container.read(
+      eventRsvpsProvider(eventLa3Library.id).future,
+    );
     expect(
       rsvps.any(
         (r) => r.userId == currentUserId && r.status == RsvpStatus.attending,

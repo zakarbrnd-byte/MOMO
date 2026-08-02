@@ -54,7 +54,9 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
 
     final succeeded = await ref.read(createPostMutationProvider.notifier).run(
       () {
-        ref.read(postProvider.notifier).createPost(
+        ref
+            .read(postProvider.notifier)
+            .createPost(
               title: _titleController.text,
               content: _contentController.text,
             );
@@ -82,72 +84,72 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
       appBar: AppBar(title: const Text('Create Post')),
       body: switch (mutation) {
         AsyncOpLoading() => const MomoLoading(
-            title: 'Loading...',
-            message: 'Please wait.',
-          ),
+          title: 'Loading...',
+          message: 'Please wait.',
+        ),
         AsyncOpError(:final message) => MomoError(
-            title: 'Could not create post',
-            message: message,
-            onRetry: () => _post(fromRetry: true),
-          ),
+          title: 'Could not create post',
+          message: message,
+          onRetry: () => _post(fromRetry: true),
+        ),
         _ => Form(
-            key: _formKey,
-            autovalidateMode: _autoValidateMode,
-            child: MomoFormBody(
-              children: [
-                MomoTextField(
-                  controller: _titleController,
-                  focusNode: _titleFocus,
-                  label: 'Title',
-                  hint: 'What do you want to share?',
-                  enabled: fieldsEnabled,
-                  textInputAction: TextInputAction.next,
-                  maxLength: FormValidators.shortTitleMax,
-                  onFieldSubmitted: (_) => _contentFocus.requestFocus(),
-                  validator: FormValidators.combine([
-                    (value) => FormValidators.requiredTrimmed(
-                          value,
-                          FormValidators.titleRequired,
-                        ),
-                    (value) => FormValidators.maxLength(
-                          value,
-                          FormValidators.shortTitleMax,
-                          fieldLabel: 'Title',
-                        ),
-                  ]),
-                ),
-                MomoTextField(
-                  controller: _contentController,
-                  focusNode: _contentFocus,
-                  label: 'Content',
-                  hint: 'Write your post…',
-                  maxLines: 6,
-                  minLines: 4,
-                  maxLength: FormValidators.longTextMax,
-                  enabled: fieldsEnabled,
-                  textInputAction: TextInputAction.newline,
-                  validator: FormValidators.combine([
-                    (value) => FormValidators.requiredTrimmed(
-                          value,
-                          FormValidators.contentRequired,
-                        ),
-                    (value) => FormValidators.maxLength(
-                          value,
-                          FormValidators.longTextMax,
-                          fieldLabel: 'Content',
-                        ),
-                  ]),
-                ),
-                const MomoFormSubmitGap(),
-                MomoButton(
-                  label: 'Create Post',
-                  isLoading: isBusy,
-                  enabled: fieldsEnabled,
-                  onPressed: _post,
-                ),
-              ],
-            ),
+          key: _formKey,
+          autovalidateMode: _autoValidateMode,
+          child: MomoFormBody(
+            children: [
+              MomoTextField(
+                controller: _titleController,
+                focusNode: _titleFocus,
+                label: 'Title',
+                hint: 'What do you want to share?',
+                enabled: fieldsEnabled,
+                textInputAction: TextInputAction.next,
+                maxLength: FormValidators.shortTitleMax,
+                onFieldSubmitted: (_) => _contentFocus.requestFocus(),
+                validator: FormValidators.combine([
+                  (value) => FormValidators.requiredTrimmed(
+                    value,
+                    FormValidators.titleRequired,
+                  ),
+                  (value) => FormValidators.maxLength(
+                    value,
+                    FormValidators.shortTitleMax,
+                    fieldLabel: 'Title',
+                  ),
+                ]),
+              ),
+              MomoTextField(
+                controller: _contentController,
+                focusNode: _contentFocus,
+                label: 'Content',
+                hint: 'Write your post…',
+                maxLines: 6,
+                minLines: 4,
+                maxLength: FormValidators.longTextMax,
+                enabled: fieldsEnabled,
+                textInputAction: TextInputAction.newline,
+                validator: FormValidators.combine([
+                  (value) => FormValidators.requiredTrimmed(
+                    value,
+                    FormValidators.contentRequired,
+                  ),
+                  (value) => FormValidators.maxLength(
+                    value,
+                    FormValidators.longTextMax,
+                    fieldLabel: 'Content',
+                  ),
+                ]),
+              ),
+              const MomoFormSubmitGap(),
+              MomoButton(
+                label: 'Create Post',
+                isLoading: isBusy,
+                enabled: fieldsEnabled,
+                onPressed: _post,
+              ),
+            ],
           ),
+        ),
       },
     );
   }

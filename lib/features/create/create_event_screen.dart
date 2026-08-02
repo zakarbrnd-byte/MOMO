@@ -85,27 +85,27 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
       return;
     }
 
-    final ok =
-        await ref.read(createEventMutationProvider.notifier).run(() async {
-      await ref.read(groupProvider.notifier).createEvent(
-            groupId: widget.groupId,
-            title: title,
-            description: description,
-            dateTime: _dateTime,
-            location: location,
-            childAgeRange: _childAge.text.trim(),
-            participantLimit: limit,
-          );
-    });
+    final ok = await ref.read(createEventMutationProvider.notifier).run(
+      () async {
+        await ref
+            .read(groupProvider.notifier)
+            .createEvent(
+              groupId: widget.groupId,
+              title: title,
+              description: description,
+              dateTime: _dateTime,
+              location: location,
+              childAgeRange: _childAge.text.trim(),
+              participantLimit: limit,
+            );
+      },
+    );
 
     if (!mounted) return;
     if (ok) {
       Navigator.of(context).pop();
     } else {
-      MomoErrorBanner.show(
-        context,
-        '이벤트를 만들지 못했습니다. 다시 시도해주세요.',
-      );
+      MomoErrorBanner.show(context, '이벤트를 만들지 못했습니다. 다시 시도해주세요.');
     }
   }
 

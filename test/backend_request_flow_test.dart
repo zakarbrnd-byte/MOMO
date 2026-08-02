@@ -26,16 +26,16 @@ class _FakeEmptyPlaydateRepository implements PlaydateRepository {
     required String creatorId,
     String? hostName,
     int? maxParticipants,
-  }) async =>
-      const Success(true);
+  }) async => const Success(true);
 
   @override
   Future<Result<bool>> update(Playdate playdate) async => const Success(true);
 
   @override
   Future<Result<bool>> delete(
-          String playdateId, String requestingUserId) async =>
-      const Success(true);
+    String playdateId,
+    String requestingUserId,
+  ) async => const Success(true);
 
   @override
   Future<Result<bool>> join(String playdateId, String userId) async =>
@@ -56,10 +56,7 @@ void main() {
       expect(bad.isFailure, isTrue);
       expect(ok.dataOrNull, isTrue);
       expect(bad.errorOrNull, 'Nope');
-      expect(
-        ok.when(success: (_) => 'ok', failure: (_) => 'fail'),
-        'ok',
-      );
+      expect(ok.when(success: (_) => 'ok', failure: (_) => 'fail'), 'ok');
     });
   });
 
@@ -85,9 +82,7 @@ void main() {
 
     test('overridePlaydateRepository replaces implementation', () async {
       final container = ProviderContainer(
-        overrides: [
-          overridePlaydateRepository(_FakeEmptyPlaydateRepository()),
-        ],
+        overrides: [overridePlaydateRepository(_FakeEmptyPlaydateRepository())],
       );
       addTearDown(container.dispose);
 

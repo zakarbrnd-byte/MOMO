@@ -14,26 +14,52 @@ void main() {
     expect(theme.colorScheme.primary, AppColors.primary);
     expect(theme.colorScheme.secondary, AppColors.secondary);
     expect(theme.colorScheme.error, AppColors.error);
-    expect(theme.textTheme.headlineLarge?.fontSize,
-        AppTextStyles.headline.fontSize);
-    expect(theme.textTheme.headlineLarge?.fontWeight,
-        AppTextStyles.headline.fontWeight);
+    expect(
+      theme.textTheme.headlineLarge?.fontSize,
+      AppTextStyles.headline.fontSize,
+    );
+    expect(
+      theme.textTheme.headlineLarge?.fontWeight,
+      AppTextStyles.headline.fontWeight,
+    );
     expect(theme.textTheme.bodyLarge?.fontSize, AppTextStyles.body.fontSize);
     expect(theme.inputDecorationTheme.fillColor, AppColors.surface);
     expect(theme.cardTheme.color, AppColors.card);
+    expect(
+      theme.appBarTheme.titleTextStyle?.fontSize,
+      AppTextStyles.brandLogo.fontSize,
+    );
+    expect(theme.navigationBarTheme.indicatorColor, AppColors.lightPink);
+  });
+
+  test('AppColors expose modern friendly pink palette', () {
+    expect(AppColors.primary, const Color(0xFFFF4D6D));
+    expect(AppColors.lightPink, const Color(0xFFFFE7EA));
+    expect(AppColors.softBlush, const Color(0xFFFFF3F4));
+    expect(AppColors.background, const Color(0xFFFFF9F7));
+    expect(AppColors.card, const Color(0xFFFFFFFF));
+    expect(AppColors.border, const Color(0xFFF1E5E3));
+    expect(AppColors.textPrimary, const Color(0xFF1A1A1A));
+    expect(AppColors.textSecondary, const Color(0xFF6B7280));
+    expect(AppColors.primarySoft, AppColors.lightPink);
   });
 
   test('AppTextStyles exposes expected scale', () {
-    expect(AppTextStyles.displayLarge.fontSize, 36);
-    expect(AppTextStyles.headline.fontSize, 28);
-    expect(AppTextStyles.title.fontSize, 20);
+    expect(AppTextStyles.brandLogo.fontSize, 40);
+    expect(AppTextStyles.brandLogo.fontWeight, FontWeight.w800);
+    expect(AppTextStyles.displayLarge.fontSize, 40);
+    expect(AppTextStyles.heroTitle.fontSize, 30);
+    expect(AppTextStyles.headline.fontSize, 30);
+    expect(AppTextStyles.sectionTitle.fontSize, 24);
+    expect(AppTextStyles.title.fontSize, 24);
     expect(AppTextStyles.subtitle.fontSize, 16);
-    expect(AppTextStyles.cardTitle.fontSize, 16);
-    expect(AppTextStyles.cardTitle.fontWeight, FontWeight.w600);
-    expect(AppTextStyles.body.fontSize, 16);
+    expect(AppTextStyles.cardTitle.fontSize, 22);
+    expect(AppTextStyles.cardTitle.fontWeight, FontWeight.w700);
+    expect(AppTextStyles.body.fontSize, 15);
     expect(AppTextStyles.bodyMedium.fontWeight, FontWeight.w500);
     expect(AppTextStyles.bodySmall.fontSize, 14);
-    expect(AppTextStyles.caption.fontSize, 12);
+    expect(AppTextStyles.metadata.fontSize, 13);
+    expect(AppTextStyles.caption.fontSize, 13);
     expect(AppTextStyles.button.fontWeight, FontWeight.w600);
   });
 

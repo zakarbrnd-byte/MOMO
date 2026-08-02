@@ -4,11 +4,12 @@ Implemented in `lib/core/theme/`.
 
 ## Direction
 
-- Warm, minimal
-- Rounded cards with light borders
-- Large, readable typography
-- Primary accent: coral (`AppColors.primary`)
-- Background: soft warm off-white (`AppColors.background`)
+- Modern & Friendly pink
+- Rounded cards (radius 20) with soft borders + soft shadow
+- Large, energetic typography
+- Primary accent: pink `#FF4D6D` (`AppColors.primary`)
+- Background: warm cream `#FFF9F7` (`AppColors.background`)
+- Soft fills: light pink `#FFE7EA`, blush `#FFF3F4`
 
 ## UI rules
 

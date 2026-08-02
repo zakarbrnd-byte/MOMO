@@ -22,10 +22,7 @@ abstract class GroupRepository {
     required String userName,
   });
 
-  Future<Result<bool>> leave({
-    required String groupId,
-    required String userId,
-  });
+  Future<Result<bool>> leave({required String groupId, required String userId});
 
   Future<List<EventAnnouncement>> loadEvents(String groupId);
 

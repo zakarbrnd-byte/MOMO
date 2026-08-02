@@ -33,10 +33,7 @@ class DebugSession {
     };
   }
 
-  DebugSession copyWith({
-    AsyncOpState<void>? opState,
-    String? lastAction,
-  }) {
+  DebugSession copyWith({AsyncOpState<void>? opState, String? lastAction}) {
     return DebugSession(
       opState: opState ?? this.opState,
       lastAction: lastAction ?? this.lastAction,
@@ -120,5 +117,5 @@ class DebugSessionNotifier extends Notifier<DebugSession> {
 
 final debugSessionProvider =
     NotifierProvider<DebugSessionNotifier, DebugSession>(
-  DebugSessionNotifier.new,
-);
+      DebugSessionNotifier.new,
+    );

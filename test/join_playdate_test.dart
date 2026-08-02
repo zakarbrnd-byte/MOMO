@@ -35,17 +35,16 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(
-          home: PlaydateDetailScreen(playdate: playdate),
-        ),
+        child: MaterialApp(home: PlaydateDetailScreen(playdate: playdate)),
       ),
     );
     await tester.pumpAndSettle();
     return (container: container, playdate: playdate);
   }
 
-  testWidgets('Join button visible when current user has not joined',
-      (tester) async {
+  testWidgets('Join button visible when current user has not joined', (
+    tester,
+  ) async {
     await pumpDetail(tester, 'pd1');
 
     expect(find.text('Join Playdate'), findsOneWidget);
@@ -71,8 +70,9 @@ void main() {
     expect(playdate.currentParticipants, 3);
     expect(playdate.isJoinedBy(currentUser.id), isTrue);
 
-    ScaffoldMessenger.of(tester.element(find.byType(Scaffold).first))
-        .clearSnackBars();
+    ScaffoldMessenger.of(
+      tester.element(find.byType(Scaffold).first),
+    ).clearSnackBars();
     await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(OutlinedButton, 'Leave Playdate'));
@@ -111,8 +111,9 @@ void main() {
     );
   });
 
-  testWidgets('Full playdate disables join for non-participant',
-      (tester) async {
+  testWidgets('Full playdate disables join for non-participant', (
+    tester,
+  ) async {
     await pumpDetail(tester, 'pd3');
 
     expect(find.text('5 / 5 joined'), findsWidgets);
@@ -125,8 +126,9 @@ void main() {
     expect(button.onPressed, isNull);
   });
 
-  testWidgets('Leave remains available when user fills the last spot',
-      (tester) async {
+  testWidgets('Leave remains available when user fills the last spot', (
+    tester,
+  ) async {
     final result = await pumpDetail(tester, 'pd4');
     final container = result.container;
 
@@ -145,8 +147,9 @@ void main() {
     expect(playdate.isFull, isTrue);
     expect(playdate.isJoinedBy(currentUser.id), isTrue);
 
-    ScaffoldMessenger.of(tester.element(find.byType(Scaffold).first))
-        .clearSnackBars();
+    ScaffoldMessenger.of(
+      tester.element(find.byType(Scaffold).first),
+    ).clearSnackBars();
     await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(OutlinedButton, 'Leave Playdate'));

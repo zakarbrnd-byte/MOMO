@@ -31,11 +31,7 @@ class MomoError extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: AppSpacing.xxxl,
-              color: AppColors.error,
-            ),
+            Icon(icon, size: AppSpacing.xxxl, color: AppColors.error),
             const SizedBox(height: AppSpacing.lg),
             Text(
               title,
@@ -51,10 +47,7 @@ class MomoError extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),
-            MomoButton(
-              label: retryLabel,
-              onPressed: onRetry,
-            ),
+            MomoButton(label: retryLabel, onPressed: onRetry),
           ],
         ),
       ),

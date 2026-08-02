@@ -16,8 +16,8 @@ class InstantSimulatedBackend extends SimulatedBackendNotifier {
 
 /// Default overrides so create flows stay fast in tests.
 List<Override> get testBackendOverrides => [
-      simulatedBackendProvider.overrideWith(InstantSimulatedBackend.new),
-    ];
+  simulatedBackendProvider.overrideWith(InstantSimulatedBackend.new),
+];
 
 /// Override the playdate repository (fake / stub for unit or widget tests).
 Override overridePlaydateRepository(PlaydateRepository repository) {

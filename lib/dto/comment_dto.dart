@@ -28,7 +28,8 @@ class CommentDto {
       authorId: JsonConverters.stringFromJson(json['authorId']),
       authorName: JsonConverters.stringFromJson(json['authorName']),
       body: JsonConverters.stringFromJson(json['body']),
-      createdAt: JsonConverters.dateTimeFromJson(json['createdAt']) ??
+      createdAt:
+          JsonConverters.dateTimeFromJson(json['createdAt']) ??
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
       parentCommentId: JsonConverters.nullableStringFromJson(
         json['parentCommentId'],

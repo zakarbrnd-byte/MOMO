@@ -35,9 +35,7 @@ class MutationNotifier extends AutoDisposeNotifier<AsyncOpState<void>> {
   }
 
   /// Same lifecycle as [run], mapping [Result.failure] → [AsyncOpError].
-  Future<bool> runResult(
-    FutureOr<Result<bool>> Function() action,
-  ) async {
+  Future<bool> runResult(FutureOr<Result<bool>> Function() action) async {
     if (isBusy) return false;
 
     state = const AsyncOpLoading();
@@ -89,47 +87,47 @@ class MutationNotifier extends AutoDisposeNotifier<AsyncOpState<void>> {
 /// Create-playdate mutation lifecycle (legacy — retired from Create hub).
 final createPlaydateMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
-  MutationNotifier.new,
-);
+      MutationNotifier.new,
+    );
 
 /// Create-post mutation lifecycle.
 final createPostMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
-  MutationNotifier.new,
-);
+      MutationNotifier.new,
+    );
 
 /// Create-group mutation lifecycle.
 final createGroupMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
-  MutationNotifier.new,
-);
+      MutationNotifier.new,
+    );
 
 /// Create-event mutation lifecycle.
 final createEventMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
-  MutationNotifier.new,
-);
+      MutationNotifier.new,
+    );
 
 /// Join-group mutation lifecycle.
 final joinGroupMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
-  MutationNotifier.new,
-);
+      MutationNotifier.new,
+    );
 
 /// Leave-group mutation lifecycle.
 final leaveGroupMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
-  MutationNotifier.new,
-);
+      MutationNotifier.new,
+    );
 
 /// RSVP mutation lifecycle.
 final rsvpMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
-  MutationNotifier.new,
-);
+      MutationNotifier.new,
+    );
 
 /// Legacy playdate participation mutation (dormant Playdate UI).
 final playdateParticipationMutationProvider =
     NotifierProvider.autoDispose<MutationNotifier, AsyncOpState<void>>(
-  MutationNotifier.new,
-);
+      MutationNotifier.new,
+    );

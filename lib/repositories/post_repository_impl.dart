@@ -13,18 +13,14 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<List<Post>> load() {
     return _dataSource.getPosts().then((items) {
-      return [
-        for (final item in items) PostDto.fromDomain(item).toDomain(),
-      ];
+      return [for (final item in items) PostDto.fromDomain(item).toDomain()];
     });
   }
 
   @override
   Future<List<Post>> loadByGroup(String groupId) {
     return _dataSource.getPostsByGroup(groupId).then((items) {
-      return [
-        for (final item in items) PostDto.fromDomain(item).toDomain(),
-      ];
+      return [for (final item in items) PostDto.fromDomain(item).toDomain()];
     });
   }
 
@@ -35,11 +31,7 @@ class PostRepositoryImpl implements PostRepository {
     String? authorName,
   }) {
     return _dataSource
-        .createPost(
-          title: title,
-          content: content,
-          authorName: authorName,
-        )
+        .createPost(title: title, content: content, authorName: authorName)
         .then((_) => const Success(true));
   }
 

@@ -3,11 +3,7 @@ import 'json_converters.dart';
 
 /// Wire format for [Child]. Nested under [UserDto].
 class ChildDto {
-  const ChildDto({
-    this.id,
-    this.displayName,
-    this.ageLabel,
-  });
+  const ChildDto({this.id, this.displayName, this.ageLabel});
 
   final String? id;
   final String? displayName;
@@ -30,11 +26,7 @@ class ChildDto {
   }
 
   Child toDomain() {
-    return Child(
-      id: id,
-      displayName: displayName,
-      ageLabel: ageLabel,
-    );
+    return Child(id: id, displayName: displayName, ageLabel: ageLabel);
   }
 
   factory ChildDto.fromDomain(Child child) {

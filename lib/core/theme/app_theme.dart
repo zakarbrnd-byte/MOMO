@@ -32,11 +32,12 @@ abstract final class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: AppTextStyles.headline,
+        titleTextStyle: AppTextStyles.brandLogo,
       ),
       cardTheme: CardThemeData(
         color: AppColors.card,
-        elevation: 0,
+        elevation: 1,
+        shadowColor: AppColors.cardShadow,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
           side: const BorderSide(color: AppColors.border),
@@ -50,7 +51,13 @@ abstract final class AppTheme {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.surface,
-        indicatorColor: AppColors.primarySoft,
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: AppColors.lightPink,
+        indicatorShape: const CircleBorder(
+          side: BorderSide(color: AppColors.border),
+        ),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return AppTextStyles.caption.copyWith(
@@ -149,9 +156,7 @@ abstract final class AppTheme {
           color: AppColors.onPrimary,
         ),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

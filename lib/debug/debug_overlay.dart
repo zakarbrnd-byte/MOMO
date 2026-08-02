@@ -33,10 +33,7 @@ class DebugOverlay extends ConsumerWidget {
           const Positioned.fill(
             child: Material(
               color: AppColors.background,
-              child: MomoLoading(
-                title: 'Loading...',
-                message: 'Please wait.',
-              ),
+              child: MomoLoading(title: 'Loading...', message: 'Please wait.'),
             ),
           ),
         if (session.opState case AsyncOpError(:final message))

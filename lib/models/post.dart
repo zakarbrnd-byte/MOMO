@@ -90,11 +90,13 @@ class Post {
       title: title ?? this.title,
       content: content ?? this.content,
       authorName: authorName ?? this.authorName,
-      creatorId:
-          identical(creatorId, _unset) ? this.creatorId : creatorId as String?,
+      creatorId: identical(creatorId, _unset)
+          ? this.creatorId
+          : creatorId as String?,
       groupId: identical(groupId, _unset) ? this.groupId : groupId as String?,
-      groupName:
-          identical(groupName, _unset) ? this.groupName : groupName as String?,
+      groupName: identical(groupName, _unset)
+          ? this.groupName
+          : groupName as String?,
       category: category ?? this.category,
       viewCount: viewCount ?? this.viewCount,
       commentCount: commentCount ?? this.commentCount,

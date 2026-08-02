@@ -16,17 +16,15 @@ void main() {
       home: MediaQuery(
         data: MediaQueryData(size: size),
         child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(24),
-            child: child,
-          ),
+          body: Padding(padding: const EdgeInsets.all(24), child: child),
         ),
       ),
     );
   }
 
-  testWidgets('places badge left and author/time right on one row',
-      (tester) async {
+  testWidgets('places badge left and author/time right on one row', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrap(
         CardHeader(
@@ -52,8 +50,9 @@ void main() {
     expect(authorLeft, greaterThan(badgeRight));
   });
 
-  testWidgets('narrow width keeps badge and timestamp without overflow',
-      (tester) async {
+  testWidgets('narrow width keeps badge and timestamp without overflow', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       wrap(
         SizedBox(

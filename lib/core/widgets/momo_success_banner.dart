@@ -21,10 +21,11 @@ abstract final class MomoSuccessBanner {
     VoidCallback? onAction,
   }) {
     final scaffoldMessenger = messenger ?? ScaffoldMessenger.of(context);
-    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: AppColors.onPrimary,
-        );
-    final hasAction = actionLabel != null &&
+    final textStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(color: AppColors.onPrimary);
+    final hasAction =
+        actionLabel != null &&
         actionLabel.trim().isNotEmpty &&
         onAction != null;
 
@@ -40,9 +41,7 @@ abstract final class MomoSuccessBanner {
                 size: 22,
               ),
               const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Text(message, style: textStyle),
-              ),
+              Expanded(child: Text(message, style: textStyle)),
             ],
           ),
           action: hasAction

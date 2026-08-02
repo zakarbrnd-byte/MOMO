@@ -186,15 +186,7 @@ abstract final class GroupDiscoveryService {
   }
 
   static Set<String> _significantLocationTokens(String value) {
-    const stop = {
-      'los',
-      'angeles',
-      'orange',
-      'county',
-      'and',
-      'the',
-      '/',
-    };
+    const stop = {'los', 'angeles', 'orange', 'county', 'and', 'the', '/'};
     return {
       for (final part in value.toLowerCase().split(RegExp(r'[,/]')))
         for (final word in part.trim().split(RegExp(r'\s+')))
@@ -212,8 +204,9 @@ abstract final class GroupDiscoveryService {
     if (childAges.isEmpty || group.childAgeRanges.isEmpty) return false;
 
     for (final childAge in childAges) {
-      final ageNum =
-          int.tryParse(RegExp(r'\d+').firstMatch(childAge)?.group(0) ?? '');
+      final ageNum = int.tryParse(
+        RegExp(r'\d+').firstMatch(childAge)?.group(0) ?? '',
+      );
       for (final range in group.childAgeRanges) {
         if (_ageLabelMatchesRange(childAge, range, ageNum)) return true;
       }
@@ -299,11 +292,7 @@ abstract final class GroupDiscoveryService {
       score -= joinedPenalty;
     }
 
-    return GroupRecommendation(
-      group: group,
-      score: score,
-      reasons: reasons,
-    );
+    return GroupRecommendation(group: group, score: score, reasons: reasons);
   }
 
   static int compareRecommendations(
@@ -342,7 +331,8 @@ abstract final class GroupDiscoveryService {
 
   /// Catalog order: featured → member count desc → name.
   static List<Group> sortAllGroups(List<Group> groups) {
-    final sorted = [...groups]..sort((a, b) {
+    final sorted = [...groups]
+      ..sort((a, b) {
         if (a.isFeatured != b.isFeatured) {
           return a.isFeatured ? -1 : 1;
         }

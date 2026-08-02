@@ -20,9 +20,7 @@ void main() {
       theme: AppTheme.light,
       home: MediaQuery(
         data: MediaQueryData(size: size),
-        child: Scaffold(
-          body: SingleChildScrollView(child: child),
-        ),
+        child: Scaffold(body: SingleChildScrollView(child: child)),
       ),
     );
   }
@@ -56,13 +54,7 @@ void main() {
   group('EngagementRow', () {
     testWidgets('displays all three counts including zeros', (tester) async {
       await tester.pumpWidget(
-        wrap(
-          const EngagementRow(
-            viewCount: 0,
-            commentCount: 0,
-            likeCount: 0,
-          ),
-        ),
+        wrap(const EngagementRow(viewCount: 0, commentCount: 0, likeCount: 0)),
       );
 
       expect(find.text('0'), findsNWidgets(3));
@@ -74,8 +66,9 @@ void main() {
       expect(find.bySemanticsLabel('좋아요 0개'), findsOneWidget);
     });
 
-    testWidgets('supports larger values with semantics and no taps',
-        (tester) async {
+    testWidgets('supports larger values with semantics and no taps', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(
           const SizedBox(
@@ -103,9 +96,7 @@ void main() {
 
   group('AuthorSummary', () {
     testWidgets('displays author name with initials fallback', (tester) async {
-      await tester.pumpWidget(
-        wrap(const AuthorSummary(displayName: '최유나')),
-      );
+      await tester.pumpWidget(wrap(const AuthorSummary(displayName: '최유나')));
 
       expect(find.text('최유나'), findsOneWidget);
       expect(find.text('최'), findsOneWidget);
@@ -129,8 +120,9 @@ void main() {
       expect(find.byType(Image), findsNothing);
     });
 
-    testWidgets('ignores invalid avatar URL and ellipsizes long names',
-        (tester) async {
+    testWidgets('ignores invalid avatar URL and ellipsizes long names', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(
           const SizedBox(
@@ -175,62 +167,56 @@ void main() {
     );
 
     testWidgets(
-        'renders hierarchy: header (badge+author), title, preview, metrics',
-        (tester) async {
-      await tester.pumpWidget(
-        wrap(PostCard(post: sample, onTap: () {})),
-      );
+      'renders hierarchy: header (badge+author), title, preview, metrics',
+      (tester) async {
+        await tester.pumpWidget(wrap(PostCard(post: sample, onTap: () {})));
 
-      expect(find.byType(CategoryChip), findsOneWidget);
-      expect(find.byType(CardHeader), findsOneWidget);
-      expect(find.byType(CardAuthorMetadata), findsOneWidget);
-      expect(find.text('지역정보'), findsOneWidget);
-      expect(find.text('테스트 게시글 제목'), findsOneWidget);
-      expect(find.textContaining('본문 미리보기'), findsOneWidget);
-      expect(find.text('박민지'), findsOneWidget);
-      expect(find.text('187'), findsOneWidget);
-      expect(find.text('14'), findsOneWidget);
-      expect(find.text('31'), findsOneWidget);
-      expect(find.byType(AuthorSummary), findsNothing);
-      expect(find.byType(EngagementRow), findsOneWidget);
+        expect(find.byType(CategoryChip), findsOneWidget);
+        expect(find.byType(CardHeader), findsOneWidget);
+        expect(find.byType(CardAuthorMetadata), findsOneWidget);
+        expect(find.text('지역정보'), findsOneWidget);
+        expect(find.text('테스트 게시글 제목'), findsOneWidget);
+        expect(find.textContaining('본문 미리보기'), findsOneWidget);
+        expect(find.text('박민지'), findsOneWidget);
+        expect(find.text('187'), findsOneWidget);
+        expect(find.text('14'), findsOneWidget);
+        expect(find.text('31'), findsOneWidget);
+        expect(find.byType(AuthorSummary), findsNothing);
+        expect(find.byType(EngagementRow), findsOneWidget);
 
-      final categoryY = tester.getTopLeft(find.text('지역정보')).dy;
-      final authorY = tester.getTopLeft(find.text('박민지')).dy;
-      final titleY = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
-      final engagementY = tester.getTopLeft(find.byType(EngagementRow)).dy;
+        final categoryY = tester.getTopLeft(find.text('지역정보')).dy;
+        final authorY = tester.getTopLeft(find.text('박민지')).dy;
+        final titleY = tester.getTopLeft(find.text('테스트 게시글 제목')).dy;
+        final engagementY = tester.getTopLeft(find.byType(EngagementRow)).dy;
 
-      // Badge and author share the header row; title is below.
-      expect((authorY - categoryY).abs(), lessThan(8));
-      expect(categoryY, lessThan(titleY));
-      expect(titleY, lessThan(engagementY));
+        // Badge and author share the header row; title is below.
+        expect((authorY - categoryY).abs(), lessThan(8));
+        expect(categoryY, lessThan(titleY));
+        expect(titleY, lessThan(engagementY));
 
-      final authorRight = tester.getBottomRight(find.text('박민지')).dx;
-      final categoryLeft = tester.getTopLeft(find.text('지역정보')).dx;
-      expect(authorRight, greaterThan(categoryLeft));
+        final authorRight = tester.getBottomRight(find.text('박민지')).dx;
+        final categoryLeft = tester.getTopLeft(find.text('지역정보')).dx;
+        expect(authorRight, greaterThan(categoryLeft));
 
-      final title = tester.widget<Text>(find.text('테스트 게시글 제목'));
-      expect(title.style?.fontSize, AppTextStyles.cardTitle.fontSize);
+        final title = tester.widget<Text>(find.text('테스트 게시글 제목'));
+        expect(title.style?.fontSize, AppTextStyles.cardTitle.fontSize);
 
-      final preview = tester.widget<Text>(
-        find.descendant(
-          of: find.byType(PostCard),
-          matching: find.textContaining('본문 미리보기'),
-        ),
-      );
-      expect(preview.maxLines, 1);
-      expect(preview.overflow, TextOverflow.ellipsis);
-    });
-
-    testWidgets('shows author · relative time when createdAt is set',
-        (tester) async {
-      await tester.pumpWidget(
-        wrap(
-          PostCard(
-            post: sampleWithTime,
-            onTap: () {},
-            now: clock,
+        final preview = tester.widget<Text>(
+          find.descendant(
+            of: find.byType(PostCard),
+            matching: find.textContaining('본문 미리보기'),
           ),
-        ),
+        );
+        expect(preview.maxLines, 1);
+        expect(preview.overflow, TextOverflow.ellipsis);
+      },
+    );
+
+    testWidgets('shows author · relative time when createdAt is set', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(PostCard(post: sampleWithTime, onTap: () {}, now: clock)),
       );
 
       expect(find.text('최유나'), findsOneWidget);
@@ -255,8 +241,9 @@ void main() {
       expect(find.textContaining('·'), findsNothing);
     });
 
-    testWidgets('long author + time does not overflow narrow width',
-        (tester) async {
+    testWidgets('long author + time does not overflow narrow width', (
+      tester,
+    ) async {
       final longPost = Post(
         id: 'po_long_author',
         title: '제목',
@@ -269,11 +256,7 @@ void main() {
         wrap(
           SizedBox(
             width: 320,
-            child: PostCard(
-              post: longPost,
-              onTap: () {},
-              now: clock,
-            ),
+            child: PostCard(post: longPost, onTap: () {}, now: clock),
           ),
           size: const Size(320, 600),
         ),
@@ -285,16 +268,12 @@ void main() {
       expect(find.text(' · 5시간 전'), findsOneWidget);
     });
 
-    testWidgets('full card tap works; nested rows do not block',
-        (tester) async {
+    testWidgets('full card tap works; nested rows do not block', (
+      tester,
+    ) async {
       var taps = 0;
       await tester.pumpWidget(
-        wrap(
-          PostCard(
-            post: sample,
-            onTap: () => taps += 1,
-          ),
-        ),
+        wrap(PostCard(post: sample, onTap: () => taps += 1)),
       );
 
       await tester.tap(find.text('지역정보'));
@@ -311,9 +290,7 @@ void main() {
     });
 
     testWidgets('exposes compact card semantics', (tester) async {
-      await tester.pumpWidget(
-        wrap(PostCard(post: sample, onTap: () {})),
-      );
+      await tester.pumpWidget(wrap(PostCard(post: sample, onTap: () {})));
 
       expect(
         find.bySemanticsLabel('지역정보 게시글, 테스트 게시글 제목, 작성자 박민지'),
@@ -321,8 +298,9 @@ void main() {
       );
     });
 
-    testWidgets('handles zero and large engagement without overflow',
-        (tester) async {
+    testWidgets('handles zero and large engagement without overflow', (
+      tester,
+    ) async {
       const zeroPost = Post(
         id: 'po_zero',
         title: '제로 참여 게시글',
@@ -366,8 +344,9 @@ void main() {
       expect(find.textContaining('아주아주'), findsOneWidget);
     });
 
-    testWidgets('long Korean title and content fit narrow width',
-        (tester) async {
+    testWidgets('long Korean title and content fit narrow width', (
+      tester,
+    ) async {
       const longPost = Post(
         id: 'po_long',
         title: '한인타운 근처에서 아이랑 같이 갈 만한 그늘 많고 안전한 놀이터 추천 부탁드려요',
@@ -412,11 +391,7 @@ void main() {
 
       final homePost = mockGlobalPosts.first;
 
-      await tester.pumpWidget(
-        const ProviderScope(
-          child: MomoApp(),
-        ),
-      );
+      await tester.pumpWidget(const ProviderScope(child: MomoApp()));
       await tester.pumpAndSettle();
 
       await tester.scrollUntilVisible(

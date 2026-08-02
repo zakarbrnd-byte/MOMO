@@ -150,10 +150,7 @@ class _InfoRow extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            flex: 3,
-            child: Text(value, style: textTheme.titleMedium),
-          ),
+          Expanded(flex: 3, child: Text(value, style: textTheme.titleMedium)),
         ],
       ),
     );

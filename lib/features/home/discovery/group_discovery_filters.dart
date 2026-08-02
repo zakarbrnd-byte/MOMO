@@ -1,9 +1,5 @@
 /// Membership facet for Group discovery filters.
-enum GroupMembershipFilter {
-  all,
-  joined,
-  notJoined,
-}
+enum GroupMembershipFilter { all, joined, notJoined }
 
 /// Immutable discovery filter state (no UI / BuildContext).
 class GroupDiscoveryFilters {
@@ -32,7 +28,8 @@ class GroupDiscoveryFilters {
 
   /// Count of active filter facets (membership counts as 1 when not [all]).
   int get activeCount {
-    var count = locations.length +
+    var count =
+        locations.length +
         ageRanges.length +
         interests.length +
         categories.length;
@@ -88,12 +85,12 @@ class GroupDiscoveryFilters {
 
   @override
   int get hashCode => Object.hash(
-        Object.hashAllUnordered(locations),
-        Object.hashAllUnordered(ageRanges),
-        Object.hashAllUnordered(interests),
-        Object.hashAllUnordered(categories),
-        membership,
-      );
+    Object.hashAllUnordered(locations),
+    Object.hashAllUnordered(ageRanges),
+    Object.hashAllUnordered(interests),
+    Object.hashAllUnordered(categories),
+    membership,
+  );
 }
 
 bool _setEquals(Set<String> a, Set<String> b) {

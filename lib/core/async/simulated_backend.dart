@@ -16,10 +16,7 @@ class SimulatedBackendConfig {
   /// When true, the next [MutationNotifier.run] fails once, then clears.
   final bool failNext;
 
-  SimulatedBackendConfig copyWith({
-    Duration? delay,
-    bool? failNext,
-  }) {
+  SimulatedBackendConfig copyWith({Duration? delay, bool? failNext}) {
     return SimulatedBackendConfig(
       delay: delay ?? this.delay,
       failNext: failNext ?? this.failNext,
@@ -52,5 +49,5 @@ class SimulatedBackendNotifier extends Notifier<SimulatedBackendConfig> {
 
 final simulatedBackendProvider =
     NotifierProvider<SimulatedBackendNotifier, SimulatedBackendConfig>(
-  SimulatedBackendNotifier.new,
-);
+      SimulatedBackendNotifier.new,
+    );

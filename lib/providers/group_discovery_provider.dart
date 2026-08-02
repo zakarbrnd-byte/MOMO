@@ -47,15 +47,16 @@ class GroupDiscoveryFiltersNotifier extends Notifier<GroupDiscoveryFilters> {
 
 final groupDiscoveryFiltersProvider =
     NotifierProvider<GroupDiscoveryFiltersNotifier, GroupDiscoveryFilters>(
-  GroupDiscoveryFiltersNotifier.new,
-);
+      GroupDiscoveryFiltersNotifier.new,
+    );
 
 /// Filter chip options derived from the loaded Group catalog.
-final groupFilterOptionsProvider =
-    Provider<AsyncValue<GroupFilterOptions>>((ref) {
-  return ref.watch(groupProvider).whenData(
-        GroupDiscoveryService.extractFilterOptions,
-      );
+final groupFilterOptionsProvider = Provider<AsyncValue<GroupFilterOptions>>((
+  ref,
+) {
+  return ref
+      .watch(groupProvider)
+      .whenData(GroupDiscoveryService.extractFilterOptions);
 });
 
 /// Groups after search + filters (async-safe combine of Group + membership).
@@ -136,10 +137,12 @@ final homeDiscoveryProvider = Provider<AsyncValue<HomeDiscoveryView>>((ref) {
 
 /// Global community posts for the secondary Home section (not search targets).
 final homeCommunityPostsProvider = Provider<AsyncValue<List<Post>>>((ref) {
-  return ref.watch(postProvider).whenData(
+  return ref
+      .watch(postProvider)
+      .whenData(
         (posts) => [
           for (final post in posts)
-            if (post.isGlobal) post
+            if (post.isGlobal) post,
         ],
       );
 });

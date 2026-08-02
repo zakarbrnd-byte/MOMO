@@ -126,8 +126,9 @@ class GroupNotifier extends AsyncNotifier<List<Group>> {
   }
 }
 
-final groupProvider =
-    AsyncNotifierProvider<GroupNotifier, List<Group>>(GroupNotifier.new);
+final groupProvider = AsyncNotifierProvider<GroupNotifier, List<Group>>(
+  GroupNotifier.new,
+);
 
 /// Joined group ids for the current user (async source of truth).
 final currentUserGroupIdsProvider = FutureProvider<Set<String>>((ref) async {
@@ -137,8 +138,10 @@ final currentUserGroupIdsProvider = FutureProvider<Set<String>>((ref) async {
 });
 
 /// Single group by id. Prefers the loaded group list when available.
-final groupByIdProvider =
-    FutureProvider.family<Group?, String>((ref, groupId) async {
+final groupByIdProvider = FutureProvider.family<Group?, String>((
+  ref,
+  groupId,
+) async {
   final groupsAsync = ref.watch(groupProvider);
   final groups = groupsAsync.valueOrNull;
   if (groups != null) {
@@ -156,31 +159,43 @@ final groupByIdProvider =
   return ref.watch(groupRepositoryProvider).getById(groupId);
 });
 
-final groupMembersProvider =
-    FutureProvider.family<List<GroupMember>, String>((ref, groupId) async {
+final groupMembersProvider = FutureProvider.family<List<GroupMember>, String>((
+  ref,
+  groupId,
+) async {
   return ref.watch(groupRepositoryProvider).loadMembers(groupId);
 });
 
 final groupEventsProvider =
-    FutureProvider.family<List<EventAnnouncement>, String>(
-        (ref, groupId) async {
-  return ref.watch(groupRepositoryProvider).loadEvents(groupId);
-});
+    FutureProvider.family<List<EventAnnouncement>, String>((
+      ref,
+      groupId,
+    ) async {
+      return ref.watch(groupRepositoryProvider).loadEvents(groupId);
+    });
 
-final eventByIdProvider =
-    FutureProvider.family<EventAnnouncement?, String>((ref, eventId) async {
+final eventByIdProvider = FutureProvider.family<EventAnnouncement?, String>((
+  ref,
+  eventId,
+) async {
   return ref.watch(groupRepositoryProvider).getEventById(eventId);
 });
 
-final eventRsvpsProvider =
-    FutureProvider.family<List<Rsvp>, String>((ref, eventId) async {
+final eventRsvpsProvider = FutureProvider.family<List<Rsvp>, String>((
+  ref,
+  eventId,
+) async {
   return ref.watch(groupRepositoryProvider).loadRsvps(eventId);
 });
 
 /// Group-scoped posts derived from [postProvider] (no sync repository bridge).
-final groupPostsProvider =
-    Provider.family<AsyncValue<List<Post>>, String>((ref, groupId) {
-  return ref.watch(postProvider).whenData(
+final groupPostsProvider = Provider.family<AsyncValue<List<Post>>, String>((
+  ref,
+  groupId,
+) {
+  return ref
+      .watch(postProvider)
+      .whenData(
         (posts) => [
           for (final post in posts)
             if (post.groupId == groupId) post,

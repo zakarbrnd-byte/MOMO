@@ -32,22 +32,23 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(
-          home: PlaydateDetailScreen(playdate: playdate),
-        ),
+        child: MaterialApp(home: PlaydateDetailScreen(playdate: playdate)),
       ),
     );
     await tester.pumpAndSettle();
     return container;
   }
 
-  testWidgets('Create unlimited playdate shows 0 joined for owner',
-      (tester) async {
+  testWidgets('Create unlimited playdate shows 0 joined for owner', (
+    tester,
+  ) async {
     final container = ProviderContainer(overrides: testBackendOverrides);
     addTearDown(container.dispose);
     await container.read(playdateProvider.future);
 
-    container.read(playdateProvider.notifier).createPlaydate(
+    container
+        .read(playdateProvider.notifier)
+        .createPlaydate(
           title: 'Unlimited Park Day',
           date: 'Sat',
           time: '',
@@ -72,9 +73,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(
-          home: PlaydateDetailScreen(playdate: created),
-        ),
+        child: MaterialApp(home: PlaydateDetailScreen(playdate: created)),
       ),
     );
     await tester.pumpAndSettle();
@@ -90,7 +89,9 @@ void main() {
     addTearDown(container.dispose);
     await container.read(playdateProvider.future);
 
-    container.read(playdateProvider.notifier).createPlaydate(
+    container
+        .read(playdateProvider.notifier)
+        .createPlaydate(
           title: 'Limited Park Day',
           date: 'Sat',
           time: '',
@@ -115,9 +116,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(
-          home: PlaydateDetailScreen(playdate: created),
-        ),
+        child: MaterialApp(home: PlaydateDetailScreen(playdate: created)),
       ),
     );
     await tester.pumpAndSettle();
@@ -153,24 +152,26 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
     expect(
-        find.text('Please enter a valid participant limit.'), findsOneWidget);
+      find.text('Please enter a valid participant limit.'),
+      findsOneWidget,
+    );
 
     await tester.enterText(capacity, '');
     final field = tester.widget<TextFormField>(
-      find.descendant(
-        of: capacity,
-        matching: find.byType(TextFormField),
-      ),
+      find.descendant(of: capacity, matching: find.byType(TextFormField)),
     );
     field.controller!.text = 'abc';
     await tester.tap(find.widgetWithText(FilledButton, 'Create Playdate'));
     await tester.pumpAndSettle();
     expect(
-        find.text('Please enter a valid participant limit.'), findsOneWidget);
+      find.text('Please enter a valid participant limit.'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('Unlimited mock playdate label has no capacity slash',
-      (tester) async {
+  testWidgets('Unlimited mock playdate label has no capacity slash', (
+    tester,
+  ) async {
     await pumpDetailById(tester, 'pd2');
 
     expect(find.text('3 joined'), findsWidgets);
@@ -195,8 +196,9 @@ void main() {
     expect(full.isFull, isTrue);
     expect(full.isJoinedBy(currentUser.id), isTrue);
 
-    ScaffoldMessenger.of(tester.element(find.byType(Scaffold).first))
-        .clearSnackBars();
+    ScaffoldMessenger.of(
+      tester.element(find.byType(Scaffold).first),
+    ).clearSnackBars();
     await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(OutlinedButton, 'Leave Playdate'));

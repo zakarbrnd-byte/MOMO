@@ -52,10 +52,7 @@ class _GroupDetailScreenState extends ConsumerState<GroupDetailScreen>
       skipLoadingOnRefresh: true,
       loading: () => Scaffold(
         appBar: AppBar(title: const Text('Group')),
-        body: const MomoLoading(
-          title: 'Loading...',
-          message: 'Please wait.',
-        ),
+        body: const MomoLoading(title: 'Loading...', message: 'Please wait.'),
       ),
       error: (error, _) => Scaffold(
         appBar: AppBar(title: const Text('Group')),
@@ -135,10 +132,8 @@ class _PostsTab extends ConsumerWidget {
     return postsAsync.when(
       skipLoadingOnReload: true,
       skipLoadingOnRefresh: true,
-      loading: () => const MomoLoading(
-        title: 'Loading...',
-        message: 'Please wait.',
-      ),
+      loading: () =>
+          const MomoLoading(title: 'Loading...', message: 'Please wait.'),
       error: (error, _) => MomoError(
         title: 'Something went wrong',
         message: '게시글을 불러오지 못했습니다.',
@@ -196,10 +191,8 @@ class _EventsTab extends ConsumerWidget {
     return eventsAsync.when(
       skipLoadingOnReload: true,
       skipLoadingOnRefresh: true,
-      loading: () => const MomoLoading(
-        title: 'Loading...',
-        message: 'Please wait.',
-      ),
+      loading: () =>
+          const MomoLoading(title: 'Loading...', message: 'Please wait.'),
       error: (error, _) => MomoError(
         title: 'Something went wrong',
         message: '이벤트를 불러오지 못했습니다.',
@@ -220,10 +213,12 @@ class _EventsTab extends ConsumerWidget {
             final event = events[index];
             final rsvpsAsync = ref.watch(eventRsvpsProvider(event.id));
             final rsvps = rsvpsAsync.valueOrNull ?? const <Rsvp>[];
-            final attending =
-                rsvps.where((r) => r.status == RsvpStatus.attending).length;
-            final notAttending =
-                rsvps.where((r) => r.status == RsvpStatus.notAttending).length;
+            final attending = rsvps
+                .where((r) => r.status == RsvpStatus.attending)
+                .length;
+            final notAttending = rsvps
+                .where((r) => r.status == RsvpStatus.notAttending)
+                .length;
             final local = event.dateTime.toLocal();
             final ampm = local.hour < 12 ? '오전' : '오후';
             final hour12 = local.hour % 12 == 0 ? 12 : local.hour % 12;
@@ -275,10 +270,8 @@ class _MembersTab extends ConsumerWidget {
     return membersAsync.when(
       skipLoadingOnReload: true,
       skipLoadingOnRefresh: true,
-      loading: () => const MomoLoading(
-        title: 'Loading...',
-        message: 'Please wait.',
-      ),
+      loading: () =>
+          const MomoLoading(title: 'Loading...', message: 'Please wait.'),
       error: (error, _) => MomoError(
         title: 'Something went wrong',
         message: '멤버를 불러오지 못했습니다.',

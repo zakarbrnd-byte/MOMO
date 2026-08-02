@@ -27,10 +27,7 @@ class CreateScreen extends ConsumerWidget {
       body: ListView(
         padding: AppSpacing.pageCreate,
         children: [
-          Text(
-            'What would you like to share?',
-            style: textTheme.titleMedium,
-          ),
+          Text('What would you like to share?', style: textTheme.titleMedium),
           const SizedBox(height: AppSpacing.sm),
           Text(
             'Groups are communities. Event Announcements are created inside a Group.',
@@ -42,10 +39,7 @@ class CreateScreen extends ConsumerWidget {
             title: 'Create Group',
             subtitle: 'Start a community around interest, age, or location',
             onTap: () {
-              AppNavigation.pushPage(
-                context,
-                const CreateGroupScreen(),
-              );
+              AppNavigation.pushPage(context, const CreateGroupScreen());
             },
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -54,10 +48,7 @@ class CreateScreen extends ConsumerWidget {
             title: 'Create Post',
             subtitle: 'Ask a question or share with the community',
             onTap: () {
-              AppNavigation.pushPage(
-                context,
-                const CreatePostScreen(),
-              );
+              AppNavigation.pushPage(context, const CreatePostScreen());
             },
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -103,10 +94,7 @@ class _EventMembershipGate extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.md),
-          TextButton(
-            onPressed: onBrowseGroups,
-            child: const Text('모임 찾아보기'),
-          ),
+          TextButton(onPressed: onBrowseGroups, child: const Text('모임 찾아보기')),
         ],
       ),
     );

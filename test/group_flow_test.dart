@@ -22,10 +22,7 @@ void main() {
     addTearDown(container.dispose);
 
     await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: const MomoApp(),
-      ),
+      UncontrolledProviderScope(container: container, child: const MomoApp()),
     );
     await tester.pumpAndSettle();
     return container;
@@ -41,8 +38,9 @@ void main() {
     expect(find.widgetWithText(AppBar, '모임 정보'), findsOneWidget);
   }
 
-  testWidgets('Home shows group names and no Playdate / Create Playdate',
-      (tester) async {
+  testWidgets('Home shows group names and no Playdate / Create Playdate', (
+    tester,
+  ) async {
     await pumpApp(tester);
 
     expect(find.textContaining('LA 3살'), findsWidgets);
@@ -85,8 +83,9 @@ void main() {
     expect(find.text('이번 주 Lafayette Park 가실 분?'), findsOneWidget);
   });
 
-  testWidgets('Group Information shows details and membership actions',
-      (tester) async {
+  testWidgets('Group Information shows details and membership actions', (
+    tester,
+  ) async {
     await pumpApp(tester);
 
     await openLa3(tester);
@@ -106,8 +105,9 @@ void main() {
     expect(find.text('Join Group'), findsNothing);
   });
 
-  testWidgets('Join and Leave updates membership from Group Information',
-      (tester) async {
+  testWidgets('Join and Leave updates membership from Group Information', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
 
     await openHomeGroupBySearch(tester, 'OC 워킹맘');
@@ -139,8 +139,9 @@ void main() {
       before + 1,
     );
     expect(
-      (await container.read(currentUserGroupIdsProvider.future))
-          .contains(groupOcWork.id),
+      (await container.read(
+        currentUserGroupIdsProvider.future,
+      )).contains(groupOcWork.id),
       isTrue,
     );
     expect(
@@ -163,8 +164,9 @@ void main() {
       before,
     );
     expect(
-      (await container.read(currentUserGroupIdsProvider.future))
-          .contains(groupOcWork.id),
+      (await container.read(
+        currentUserGroupIdsProvider.future,
+      )).contains(groupOcWork.id),
       isFalse,
     );
   });
@@ -194,8 +196,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      (await container.read(currentUserGroupIdsProvider.future))
-          .contains(groupOcWork.id),
+      (await container.read(
+        currentUserGroupIdsProvider.future,
+      )).contains(groupOcWork.id),
       isTrue,
     );
 
@@ -250,8 +253,10 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, '이벤트 만들기'));
     await tester.pumpAndSettle();
 
-    expect(find.widgetWithText(AppBar, 'Create Event Announcement'),
-        findsOneWidget);
+    expect(
+      find.widgetWithText(AppBar, 'Create Event Announcement'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Group detail shows posts and events', (tester) async {

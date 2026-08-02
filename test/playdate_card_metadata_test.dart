@@ -20,9 +20,7 @@ void main() {
         theme: AppTheme.light,
         home: MediaQuery(
           data: MediaQueryData(size: size),
-          child: Scaffold(
-            body: SingleChildScrollView(child: child),
-          ),
+          child: Scaffold(body: SingleChildScrollView(child: child)),
         ),
       ),
     );
@@ -42,16 +40,11 @@ void main() {
       createdAt: clock.subtract(const Duration(hours: 3)),
     );
 
-    testWidgets('shows host · relative time on header row with badge',
-        (tester) async {
+    testWidgets('shows host · relative time on header row with badge', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        wrap(
-          PlaydateCard(
-            playdate: sample,
-            onTap: () {},
-            now: clock,
-          ),
-        ),
+        wrap(PlaydateCard(playdate: sample, onTap: () {}, now: clock)),
       );
 
       expect(find.text('Playdate'), findsOneWidget);
@@ -90,21 +83,16 @@ void main() {
       );
 
       await tester.pumpWidget(
-        wrap(
-          PlaydateCard(
-            playdate: noTime,
-            onTap: () {},
-            now: clock,
-          ),
-        ),
+        wrap(PlaydateCard(playdate: noTime, onTap: () {}, now: clock)),
       );
 
       expect(find.text('박민지'), findsOneWidget);
       expect(find.textContaining('·'), findsNothing);
     });
 
-    testWidgets('long host + time does not overflow narrow width',
-        (tester) async {
+    testWidgets('long host + time does not overflow narrow width', (
+      tester,
+    ) async {
       final longHost = Playdate(
         id: 'pd_long',
         creatorId: 'mom_other',
@@ -122,11 +110,7 @@ void main() {
         wrap(
           SizedBox(
             width: 320,
-            child: PlaydateCard(
-              playdate: longHost,
-              onTap: () {},
-              now: clock,
-            ),
+            child: PlaydateCard(playdate: longHost, onTap: () {}, now: clock),
           ),
           size: const Size(320, 700),
         ),
@@ -139,8 +123,9 @@ void main() {
   });
 
   group('shared card title style', () {
-    testWidgets('Playdate and Post titles use identical cardTitle size',
-        (tester) async {
+    testWidgets('Playdate and Post titles use identical cardTitle size', (
+      tester,
+    ) async {
       const post = Post(
         id: 'po_shared',
         title: '동일 타이틀 스타일',

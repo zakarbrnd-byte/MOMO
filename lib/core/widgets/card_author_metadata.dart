@@ -45,12 +45,7 @@ class CardAuthorMetadata extends StatelessWidget {
           ),
         ),
         if (relative != null && relative.isNotEmpty)
-          Text(
-            ' · $relative',
-            style: textStyle,
-            maxLines: 1,
-            softWrap: false,
-          ),
+          Text(' · $relative', style: textStyle, maxLines: 1, softWrap: false),
       ],
     );
   }

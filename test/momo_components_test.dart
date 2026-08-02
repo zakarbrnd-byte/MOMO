@@ -17,12 +17,7 @@ void main() {
   testWidgets('MomoButton taps when enabled', (tester) async {
     var pressed = false;
     await tester.pumpWidget(
-      wrap(
-        MomoButton(
-          label: 'Save',
-          onPressed: () => pressed = true,
-        ),
-      ),
+      wrap(MomoButton(label: 'Save', onPressed: () => pressed = true)),
     );
 
     await tester.tap(find.text('Save'));
@@ -75,10 +70,7 @@ void main() {
     var tapped = false;
     await tester.pumpWidget(
       wrap(
-        MomoCard(
-          onTap: () => tapped = true,
-          child: const Text('Card body'),
-        ),
+        MomoCard(onTap: () => tapped = true, child: const Text('Card body')),
       ),
     );
 
