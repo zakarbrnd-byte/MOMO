@@ -17,6 +17,9 @@ abstract final class AppColors {
   /// Soft blush surface accent.
   static const Color softBlush = Color(0xFFFFF3F4);
 
+  /// Compact Home hero banner fill.
+  static const Color heroBanner = Color(0xFFFFF1F4);
+
   // Surfaces
   static const Color background = Color(0xFFFFF9F7);
   static const Color surface = Color(0xFFFFFFFF);

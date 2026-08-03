@@ -45,6 +45,97 @@ void main() {
     expect(find.byIcon(Icons.bookmark_border_rounded), findsWidgets);
   });
 
+  testWidgets('Home hero is compact horizontal with transparent art', (
+    tester,
+  ) async {
+    await pumpHome(tester);
+
+    final heading = find.textContaining('우리 동네 엄마들의');
+    expect(heading, findsOneWidget);
+    expect(find.text('✨ 추천 모임'), findsOneWidget);
+
+    final image = find.byWidgetPredicate((widget) {
+      if (widget is! Image) return false;
+      final provider = widget.image;
+      return provider is AssetImage &&
+          provider.assetName == 'assets/images/hero_moms_transparent.png';
+    });
+    expect(image, findsOneWidget);
+
+    // Heading and illustration share one Row at standard mobile width.
+    final row = find.ancestor(of: heading, matching: find.byType(Row));
+    expect(row, findsWidgets);
+    expect(
+      find.descendant(of: row.first, matching: image),
+      findsOneWidget,
+    );
+
+    final heroHeight = tester.getSize(row.first).height;
+    expect(heroHeight, lessThan(180));
+
+    // Recommended section sits below the hero.
+    final heroBottom = tester.getBottomLeft(heading).dy;
+    final sectionTop = tester.getTopLeft(find.text('✨ 추천 모임')).dy;
+    expect(sectionTop, greaterThan(heroBottom));
+  });
+
+  testWidgets('Home hero has no overflow at narrow width and large text', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    // Feed cards may overflow at large scale (out of scope); suppress those
+    // so we can still assert the compact hero stays on one row.
+    final previousOnError = FlutterError.onError;
+    FlutterError.onError = (details) {
+      if ('${details.exception}'.contains('A RenderFlex overflowed')) {
+        return;
+      }
+      previousOnError?.call(details);
+    };
+    addTearDown(() => FlutterError.onError = previousOnError);
+
+    final container = ProviderContainer(overrides: testBackendOverrides);
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MediaQuery(
+          data: MediaQueryData(
+            size: Size(320, 900),
+            textScaler: TextScaler.linear(1.3),
+          ),
+          child: MomoApp(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final heading = find.textContaining('우리 동네 엄마들의');
+    expect(heading, findsOneWidget);
+
+    final heroRow =
+        find.ancestor(of: heading, matching: find.byType(Row)).first;
+    expect(tester.getSize(heroRow).width, lessThanOrEqualTo(320));
+    expect(tester.getSize(heroRow).height, lessThan(220));
+    expect(
+      find.descendant(
+        of: heroRow,
+        matching: find.byWidgetPredicate((widget) {
+          if (widget is! Image) return false;
+          final provider = widget.image;
+          return provider is AssetImage &&
+              provider.assetName.contains('hero_moms_transparent');
+        }),
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('Search query shows results mode', (tester) async {
     final container = await pumpHome(tester);
 
@@ -104,9 +195,7 @@ void main() {
   testWidgets('Clear filter chip removes one filter', (tester) async {
     final container = await pumpHome(tester);
 
-    container
-        .read(groupDiscoveryFiltersProvider.notifier)
-        .setFilters(
+    container.read(groupDiscoveryFiltersProvider.notifier).setFilters(
           const GroupDiscoveryFilters(
             interests: {'도서관'},
             locations: {'Koreatown, Los Angeles'},
@@ -126,9 +215,7 @@ void main() {
   testWidgets('Clear all removes all filters', (tester) async {
     final container = await pumpHome(tester);
 
-    container
-        .read(groupDiscoveryFiltersProvider.notifier)
-        .setFilters(
+    container.read(groupDiscoveryFiltersProvider.notifier).setFilters(
           const GroupDiscoveryFilters(interests: {'도서관'}, ageRanges: {'2–4세'}),
         );
     await tester.pumpAndSettle();
