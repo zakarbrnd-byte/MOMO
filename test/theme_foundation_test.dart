@@ -51,6 +51,7 @@ void main() {
     expect(AppColors.primary, const Color(0xFFFF4D6D));
     expect(AppColors.lightPink, const Color(0xFFFFE7EA));
     expect(AppColors.softBlush, const Color(0xFFFFF3F4));
+    expect(AppColors.heroBanner, const Color(0xFFFFF1F4));
     expect(AppColors.background, const Color(0xFFFFF9F7));
     expect(AppColors.card, const Color(0xFFFFFFFF));
     expect(AppColors.border, const Color(0xFFF1E5E3));
@@ -63,7 +64,8 @@ void main() {
     expect(AppTextStyles.brandLogo.fontSize, 40);
     expect(AppTextStyles.brandLogo.fontWeight, FontWeight.w800);
     expect(AppTextStyles.displayLarge.fontSize, 40);
-    expect(AppTextStyles.heroTitle.fontSize, 30);
+    expect(AppTextStyles.heroTitle.fontSize, 26);
+    expect(AppTextStyles.heroTitle.fontWeight, FontWeight.w700);
     expect(AppTextStyles.headline.fontSize, 30);
     expect(AppTextStyles.sectionTitle.fontSize, 24);
     expect(AppTextStyles.title.fontSize, 24);

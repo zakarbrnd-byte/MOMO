@@ -19,7 +19,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/hero_moms.png
+    - assets/images/hero_moms_transparent.png
   fonts:
     - family: Pretendard
       fonts:

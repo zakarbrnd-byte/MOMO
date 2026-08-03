@@ -32,15 +32,15 @@ abstract final class AppTextStyles {
     height: 1.2,
   );
 
-  /// Hero headline under the Home header.
+  /// Compact Home hero headline (same row as illustration).
   static const TextStyle heroTitle = TextStyle(
     fontFamily: _fontFamily,
     fontFamilyFallback: _fontFamilyFallback,
-    fontSize: 30,
+    fontSize: 26,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
-    letterSpacing: -0.4,
-    height: 1.25,
+    letterSpacing: -0.3,
+    height: 1.22,
   );
 
   /// Large screen / AppBar title (non-brand).

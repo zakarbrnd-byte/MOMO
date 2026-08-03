@@ -147,7 +147,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               children: [
                 if (!showSearch && filters.isEmpty && !catalogEmpty) ...[
                   const _HomeHero(),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xl + AppSpacing.xs),
                 ],
                 if (!filters.isEmpty) ...[
                   _ActiveFilterChips(
@@ -357,62 +357,68 @@ class _HeaderCircleIconButton extends StatelessWidget {
   }
 }
 
-/// Friendly hero under the Home header.
+/// Compact Home hero: heading + transparent moms illustration on one row.
 class _HomeHero extends StatelessWidget {
   const _HomeHero();
 
+  /// Bundled transparent illustration (no baked white canvas).
+  static const String illustrationAsset =
+      'assets/images/hero_moms_transparent.png';
+
   @override
   Widget build(BuildContext context) {
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
     return Semantics(
       header: true,
       label: '우리 동네 엄마들의 모임을 만나보세요',
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.softBlush,
-          borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+          color: AppColors.heroBanner,
+          borderRadius: BorderRadius.circular(22),
           border: Border.all(color: AppColors.border),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg,
-            AppSpacing.lg,
-            AppSpacing.md,
-            AppSpacing.lg,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.xl,
+            vertical: AppSpacing.lg,
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final narrow = constraints.maxWidth < 340;
-              const headline = Text(
-                '우리 동네 엄마들의\n모임을 만나보세요!',
-                style: AppTextStyles.heroTitle,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              );
-              final art = Image.asset(
-                'assets/images/hero_moms.png',
-                height: narrow ? 88 : 112,
-                fit: BoxFit.contain,
-                alignment: Alignment.centerRight,
-                semanticLabel: '엄마들의 모임 일러스트',
-              );
-
-              if (narrow) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    headline,
-                    const SizedBox(height: AppSpacing.md),
-                    Align(alignment: Alignment.centerRight, child: art),
-                  ],
-                );
+              final width = constraints.maxWidth;
+              // Keep text + art on one row; shrink art on narrow / large text.
+              var artWidth = width >= 360 ? 150.0 : 120.0;
+              if (textScale > 1.2) {
+                artWidth = (artWidth * 0.85).clamp(100.0, artWidth);
               }
+              if (width < 300) {
+                artWidth = 110;
+              }
+              final artHeight = artWidth * 0.88;
 
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Expanded(flex: 5, child: headline),
+                  const Expanded(
+                    child: Text(
+                      '우리 동네 엄마들의\n모임을 만나보세요!',
+                      style: AppTextStyles.heroTitle,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
                   const SizedBox(width: AppSpacing.sm),
-                  Expanded(flex: 4, child: art),
+                  SizedBox(
+                    width: artWidth,
+                    height: artHeight,
+                    child: Image.asset(
+                      illustrationAsset,
+                      fit: BoxFit.contain,
+                      alignment: Alignment.bottomRight,
+                      excludeFromSemantics: true,
+                      filterQuality: FilterQuality.medium,
+                    ),
+                  ),
                 ],
               );
             },
